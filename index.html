@@ -145,6 +145,29 @@
             100% { left: 100%; }
         }
 
+        /* ── PREVIEW SECTION ── */
+        .preview {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 900px;
+            padding: 0 2rem 2rem;
+            animation: fadeUp 1.5s ease-out 1s both;
+        }
+
+        .preview-wrapper {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(150, 70, 255, 0.15);
+            box-shadow: 0 0 60px rgba(120, 50, 220, 0.15);
+        }
+
+        .preview-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
         /* ── FEATURES SECTION ── */
         .features {
             position: relative;
@@ -341,6 +364,13 @@
         <div class="tagline">The Future of Football Commentary</div>
         <div class="subtext">AI-powered live commentary platform delivering real-time, multi-voice coverage with emotional intelligence</div>
         <div class="coming-soon">Launching Soon</div>
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="preview">
+        <div class="preview-wrapper">
+            <img src="preview.png" alt="FootyHubTV Platform Preview" class="preview-img">
+        </div>
     </section>
 
     <!-- FEATURES -->
