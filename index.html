@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FootyHubTV — The Future of Football Commentary</title>
-    <meta name="description" content="FootyHubTV is redefining live football commentary. Something big is coming.">
-    <meta property="og:title" content="FootyHubTV — Coming Soon">
-    <meta property="og:description" content="The future of football commentary is almost here.">
+    <title>FootyHubTV — AI-Powered Live Football Commentary Platform</title>
+    <meta name="description" content="FootyHubTV is the world's first AI-powered live football commentary platform. Real-time, multi-voice, emotionally intelligent coverage.">
+    <meta property="og:title" content="FootyHubTV — The Future of Football Commentary">
+    <meta property="og:description" content="AI-powered live football commentary platform. Real-time, multi-voice coverage for fans, media companies, and leagues.">
     <meta property="og:image" content="logo.png">
     <meta property="og:type" content="website">
     <link rel="icon" type="image/png" href="logo.png">
@@ -22,12 +22,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             background: #000;
             color: #fff;
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            overflow: hidden;
             position: relative;
+            overflow-x: hidden;
         }
 
         /* Animated background */
@@ -48,18 +47,24 @@
             100% { opacity: 1; }
         }
 
-        .container {
+        /* ── HERO SECTION ── */
+        .hero {
             position: relative;
             z-index: 1;
             text-align: center;
-            padding: 2rem;
+            padding: 4rem 2rem 2rem;
             max-width: 800px;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo-wrapper {
             position: relative;
             display: inline-block;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
             animation: logoIn 1.5s ease-out;
         }
 
@@ -74,7 +79,7 @@
         }
 
         .logo {
-            width: min(90vw, 550px);
+            width: min(90vw, 500px);
             height: auto;
             filter: drop-shadow(0 0 60px rgba(140, 60, 255, 0.5)) drop-shadow(0 0 120px rgba(120, 40, 220, 0.3));
             mask-image: radial-gradient(ellipse 70% 65% at center, black 30%, transparent 75%);
@@ -92,7 +97,7 @@
             letter-spacing: 0.15em;
             text-transform: uppercase;
             color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             animation: fadeUp 1.5s ease-out 0.3s both;
         }
 
@@ -100,7 +105,9 @@
             font-size: clamp(0.9rem, 2vw, 1.05rem);
             color: rgba(255, 255, 255, 0.45);
             font-weight: 300;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            line-height: 1.6;
             animation: fadeUp 1.5s ease-out 0.6s both;
         }
 
@@ -138,21 +145,164 @@
             100% { left: 100%; }
         }
 
-        .contact {
-            margin-top: 3rem;
+        /* ── FEATURES SECTION ── */
+        .features {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 900px;
+            padding: 3rem 2rem;
             animation: fadeUp 1.5s ease-out 1.2s both;
         }
 
-        .contact a {
-            color: rgba(200, 170, 255, 0.6);
+        .features-title {
+            text-align: center;
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(200, 170, 255, 0.5);
+            margin-bottom: 2.5rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: rgba(150, 70, 255, 0.04);
+            border: 1px solid rgba(150, 70, 255, 0.12);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(150, 70, 255, 0.3);
+            background: rgba(150, 70, 255, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .feature-card h3 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .feature-card p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.5;
+        }
+
+        /* ── B2B SECTION ── */
+        .b2b {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 3rem 2rem;
+            max-width: 600px;
+            animation: fadeUp 1.5s ease-out 1.5s both;
+        }
+
+        .b2b-title {
+            font-size: clamp(0.7rem, 1.5vw, 0.8rem);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(200, 170, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .b2b p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .b2b a {
+            color: rgba(200, 170, 255, 0.7);
             text-decoration: none;
             font-size: 0.85rem;
+            border-bottom: 1px solid rgba(200, 170, 255, 0.2);
+            padding-bottom: 2px;
+            transition: color 0.3s, border-color 0.3s;
+        }
+
+        .b2b a:hover {
+            color: rgba(200, 170, 255, 1);
+            border-color: rgba(200, 170, 255, 0.6);
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            margin-top: auto;
+            animation: fadeUp 1.5s ease-out 1.8s both;
+        }
+
+        .powered-by {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .powered-by span {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        .powered-by svg {
+            height: 18px;
+            fill: rgba(255, 255, 255, 0.35);
+            transition: fill 0.3s;
+        }
+
+        .powered-by a {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.35);
+            font-size: 0.75rem;
+            font-weight: 500;
             letter-spacing: 0.05em;
             transition: color 0.3s;
         }
 
-        .contact a:hover {
+        .powered-by a:hover {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .footer-contact a {
+            color: rgba(200, 170, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        .footer-contact a:hover {
             color: rgba(200, 170, 255, 1);
+        }
+
+        .copyright {
+            margin-top: 1rem;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.15);
         }
 
         /* Floating particles */
@@ -183,17 +333,63 @@
 <body>
     <div class="particles" id="particles"></div>
 
-    <div class="container">
+    <!-- HERO -->
+    <section class="hero">
         <div class="logo-wrapper">
             <img src="logo.png" alt="FootyHubTV" class="logo">
         </div>
         <div class="tagline">The Future of Football Commentary</div>
-        <div class="subtext">A new era in sports broadcasting is almost here</div>
-        <div class="coming-soon">Coming Soon</div>
-        <div class="contact">
+        <div class="subtext">AI-powered live commentary platform delivering real-time, multi-voice coverage with emotional intelligence</div>
+        <div class="coming-soon">Launching Soon</div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features">
+        <div class="features-title">Platform Capabilities</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">&#127908;</div>
+                <h3>Multi-Voice Commentary</h3>
+                <p>Multiple AI presenters with distinct personalities delivering dynamic, real-time match coverage</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#9889;</div>
+                <h3>Real-Time Processing</h3>
+                <p>Live match data analysis with instant commentary generation synchronized to on-field events</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#127760;</div>
+                <h3>Multi-Language</h3>
+                <p>Scalable across languages and markets, enabling global coverage from a single platform</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">&#128200;</div>
+                <h3>Intelligent Analysis</h3>
+                <p>Context-aware tactical insights, statistical analysis, and match narratives powered by AI</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- B2B -->
+    <section class="b2b">
+        <div class="b2b-title">For Media Partners</div>
+        <p>FootyHubTV offers automated commentary-as-a-service for media companies, sports leagues, and digital platforms seeking scalable, AI-powered match coverage.</p>
+        <a href="mailto:contact@footyhub.tv">Partner Inquiries &rarr;</a>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="powered-by">
+            <a href="https://elevenlabs.io" target="_blank" rel="noopener">
+                <span>Voice AI powered by</span>
+                <strong>ElevenLabs</strong>
+            </a>
+        </div>
+        <div class="footer-contact">
             <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a>
         </div>
-    </div>
+        <div class="copyright">&copy; 2026 FootyHubTV. All rights reserved.</div>
+    </footer>
 
     <script>
         const container = document.getElementById('particles');
