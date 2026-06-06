@@ -1,0 +1,125 @@
+{
+  "is_live": false,
+  "phase": "pre",
+  "updated": "2026-06-05T23:43:46Z",
+  "note": "Single source of truth the FootyHub engine writes (from Sofascore). The site polls this ~10s and swaps off-air/live. Every demo value in the site maps 1:1 to a field here.",
+  "match": {
+    "home": "Mexico",
+    "home_code": "mx",
+    "away": "South Africa",
+    "away_code": "za",
+    "competition": "Mundial 2026",
+    "stage": "Group A · Opening match",
+    "venue": "Estadio Azteca, Mexico City",
+    "kickoff": "2026-06-11T19:00:00Z",
+    "score_home": null,
+    "score_away": null,
+    "minute": null
+  },
+  "platforms": {
+    "youtube_channel": "UCNODmrFpJQZvyc0K_A2xk7w",
+    "youtube_handle": "@FootyHub_TV",
+    "youtube_url": "https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w",
+    "youtube_embed": "https://www.youtube.com/embed/live_stream?channel=UCNODmrFpJQZvyc0K_A2xk7w",
+    "twitch": null,
+    "tiktok": null
+  },
+  "tonight_fans": [
+    {
+      "name": "Santiago",
+      "nation": "Mexico",
+      "code": "mx",
+      "role": "Home fan"
+    },
+    {
+      "name": "Thabo",
+      "nation": "South Africa",
+      "code": "za",
+      "role": "Away fan"
+    }
+  ],
+  "victor_bets": {
+    "model": "victor_betting_slip.generate_triple_bet — live pre-game (real per-90 stats + live odds)",
+    "tiers": {
+      "safe": {
+        "combined_odds": 1.86,
+        "combined_prob": 0.507,
+        "summary": "Bet builder: Home Team To Score + Over 0.5 Goals 1st Half. Combined odds 1.86.",
+        "math_summary": "Individual probabilities Home Team To Score 71% × Over 0.5 Goals 1st Half 71% → near-independent legs → combined 51%. Fair odds 1.97; offered price 1.86 (≈6% bookmaker margin).",
+        "selections": [
+          {
+            "label": "Home Team To Score",
+            "odds": 1.32,
+            "prob": 0.713,
+            "reasoning": "P=71%, basis: λ_home=1.25"
+          },
+          {
+            "label": "Over 0.5 Goals 1st Half",
+            "odds": 1.33,
+            "prob": 0.71,
+            "reasoning": "P=71%, basis: λ_1h~1.24 (45% of total)"
+          }
+        ]
+      },
+      "medium": {
+        "combined_odds": 2.74,
+        "combined_prob": 0.345,
+        "summary": "Bet builder: Away Team To Score + Over 1.5 Goals + Over 4.5 Cards. Combined odds 2.74.",
+        "math_summary": "Individual probabilities Away Team To Score 78% × Over 1.5 Goals 76% × Over 4.5 Cards 47% → correlation +25% (linked legs) → combined 34%. Fair odds 2.90; offered price 2.74 (≈6% bookmaker margin).",
+        "selections": [
+          {
+            "label": "Away Team To Score",
+            "odds": 1.21,
+            "prob": 0.777,
+            "reasoning": "P=78%, basis: λ_away=1.50"
+          },
+          {
+            "label": "Over 1.5 Goals",
+            "odds": 1.24,
+            "prob": 0.76,
+            "reasoning": "P=76%, basis: λ_home=1.25, λ_away=1.50, λ_total=2.75"
+          },
+          {
+            "label": "Over 4.5 Cards",
+            "odds": 2.02,
+            "prob": 0.468,
+            "reasoning": "P=47%, basis: home 2.83/g, away 1.67/g, λ=4.50"
+          }
+        ]
+      },
+      "max": {
+        "combined_odds": 5.27,
+        "combined_prob": 0.179,
+        "summary": "Bet builder: Over 10.5 Corners + Over 22.5 Total Shots + Both Teams To Score + Over 1.5 Goals 1st Half. Combined odds 5.27.",
+        "math_summary": "Individual probabilities Over 10.5 Corners 85% × Over 22.5 Total Shots 80% × Both Teams To Score 55% × Over 1.5 Goals 1st Half 35% → correlation +35% (linked legs) → combined 18%. Fair odds 5.59; offered price 5.27 (≈6% bookmaker margin).",
+        "selections": [
+          {
+            "label": "Over 10.5 Corners",
+            "odds": 1.12,
+            "prob": 0.846,
+            "reasoning": "P=85%, basis: home 7.2/g, away 7.2/g, λ=14.3"
+          },
+          {
+            "label": "Over 22.5 Total Shots",
+            "odds": 1.17,
+            "prob": 0.805,
+            "reasoning": "P=80%, basis: home 10.8/g, away 16.2/g"
+          },
+          {
+            "label": "Both Teams To Score",
+            "odds": 1.7,
+            "prob": 0.554,
+            "reasoning": "P=55%, basis: P_home_scores=0.71, P_away_scores=0.78"
+          },
+          {
+            "label": "Over 1.5 Goals 1st Half",
+            "odds": 2.69,
+            "prob": 0.351,
+            "reasoning": "P=35%, basis: λ_1h~1.24"
+          }
+        ]
+      }
+    }
+  },
+  "youtube_video_id": null
+}
