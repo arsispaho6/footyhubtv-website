@@ -958,7 +958,8 @@
   .poster-upnext b{color:#fff}
   .upnext-bell{margin-left:8px;font-size:.74rem;color:rgba(200,170,255,.9);text-decoration:none;border:1px solid rgba(150,70,255,.35);padding:4px 10px;border-radius:50px;cursor:pointer;white-space:nowrap}
   .upnext-bell:hover{color:#fff;border-color:rgba(150,70,255,.6)}
-  .watch-back{display:inline-block;margin-bottom:18px;font-size:.8rem;color:var(--txt-2);text-decoration:none;border:1px solid rgba(150,70,255,.3);padding:8px 16px;border-radius:50px;cursor:pointer;transition:.2s}
+  .watch-back{position:fixed;bottom:22px;left:22px;z-index:30;display:inline-flex;align-items:center;font-size:.8rem;color:var(--txt-2);text-decoration:none;border:1px solid rgba(150,70,255,.4);background:rgba(16,9,30,.92);backdrop-filter:blur(8px);padding:10px 18px;border-radius:50px;cursor:pointer;transition:.2s;box-shadow:0 6px 22px rgba(0,0,0,.45)}
+  .watch-back:hover{border-color:var(--violet);color:#fff}
   .watch-back:hover{color:#fff;border-color:rgba(150,70,255,.6)}
   #live{padding-top:120px}
   /* Mundial phase (Pre/Live/Done) */
@@ -2051,7 +2052,7 @@
   const mhBack=document.getElementById('mhBack');if(mhBack)mhBack.addEventListener('click',backToGrid);
   const mhPrev=document.getElementById('mhPrev');if(mhPrev)mhPrev.addEventListener('click',()=>showGroup(curG-1));
   const mhNext=document.getElementById('mhNext');if(mhNext)mhNext.addEventListener('click',()=>showGroup(curG+1));
-  function openHub(){if(mhub){mhub.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();}}
+  function openHub(){if(mhub){mhub.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();fhPush();}}
   function closeHub(){if(mhub){mhub.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}}
   if(mOpen)mOpen.addEventListener('click',openHub);
   if(mClose)mClose.addEventListener('click',closeHub);
@@ -2099,12 +2100,23 @@
   function showPage(pid){const o=document.getElementById('offair'),i=document.getElementById('intro');
     if(o)o.classList.remove('on');if(i)i.style.display='none';
     ['live','hosts','schedule','watch','partnersPage','predict'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
-    document.body.classList.add('scrolled');window.scrollTo({top:0});}
+    document.body.classList.add('scrolled');window.scrollTo({top:0});fhPush();}
   function showWatch(){showPage('live');}
   function showHosts(){showPage('hosts');}
   function backHome(){const o=document.getElementById('offair'),i=document.getElementById('intro');
     ['live','hosts','schedule','watch','partnersPage','predict'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('on');});
     if(o)o.classList.add('on');if(i)i.style.display='';}
+  // ── SPA browser-back: keep users inside the site (back → close overlay / home, not Google) ──
+  function _atHome(){return !(history.state&&history.state.fhNav);}
+  function fhPush(){try{if(_atHome())history.pushState({fhNav:1},'');}catch(e){}}
+  function fhCloseOverlays(){
+    const ids=['menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal','avatarLightbox'];
+    let closed=false;ids.forEach(id=>{const el=document.getElementById(id);if(el&&!el.hidden){el.hidden=true;closed=true;}});
+    if(closed){document.body.style.overflow='';if(lenis)lenis.start();}
+    return closed;
+  }
+  function goHome(){if(!_atHome()){history.back();}else{fhCloseOverlays();backHome();}}
+  window.addEventListener('popstate',function(){if(fhCloseOverlays())return;backHome();});
   // Mundial banner phase: pre (countdown) / live (tournament on) / done (champions)
   function setMundialPhase(p){
     const star=document.getElementById('mStar'),count=document.getElementById('mCount'),sub=document.getElementById('mSub'),enter=document.getElementById('mEnter'),banner=document.getElementById('mundialOpen');
@@ -2665,7 +2677,7 @@
     if(act){e.preventDefault();
       if(act==='live'){showWatch();}
       else if(act==='hosts'){showHosts();}
-      else if(act==='home'){backHome();}
+      else if(act==='home'){goHome();}
       else if(act==='mundial'){openHub();}
       else if(act==='schedule'){showPage('schedule');}
       else if(act==='watch'){showPage('watch');}
@@ -2768,7 +2780,7 @@
   if(vCount){let v=2418;setInterval(()=>{v+=Math.round((Math.random()-0.42)*16);if(v<1900)v=1900;vCount.textContent=v.toLocaleString();},3200);}
 
   // ── full-screen menu ──
-  function openMenu(){const m=document.getElementById('menu');if(m){m.hidden=false;renderMenuAuth();document.body.style.overflow='hidden';if(lenis)lenis.stop();}}
+  function openMenu(){const m=document.getElementById('menu');if(m){m.hidden=false;renderMenuAuth();document.body.style.overflow='hidden';if(lenis)lenis.stop();fhPush();}}
   function closeMenu(){const m=document.getElementById('menu');if(m){m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}}
   const menuEl=document.getElementById('menu');
   if(menuEl)menuEl.addEventListener('click',e=>{if(e.target===menuEl||e.target.closest('a'))closeMenu();});
