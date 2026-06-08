@@ -1,0 +1,6 @@
+_checkpoints/
+_bobos/
+*.preDeploy
+*.old
+.DS_Store
+Thumbs.db

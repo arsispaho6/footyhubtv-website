@@ -1,7 +1,7 @@
 {
   "is_live": false,
   "phase": "pre",
-  "updated": "2026-06-05T23:43:46Z",
+  "updated": "2026-06-08T00:14:01Z",
   "note": "Single source of truth the FootyHub engine writes (from Sofascore). The site polls this ~10s and swaps off-air/live. Every demo value in the site maps 1:1 to a field here.",
   "match": {
     "home": "Mexico",
@@ -121,5 +121,6 @@
       }
     }
   },
-  "youtube_video_id": null
+  "youtube_video_id": null,
+  "viewers": null
 }

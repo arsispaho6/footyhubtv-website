@@ -354,6 +354,24 @@
   .share-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:50px;background:rgba(255,255,255,.06);border:1px solid var(--violet-soft);color:#fff;font:inherit;font-weight:700;font-size:.85rem;cursor:pointer;transition:.2s}
   .share-btn:hover{background:var(--violet-dim);border-color:var(--violet)}
   #cinBar,#cinBar input{cursor:pointer}
+  .sponsor-form{max-width:560px;margin:16px auto 0;text-align:left;display:flex;flex-direction:column;gap:10px}
+  .sf-row{display:flex;gap:10px;flex-wrap:wrap}
+  .sf-row>*{flex:1;min-width:150px}
+  .sponsor-form input,.sponsor-form select,.sponsor-form textarea{width:100%;padding:12px 14px;border-radius:11px;border:1px solid rgba(150,70,255,.3);background:rgba(255,255,255,.04);color:#fff;font:inherit;font-size:.85rem;outline:none}
+  .sponsor-form input:focus,.sponsor-form select:focus,.sponsor-form textarea:focus{border-color:var(--violet)}
+  .sponsor-form select{cursor:pointer}
+  .sponsor-form option{background:#1a0d33}
+  .sponsor-form textarea{resize:vertical;min-height:74px}
+  .sponsor-form .btn{align-self:flex-start;margin-top:2px}
+  .sf-note{font-size:.8rem;color:var(--txt-3);min-height:18px}
+  .sf-note a{color:#caa9ff}
+  .founding{max-width:680px;margin:0 auto 36px;padding:26px 28px;border-radius:18px;border:1px solid rgba(150,70,255,.4);background:linear-gradient(135deg,rgba(150,70,255,.16),rgba(150,70,255,.04));text-align:center}
+  .founding-tag{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#caa9ff;background:rgba(150,70,255,.18);border:1px solid rgba(150,70,255,.4);padding:5px 14px;border-radius:50px;margin-bottom:12px}
+  .founding-h{font-size:1.5rem;font-weight:800;color:#fff;margin:0 0 8px}
+  .founding-p{font-size:.9rem;color:var(--txt-2);line-height:1.6;margin:0 auto 16px;max-width:520px}
+  .founding-list{list-style:none;padding:0;margin:0 auto 18px;max-width:460px;text-align:left;display:flex;flex-direction:column;gap:9px}
+  .founding-list li{font-size:.86rem;color:var(--txt-2);line-height:1.4}
+  .founding-list li b{color:#fff}
   /* animated glow underline */
   .nav::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;
     background:linear-gradient(90deg,transparent,rgba(160,90,255,.9),transparent);
@@ -458,7 +476,8 @@
   @media(max-width:520px){.poster-cast{grid-template-columns:repeat(2,1fr)}}
   .pc{padding:12px 8px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(150,70,255,.15);text-align:center}
   .pc-av{width:42px;height:42px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-weight:700;
-    background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.6),rgba(80,30,160,.4));border:1px solid rgba(150,70,255,.4)}
+    background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.6),rgba(80,30,160,.4));border:1px solid rgba(150,70,255,.4);overflow:hidden}
+  .pc-av img:not(.tkflag){width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:zoom-in}
   .pc-n{font-size:.78rem;font-weight:600}
   .pc-r{font-size:.58rem;color:var(--txt-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
   .pc-eq{display:inline-flex;align-items:flex-end;gap:2px;height:11px}
@@ -499,7 +518,8 @@
   .host-star:hover{border-color:rgba(150,70,255,.4);transform:translateY(-2px)}
   .host-star .hs-av{width:84px;height:84px;border-radius:50%;flex:0 0 84px;display:flex;align-items:center;justify-content:center;
     font-size:2rem;font-weight:700;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.7),rgba(70,25,150,.5));
-    border:1px solid rgba(150,70,255,.45);box-shadow:0 0 34px rgba(140,60,255,.4)}
+    border:1px solid rgba(150,70,255,.45);box-shadow:0 0 34px rgba(140,60,255,.4);overflow:hidden}
+  .host-star .hs-av img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%}
   .host-star h3{font-size:1.25rem;margin-bottom:2px}
   .host-star .hs-role{font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(200,170,255,.72);margin-bottom:8px}
   .host-star .hs-q{font-size:.85rem;font-style:italic;color:#d9c6ff;margin-bottom:12px}
@@ -627,6 +647,13 @@
   .fp-card.filled{background:linear-gradient(180deg,rgba(150,70,255,.12),rgba(150,70,255,.03));border-color:rgba(150,70,255,.3)}
   .fp-empty{color:var(--txt-3);font-size:.92rem;text-align:center;width:100%}
   .fp-bigflag{width:90px;height:60px;object-fit:cover;border-radius:8px;flex:0 0 90px;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 6px 18px rgba(0,0,0,.5)}
+  .fp-photo{width:104px;height:104px;flex:0 0 104px;object-fit:cover;object-position:top center;border-radius:16px;background:radial-gradient(circle at 30% 22%,rgba(150,90,255,.45),rgba(70,25,150,.28));box-shadow:0 0 0 1px rgba(255,255,255,.18),0 8px 22px rgba(0,0,0,.5)}
+  .fp-photo.isflag{height:70px;border-radius:8px;background:none}
+  .fp-roleflag{display:inline-block;width:20px;height:14px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:7px;box-shadow:0 0 0 1px rgba(255,255,255,.22)}
+  .fp-photo,.hs-av img,.hf-avatar img{cursor:zoom-in}
+  #avatarLightbox{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(8,4,18,.9);backdrop-filter:blur(14px);cursor:zoom-out;animation:mhubFade .25s ease;padding:30px}
+  #avatarLightbox[hidden]{display:none}
+  #avatarLightbox img{width:min(74vmin,380px);height:min(74vmin,380px);object-fit:cover;object-position:top center;border-radius:50%;background:radial-gradient(circle at 30% 22%,rgba(150,90,255,.55),rgba(70,25,150,.35));border:1px solid rgba(150,70,255,.5);box-shadow:0 0 90px rgba(140,60,255,.5),0 24px 70px rgba(0,0,0,.6);cursor:default}
   .fp-name{font-size:1.3rem;font-weight:700;display:flex;align-items:center;gap:10px}
   .fp-tonight{font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;background:var(--live);color:#fff;padding:2px 7px;border-radius:50px;font-weight:700}
   .fp-role{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,170,255,.7);margin:3px 0 8px}
@@ -724,7 +751,8 @@
   .hp-sub{font-size:1rem;color:var(--txt-2);max-width:560px;margin:0 auto;line-height:1.6}
   .host-full{display:flex;gap:26px;padding:28px;margin-bottom:20px;border-radius:20px;background:linear-gradient(180deg,rgba(150,70,255,.08),rgba(150,70,255,.02));border:1px solid rgba(150,70,255,.18)}
   @media(max-width:680px){.host-full{flex-direction:column;align-items:center;text-align:center}}
-  .hf-avatar{width:120px;height:120px;flex:0 0 120px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:800;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.7),rgba(70,25,150,.5));border:1px solid rgba(150,70,255,.45);box-shadow:0 0 40px rgba(140,60,255,.4)}
+  .hf-avatar{width:120px;height:120px;flex:0 0 120px;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:3rem;font-weight:800;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.7),rgba(70,25,150,.5));border:1px solid rgba(150,70,255,.45);box-shadow:0 0 40px rgba(140,60,255,.4);overflow:hidden}
+  .hf-avatar img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:inherit}
   .hf-body{flex:1;min-width:0}
   .hf-name{font-size:1.8rem;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   @media(max-width:680px){.hf-name{justify-content:center}}
@@ -794,6 +822,36 @@
   .si-cta.ghost{background:transparent;border:1px solid rgba(150,70,255,.4);color:rgba(200,170,255,.92)}
   .si-cta.ghost:hover{color:#fff;border-color:rgba(150,70,255,.7)}
   @media(max-width:560px){.sched-item{flex-wrap:wrap}.si-match{flex-basis:100%;order:-1}}
+  .sched-row{margin-bottom:10px}
+  .sched-row .sched-item{margin-bottom:0}
+  .sched-item.clickable{cursor:pointer;transition:border-color .2s}
+  .sched-item.clickable:hover{border-color:rgba(150,70,255,.35)}
+  .si-chev{margin-left:6px;color:var(--txt-3);font-size:.8rem;transition:transform .25s,color .2s}
+  .sched-item.open .si-chev{transform:rotate(180deg);color:#caa9ff}
+  .sched-item.open{border-color:rgba(150,70,255,.4);border-bottom-color:transparent;border-radius:14px 14px 0 0}
+  .sched-exp{padding:18px;border-radius:0 0 14px 14px;background:rgba(150,70,255,.07);border:1px solid rgba(150,70,255,.3);border-top:none;animation:schedDrop .25s ease}
+  @keyframes schedDrop{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .se-cd{margin-bottom:16px}
+  .se-cdg{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  .se-cdg>div{text-align:center;min-width:56px;padding:9px 6px;border-radius:10px;background:rgba(0,0,0,.3);border:1px solid rgba(150,70,255,.2)}
+  .se-cdg b{display:block;font-size:1.5rem;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1.1}
+  .se-cdg span{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--txt-3)}
+  .se-status{text-align:center;color:#caa9ff;font-size:.88rem;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .se-castlabel{text-align:center;font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;color:var(--txt-3);margin-bottom:10px}
+  .se-cast{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media(max-width:520px){.se-cast{grid-template-columns:repeat(2,1fr)}}
+  .mcast{text-align:center;padding:12px 6px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(150,70,255,.15)}
+  .mcast-av{width:54px;height:54px;border-radius:50%;margin:0 auto 8px;overflow:hidden;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.6),rgba(80,30,160,.4));border:1px solid rgba(150,70,255,.4)}
+  .mcast-av img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:zoom-in}
+  .mcast-n{font-size:.76rem;font-weight:600}
+  .mcast-r{font-size:.56rem;color:var(--txt-3);text-transform:uppercase;letter-spacing:.08em}
+  .squad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:14px;margin-top:22px}
+  .sq{text-align:center}
+  .sq-av{width:74px;height:74px;border-radius:50%;margin:0 auto 7px;overflow:hidden;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.5),rgba(80,30,160,.32));border:1px solid rgba(150,70,255,.35);transition:transform .2s,border-color .2s,box-shadow .2s}
+  .sq:hover .sq-av{transform:translateY(-3px);border-color:var(--violet);box-shadow:0 0 16px rgba(150,90,255,.5)}
+  .sq-av img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:zoom-in}
+  .sq-n{font-size:.7rem;color:var(--txt-2);display:flex;align-items:center;justify-content:center;gap:5px}
+  .sq-n .tkflag{width:16px;height:11px}
   .vod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
   .vod{cursor:pointer}
   .vod-thumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:linear-gradient(150deg,rgba(90,40,170,.5),rgba(20,10,40,.8));border:1px solid rgba(150,70,255,.18);display:flex;align-items:center;justify-content:center;transition:transform .25s,border-color .25s}
@@ -1131,16 +1189,16 @@
     <button class="nav-menu" data-action="menu"><span class="nm-bars"><i></i><i></i><i></i></span> <span class="nm-label">Menu</span></button>
   </span>
 </nav>
-<div class="mock-note" id="note">Preview · Off-Air state</div>
 
 <!-- LIVE TICKER -->
 <div class="ticker"><div class="ticker-track" id="tkt">
   <span class="tk"><span class="lbl">Premiere</span> <b>Mexico v South Africa</b> &middot; Mundial 2026 opener &middot; <b>11 Jun</b></span>
   <span class="tk"><span class="lbl">Next on FootyHub TV</span> <b>Mexico</b> v <b>South Africa</b> &middot; Estadio Azteca</span>
-  <span class="tk"><span class="lbl">Victor's Triple Bet</span> &#9656; <b>locked for the opener</b></span>
-  <span class="tk"><span class="lbl">Tonight's fans</span> Santiago <img class="tkflag" src="flags/mx.svg"> &middot; Thabo <img class="tkflag" src="flags/za.svg"></span>
+  <span class="tk"><span class="lbl">Victor's Triple Bet</span> &#9656; <b>dropping in the pre-game</b></span>
+  <span class="tk"><span class="lbl">Tonight's fans</span> Diego <img class="tkflag" src="flags/mx.svg"> &middot; Sipho <img class="tkflag" src="flags/za.svg"></span>
   <span class="tk"><span class="lbl">Mundial 2026</span> kicks off <b>11 Jun</b> &middot; 48 nations &middot; 104 matches</span>
-  <span class="tk"><span class="lbl">New clip</span> &#9656; LIA's goal call &#128293;</span>
+  <span class="tk"><span class="lbl">Predict &amp; win</span> &#9656; <b>free contest</b> &middot; top 3 win prizes</span>
+  <span class="tk"><span class="lbl">Live AI commentary</span> LIA &amp; Victor on every kick</span>
 </div></div>
 
 <!-- AMBIENT SIDE RAILS -->
@@ -1227,10 +1285,10 @@
               <a class="poster-predict" data-action="predict">🏆 Predict the score &amp; win →</a>
               <div class="poster-castlabel">Match cast</div>
               <div class="poster-cast">
-                <div class="pc"><div class="pc-av">L</div><div class="pc-n">LIA</div><div class="pc-r">Commentator</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av">V</div><div class="pc-n">Victor</div><div class="pc-r">Analyst</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av">S</div><div class="pc-n">Santiago <img class="tkflag" src="flags/mx.svg"></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av">T</div><div class="pc-n">Thabo <img class="tkflag" src="flags/za.svg"></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/lia.png" alt="LIA"></div><div class="pc-n">LIA</div><div class="pc-r">Commentator</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/victor.png" alt="Victor"></div><div class="pc-n">Victor</div><div class="pc-r">Analyst</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/mx.png" alt="Diego"></div><div class="pc-n">Diego <img class="tkflag" src="flags/mx.svg"></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/za.png" alt="Sipho"></div><div class="pc-n">Sipho <img class="tkflag" src="flags/za.svg"></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
               </div>
             </div>
             <!-- LIVE: live match -->
@@ -1241,10 +1299,10 @@
               <a class="btn poster-watch" data-action="live"><span class="pdot"></span> Watch now</a>
               <div class="poster-castlabel">On air now</div>
               <div class="poster-cast">
-                <div class="pc"><div class="pc-av">L</div><div class="pc-n">LIA</div><div class="pc-r">Commentator</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av">V</div><div class="pc-n">Victor</div><div class="pc-r">Analyst</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av">S</div><div class="pc-n">Santiago <img class="tkflag" src="flags/mx.svg"></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av">T</div><div class="pc-n">Thabo <img class="tkflag" src="flags/za.svg"></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/lia.png" alt="LIA"></div><div class="pc-n">LIA</div><div class="pc-r">Commentator</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/victor.png" alt="Victor"></div><div class="pc-n">Victor</div><div class="pc-r">Analyst</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/mx.png" alt="Diego"></div><div class="pc-n">Diego <img class="tkflag" src="flags/mx.svg"></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/za.png" alt="Sipho"></div><div class="pc-n">Sipho <img class="tkflag" src="flags/za.svg"></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
               </div>
               <div class="poster-upnext">Up next · <b>More Mundial 2026 matches</b> · 12 Jun <a class="upnext-bell" data-action="schedule">🔔 Notify</a></div>
             </div>
@@ -1269,7 +1327,7 @@
       <div class="sect-title">Your AI broadcast team</div>
       <div class="hosts2">
         <div class="host-star" data-action="hosts">
-          <div class="hs-av">L</div>
+          <div class="hs-av"><img src="avatars/lia.png" alt="LIA"></div>
           <div class="hs-info">
             <h3>LIA</h3>
             <div class="hs-role">Lead Commentator · permanent</div>
@@ -1278,7 +1336,7 @@
           </div>
         </div>
         <div class="host-star" data-action="hosts">
-          <div class="hs-av">V</div>
+          <div class="hs-av"><img src="avatars/victor.png" alt="Victor"></div>
           <div class="hs-info">
             <h3>Victor</h3>
             <div class="hs-role">Analyst &amp; Tipster · permanent</div>
@@ -1332,8 +1390,8 @@
     </section>
 
     <div class="ribbon" id="partners">
-      <p>Are you a media company, league, or platform? FootyHub TV licenses AI commentary-as-a-service.</p>
-      <a data-action="partners">For Media Partners →</a>
+      <p>Want your brand seen by football fans, every match? Sponsor FootyHub TV.</p>
+      <a data-action="partners">Become a sponsor →</a>
     </div>
   </div>
 </main>
@@ -1369,7 +1427,7 @@
           <div class="vt-total"><span class="vt-tl">Safe combined</span><span class="vt-to">1.83</span></div>
           <div class="vlock"><span class="vlock-ic">🔒</span><span class="vlock-tx"><b>Medium &amp; Max — live on FootyHub TV</b><span>Victor drops them in the live pre-game, before kickoff — so you've time to play them too</span></span></div>
           <div class="bet-foot">Entertainment only · 18+ · Not financial advice</div>
-          <div class="bet-teaser"><span class="tz">Coming soon · Victor's Premium Tips</span></div>
+          <div class="bet-teaser" data-vprem><span class="tz">Coming soon · Victor's Premium Tips</span></div>
         </div>
       </div>
 
@@ -1415,7 +1473,7 @@
           </div>
           <div class="wn-note">When the clock hits zero, the <b>live pre-game</b> begins — Victor's <b>Medium &amp; Max</b> drop then, before kickoff, so you've time to play them.</div>
           <div class="wn-actions">
-            <a class="btn wn-notify" data-action="schedule">🔔 Notify me</a>
+            <a class="btn wn-notify" data-action="notifynext">🔔 Notify me</a>
             <a class="poster-predict" data-action="predict">🏆 Predict &amp; win</a>
             <a class="yt-sub wn-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe</a>
           </div>
@@ -1458,7 +1516,7 @@
     </div>
 
     <div class="host-full">
-      <div class="hf-avatar">L</div>
+      <div class="hf-avatar"><img src="avatars/lia.png" alt="LIA"></div>
       <div class="hf-body">
         <div class="hf-name">LIA <span class="hf-tag">Lead Commentator · permanent</span></div>
         <p class="hf-bio">The world's first AI football commentator with a <b>real personality</b> — fast, passionate, a little cheeky. LIA calls every kick with genuine emotion, reads the room, reacts to viewers live, and never, ever plays it neutral.</p>
@@ -1471,7 +1529,7 @@
     </div>
 
     <div class="host-full">
-      <div class="hf-avatar v">V</div>
+      <div class="hf-avatar v"><img src="avatars/victor.png" alt="Victor"></div>
       <div class="hf-body">
         <div class="hf-name">Victor <span class="hf-tag">Analyst &amp; Tipster · permanent</span></div>
         <p class="hf-bio">Cool, sharp and data-driven. Victor breaks down the tactics, reads the xG, and tracks his <b>Triple Bet</b> live on air. He calculates the odds — then picks a side anyway.</p>
@@ -1492,7 +1550,7 @@
     <div class="hosts-fans-soon">
       <div class="hfs-title">The Fan Squad</div>
       <p>48 nations, one voice each. The right fans are fielded for every match — your country, in the booth.</p>
-      <span class="hfs-badge">Coming soon →</span>
+      <div class="squad-grid" id="squadGrid"></div>
     </div>
   </div>
 </main>
@@ -1528,30 +1586,63 @@
   </div>
 </main>
 
-<!-- ════════ PARTNERS (B2B) page ════════ -->
+<!-- ════════ SPONSORS page ════════ -->
 <main id="partnersPage">
   <div class="wrap">
     <a class="watch-back" data-action="home">&larr; Back to home</a>
     <div class="hosts-hero">
-      <div class="hp-kicker">For Media Partners</div>
-      <h1 class="hp-title">AI commentary, <span class="ai">as a service</span></h1>
-      <p class="hp-sub">License FootyHub TV's AI commentary engine for your media company, league, or platform — scalable, multilingual, broadcast-ready.</p>
-      <a class="btn pt-cta" href="mailto:contact@footyhub.tv">Partner Inquiries &rarr;</a>
+      <div class="hp-kicker">Sponsorship &amp; Advertising</div>
+      <h1 class="hp-title">Put your brand <span class="ai">in the game</span></h1>
+      <p class="hp-sub">FootyHub TV is the world's first AI football channel — calling every Mundial 2026 match live. Reach a growing, engaged audience of fans who watch, predict and chat through every match.</p>
+      <a class="btn pt-cta" href="#sponsorForm">Become a sponsor &rarr;</a>
     </div>
+
+    <div class="founding">
+      <div class="founding-tag">🚀 Founding Sponsor · Limited spots</div>
+      <h2 class="founding-h">Get in before the Mundial</h2>
+      <p class="founding-p">Be one of the first brands on the world's first AI football channel — at special founding-partner rates. Lock in your spot before kickoff on June 11.</p>
+      <ul class="founding-list">
+        <li><b>🥇 First-mover</b> — your brand tied to the channel from day one</li>
+        <li><b>💰 Founding rates</b> — early-partner pricing, before we scale</li>
+        <li><b>🌍 World Cup timing</b> — launch into the biggest football moment of 2026</li>
+        <li><b>📈 Grow with us</b> — as our audience grows, so does your reach</li>
+      </ul>
+      <a class="btn" href="#sponsorForm">Claim a founding spot &rarr;</a>
+    </div>
+
     <div class="pt-grid">
-      <div class="pt-card"><div class="pt-ic">🎙️</div><h3>Multi-Voice Commentary</h3><p>Multiple AI presenters with distinct personalities — dynamic, real-time match coverage.</p></div>
-      <div class="pt-card"><div class="pt-ic">⚡</div><h3>Real-Time Processing</h3><p>Live match-data analysis with instant commentary, synced to on-field events.</p></div>
-      <div class="pt-card"><div class="pt-ic">🌐</div><h3>Multi-Language</h3><p>Scalable across languages and markets — global coverage from a single platform.</p></div>
-      <div class="pt-card"><div class="pt-ic">📊</div><h3>Intelligent Analysis</h3><p>Context-aware tactical insights, stats and match narratives, powered by AI.</p></div>
+      <div class="pt-card"><div class="pt-ic">🌍</div><h3>Global reach</h3><p>Fans from every nation, watching live on YouTube and our site — across the Mundial 2026 and beyond.</p></div>
+      <div class="pt-card"><div class="pt-ic">🔥</div><h3>Engaged audience</h3><p>Not passive viewers — they predict scores, vote and chat live throughout every match.</p></div>
+      <div class="pt-card"><div class="pt-ic">📺</div><h3>Your brand everywhere</h3><p>Your name in our broadcasts, on-screen overlays, website and socials — seen on every match.</p></div>
+      <div class="pt-card"><div class="pt-ic">🎯</div><h3>Flexible packages</h3><p>From a single match to a full-season title sponsor — built around your goals and budget.</p></div>
     </div>
     <div class="pt-who">
-      <div class="sect-title" style="text-align:left">Built for</div>
-      <div class="pt-tags"><span>Media companies</span><span>Sports leagues</span><span>Streaming platforms</span><span>Broadcasters</span><span>Betting operators</span></div>
+      <div class="sect-title" style="text-align:left">Perfect for</div>
+      <div class="pt-tags"><span>Brands</span><span>Sportsbooks</span><span>Apps &amp; platforms</span><span>Sports &amp; lifestyle</span><span>Anyone reaching football fans</span></div>
     </div>
     <div class="pt-foot">
       <h3>Let's talk</h3>
-      <p>Automated, on-brand commentary for every match in your catalogue — at a fraction of the cost.</p>
-      <a class="btn" href="mailto:contact@footyhub.tv">contact@footyhub.tv</a>
+      <p>Get your brand in front of passionate football fans, every single match. Tell us your goals — we'll build a package around them.</p>
+      <form class="sponsor-form" id="sponsorForm">
+        <div class="sf-row">
+          <input type="text" id="sfName" placeholder="Your name" autocomplete="name">
+          <input type="text" id="sfCompany" placeholder="Company / brand" autocomplete="organization">
+        </div>
+        <div class="sf-row">
+          <input type="email" id="sfEmail" placeholder="Work email" autocomplete="email">
+          <select id="sfBudget">
+            <option value="">Budget (optional)</option>
+            <option>Let's discuss</option>
+            <option>Under €1,000</option>
+            <option>€1,000–5,000</option>
+            <option>€5,000+</option>
+            <option>Title sponsor</option>
+          </select>
+        </div>
+        <textarea id="sfMsg" rows="3" placeholder="What are you interested in? (a single match, the season, on-screen overlays, the website…)"></textarea>
+        <button class="btn" type="submit">Send inquiry &#9656;</button>
+        <div class="sf-note" id="sfNote">Or email us directly at <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a></div>
+      </form>
     </div>
   </div>
 </main>
@@ -1660,7 +1751,7 @@
       <h5>More</h5>
       <a data-vprem>🏆 Victor Premium</a>
       <a data-action="mundial">Mundial 2026</a>
-      <a data-action="partners">For Media</a>
+      <a data-action="partners">Sponsors</a>
       <a href="mailto:contact@footyhub.tv">Contact</a>
     </div>
   </div>
@@ -1788,16 +1879,11 @@
     </div>
     <div class="f-col"><h5>Watch</h5><a data-action="live">Live</a><a data-action="schedule">Schedule</a><a data-action="predict">Predictor</a><a data-action="watch">Clips</a><a data-action="watch">Replays</a></div>
     <div class="f-col"><h5>The Cast</h5><a data-action="hosts">LIA</a><a data-action="hosts">Victor</a><a data-action="hosts">The 48 fans</a></div>
-    <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">For Media</a><a href="mailto:contact@footyhub.tv">Contact</a></div>
+    <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a href="mailto:contact@footyhub.tv">Contact</a></div>
   </div>
   <div class="f-bottom">© 2026 FootyHub TV · Voice AI powered by ElevenLabs · Entertainment only · 18+</div>
 </footer>
 
-<!-- TOGGLE -->
-<div class="toggle">
-  <button id="b-off" class="active" onclick="setMatchLive(false)">◷ Off-Air</button>
-  <button id="b-live" onclick="setMatchLive(true)">● Live</button>
-</div>
 
 <script>
   // particles
@@ -1900,12 +1986,32 @@
   const NATIONS=[['mx','Mexico'],['za','S. Africa'],['kr','S. Korea'],['cz','Czechia'],['ca','Canada'],['ch','Switzerland'],['qa','Qatar'],['ba','Bosnia'],['br','Brazil'],['ma','Morocco'],['ht','Haiti'],['gb-sct','Scotland'],['us','USA'],['py','Paraguay'],['au','Australia'],['tr','Türkiye'],['de','Germany'],['cw','Curaçao'],['ci','Ivory Coast'],['ec','Ecuador'],['nl','Netherlands'],['jp','Japan'],['se','Sweden'],['tn','Tunisia'],['be','Belgium'],['eg','Egypt'],['ir','Iran'],['nz','New Zealand'],['es','Spain'],['cv','Cape Verde'],['sa','Saudi Arabia'],['uy','Uruguay'],['fr','France'],['sn','Senegal'],['no','Norway'],['iq','Iraq'],['ar','Argentina'],['dz','Algeria'],['at','Austria'],['jo','Jordan'],['pt','Portugal'],['cd','DR Congo'],['uz','Uzbekistan'],['co','Colombia'],['gb-eng','England'],['hr','Croatia'],['gh','Ghana'],['pa','Panama']];
   const TONIGHT=['mx','za']; // opening match — Mexico v South Africa
   // ── Cast: pick a nation, meet its fan ──
-  const FANS={mx:['Santiago','¡VAMOS MÉXICO!'],za:['Thabo','BAFANA BAFANA!'],br:['Diego','VAMOS, BRASIL!'],ar:['Mateo','¡AGUANTE!'],fr:['Léo','ALLEZ LES BLEUS!'],de:['Lukas','DEUTSCHLAND VOR!'],es:['Sergio','¡A POR ELLOS!'],'gb-eng':['Harry','COME ON ENGLAND!'],pt:['Tiago','FORÇA PORTUGAL!'],nl:['Daan','HUP HOLLAND!'],hr:['Luka','IDEMO HRVATSKA!'],kr:['Min-jun','DAEHAN MINGUK!'],us:['Tyler','U-S-A! U-S-A!']};
-  const fpFlags=document.getElementById('fpFlags'),fpCard=document.getElementById('fpCard');
-  function showFan(c,n){const f=FANS[c];const nm=f?f[0]:n+' fan';const q=f?f[1]:'Loud and proud for '+n+'.';const tn=TONIGHT.includes(c)?' <span class="fp-tonight">Tonight</span>':'';
-    fpCard.innerHTML='<img class="fp-bigflag" src="flags/'+c+'.svg" alt="'+n+'"><div class="fp-fi"><div class="fp-name">'+nm+tn+'</div><div class="fp-role">'+n+' fan</div><div class="fp-quote">"'+q+'"</div><span class="eq fp-eq"><i></i><i></i><i></i><i></i></span><span class="fp-hear">▶ Hear '+nm+'</span></div>';
-    fpCard.classList.add('filled');}
-  if(fpFlags){NATIONS.forEach(([c,n])=>{const im=document.createElement('img');im.src='flags/'+c+'.svg';im.alt=n;im.title=n;im.className='fp-flag'+(TONIGHT.includes(c)?' tonight':'');im.addEventListener('click',()=>{fpFlags.querySelectorAll('.fp-flag').forEach(x=>x.classList.remove('sel'));im.classList.add('sel');showFan(c,n);});fpFlags.appendChild(im);});}
+  const FANS={
+    mx:['Diego','Cielito Lindo'],za:['Sipho','Shosholoza'],kr:['Joon-ho','Dae-han-min-guk!'],cz:['Tomáš','Kdo neskáče, není Čech!'],
+    ca:['Liam','Allez les Rouges!'],ch:['Sandro','Hopp Schwiiz!'],qa:['Ahmed','Al Annabi'],ba:['Edin','Zmajevi!'],
+    br:['Rafael','Eu sou brasileiro, com muito orgulho!'],ma:['Youssef','Dima Maghrib'],ht:['Wilson','Grenadye, alaso!'],'gb-sct':['Callum','Yes Sir, I Can Boogie'],
+    us:['Tyler','I Believe That We Will Win'],py:['Mateo','Dale, dale, dale, Albirroja!'],au:['Jack','Aussie Aussie Aussie, Oi Oi Oi!'],tr:['Mehmet','Saldır, Türkiye!'],
+    de:['Stefan','Deutschland, Deutschland!'],cw:['Anthony','Dushi Kòrsou!'],ci:['Serge','Les Éléphants!'],ec:['Ricardo','¡Vamos ecuatorianos!'],
+    nl:['Daan','Hup Holland Hup!'],jp:['Hiroshi','Nippon!'],se:['Oscar','Heja Sverige!'],tn:['Walid','Aigles de Carthage!'],
+    be:['Lars','Diables Rouges!'],eg:['Mohamed','Masr! Masr!'],ir:['Reza','Team Melli'],nz:['Mason','All Whites!'],
+    es:['Sergio','Yo soy español!'],cv:['Mário','Tubarões Azuis!'],sa:['Khalid','Al-Akhdar!'],uy:['Federico','Soy Celeste!'],
+    fr:['Luis','Allez les Bleus'],sn:['Sadio','Lions de la Teranga'],no:['Magnus','Heia Norge'],iq:['Hassan','Usood al-Rafidain'],
+    ar:['Sebastián','Vamos, vamos Argentina'],dz:['Yacine','One, Two, Three, Viva l\'Algérie!'],at:['Markus','Immer wieder Österreich'],jo:['Omar','Al-Nashama'],
+    pt:['Tiago','Força Portugal!'],cd:['Yannick','Allez les Léopards!'],uz:['Bobur','Oq boʻrilar!'],co:['Andrés','¡Sí, sí, Colombia!'],
+    'gb-eng':['Harry','It\'s Coming Home!'],hr:['Marko','Vatreni!'],gh:['Kwame','Black Stars!'],pa:['Roberto','¡La Marea Roja!']
+  };
+  function showFanIn(card,c,n){if(!card)return;const f=FANS[c];const nm=f?f[0]:n+' fan';const q=f?f[1]:'Loud and proud for '+n+'.';const tn=TONIGHT.includes(c)?' <span class="fp-tonight">Tonight</span>':'';
+    card.innerHTML='<img class="fp-photo" src="avatars/'+c+'.png" alt="'+nm+'" onerror="this.onerror=null;this.src=\'flags/'+c+'.svg\';this.classList.add(\'isflag\')"><div class="fp-fi"><div class="fp-name">'+nm+tn+'</div><div class="fp-role"><img class="fp-roleflag" src="flags/'+c+'.svg" alt="">'+n+' fan</div><div class="fp-quote">"'+q+'"</div><span class="eq fp-eq"><i></i><i></i><i></i><i></i></span><span class="fp-hear">▶ Hear '+nm+'</span></div>';
+    card.classList.add('filled');}
+  function initFanpick(flagsEl,cardEl){
+    if(!flagsEl)return;
+    NATIONS.forEach(([c,n])=>{const im=document.createElement('img');im.src='flags/'+c+'.svg';im.alt=n;im.title=n;im.className='fp-flag'+(TONIGHT.includes(c)?' tonight':'');im.addEventListener('click',()=>{flagsEl.querySelectorAll('.fp-flag').forEach(x=>x.classList.remove('sel'));im.classList.add('sel');showFanIn(cardEl,c,n);});flagsEl.appendChild(im);});
+  }
+  initFanpick(document.getElementById('fpFlags'),document.getElementById('fpCard'));
+  // hosts page: the whole 48-face squad wall (different from the homepage flags→reveal)
+  (function(){const el=document.getElementById('squadGrid');if(!el)return;
+    el.innerHTML=NATIONS.map(([c,n])=>{const f=FANS[c];const nm=f?f[0]:n;
+      return '<div class="sq"><div class="sq-av"><img loading="lazy" src="avatars/'+c+'.png" alt="'+nm+'"></div><div class="sq-n"><img class="tkflag" src="flags/'+c+'.svg"> '+nm+'</div></div>';}).join('');})();
 
   // ── Mundial hub overlay ──
   const mhub=document.getElementById('mhub'),mOpen=document.getElementById('mundialOpen'),mClose=document.getElementById('mhubClose');
@@ -1955,9 +2061,6 @@
   // state toggle
   // is a match currently live? (demo toggle) — drives the poster + nav, NOT the watch page
   function setMatchLive(live){
-    document.getElementById('b-off').classList.toggle('active',!live);
-    document.getElementById('b-live').classList.toggle('active',live);
-    document.getElementById('note').textContent='Preview · '+(live?'Match LIVE':'Off-Air');
     const pOff=document.getElementById('posterOff'),pLive=document.getElementById('posterLive');
     if(pOff)pOff.hidden=live; if(pLive)pLive.hidden=!live;
     const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
@@ -2038,6 +2141,9 @@
   const tzN=document.getElementById('tzName'); if(tzN)tzN.textContent=TZ.replace(/_/g,' ');
   const MATCH_MS=2.5*3600*1000; // a match window ≈ 2.5h
   function nextFixture(){const now=Date.now();return FIX.find(f=>Date.parse(f.utc)+MATCH_MS>now)||FIX[FIX.length-1]||null;}
+  function castMember(src,name,role,flag){
+    return '<div class="mcast"><div class="mcast-av"><img loading="lazy" src="'+src+'" alt="'+name+'"></div><div class="mcast-n">'+name+(flag?' <img class="tkflag" src="'+flag+'">':'')+'</div><div class="mcast-r">'+role+'</div></div>';
+  }
   function renderFixtures(el){
     if(!el||!FIX.length)return;
     const now=Date.now();let h='',curDay='';
@@ -2050,12 +2156,46 @@
       const hh=ko?f.home:'<img class="tkflag" src="flags/'+f.home_code+'.svg"> '+f.home;
       const aa=ko?f.away:f.away+' <img class="tkflag" src="flags/'+f.away_code+'.svg">';
       const comp=ko?(f.round+(f.venue?' · '+f.venue:'')):'Mundial 2026 · Group '+f.group;
-      h+='<div class="sched-item'+(live?' live':'')+'"><span class="si-time">'+t+'</span>'
-        +'<div class="si-match"><b>'+hh+' v '+aa+'</b><span class="si-comp">'+comp+'</span></div>'+cta+'</div>';});
+      // expandable panel: live countdown (upcoming) + match cast (LIA, Victor, both fans)
+      let exp='';
+      if(!ko){
+        const hf=FANS[f.home_code]||[f.home,''], af=FANS[f.away_code]||[f.away,''];
+        let inner=(!live&&!past)
+          ? '<div class="se-cd" data-cd="'+ms+'"><div class="se-cdg"><div><b class="cd-D">--</b><span>days</span></div><div><b class="cd-H">--</b><span>hrs</span></div><div><b class="cd-M">--</b><span>min</span></div><div><b class="cd-S">--</b><span>sec</span></div></div></div>'
+          : '<div class="se-status">'+(live?'<span class="ldot"></span> Live now — LIA &amp; Victor on the call':'Full time')+'</div>';
+        inner+='<div class="se-castlabel">Match cast</div><div class="se-cast">'
+          +castMember('avatars/lia.png','LIA','Commentator','')
+          +castMember('avatars/victor.png','Victor','Analyst','')
+          +castMember('avatars/'+f.home_code+'.png',hf[0],'Home fan','flags/'+f.home_code+'.svg')
+          +castMember('avatars/'+f.away_code+'.png',af[0],'Away fan','flags/'+f.away_code+'.svg')+'</div>';
+        exp='<div class="sched-exp" hidden>'+inner+'</div>';
+      }
+      h+='<div class="sched-row"><div class="sched-item'+(live?' live':'')+(ko?'':' clickable')+'"'+(ko?'':' data-exp')+'><span class="si-time">'+t+'</span>'
+        +'<div class="si-match"><b>'+hh+' v '+aa+'</b><span class="si-comp">'+comp+'</span></div>'+cta
+        +(ko?'':'<span class="si-chev">▾</span>')+'</div>'+exp+'</div>';});
     el.innerHTML=h;
   }
   renderFixtures(document.getElementById('schedList'));
   renderFixtures(document.getElementById('mhFixList'));
+  // schedule: click a match → expand countdown + match cast (accordion)
+  function schedCdTick(){
+    document.querySelectorAll('.sched-exp:not([hidden]) .se-cd').forEach(cd=>{
+      let diff=Math.max(0,(+cd.getAttribute('data-cd'))-Date.now());
+      const d=Math.floor(diff/86400000);diff-=d*86400000;const hr=Math.floor(diff/3600000);diff-=hr*3600000;const m=Math.floor(diff/60000);diff-=m*60000;const s=Math.floor(diff/1000);
+      const P=n=>String(n).padStart(2,'0'),st=(sel,v)=>{const e=cd.querySelector(sel);if(e)e.textContent=v;};
+      st('.cd-D',P(d));st('.cd-H',P(hr));st('.cd-M',P(m));st('.cd-S',P(s));
+    });
+  }
+  setInterval(schedCdTick,1000);
+  document.addEventListener('click',function(e){
+    const it=e.target.closest('.sched-item[data-exp]'); if(!it) return;
+    if(e.target.closest('.si-cta')) return; // CTA keeps its own action
+    const row=it.closest('.sched-row'),exp=row?row.querySelector('.sched-exp'):null; if(!exp) return;
+    const opening=exp.hidden,list=row.parentNode;
+    list.querySelectorAll('.sched-exp').forEach(x=>{x.hidden=true;});
+    list.querySelectorAll('.sched-item[data-exp]').forEach(x=>x.classList.remove('open'));
+    if(opening){exp.hidden=false;it.classList.add('open');schedCdTick();}
+  });
   // ── Knockout bracket (placeholder slots like SofaScore: 1E, 2A, 3A/B/C/D/F, W74…) ──
   function bkLabel(s){let m;
     if(m=s.match(/^Winner (\d+)$/))return 'W'+m[1];
@@ -2452,6 +2592,47 @@
   syncLive();setInterval(syncLive,10000);
 
   // ── site-wide link wiring: every link goes somewhere / opens something ──
+  // one-click notify for the NEXT match (the countdown match) — no navigation to the schedule
+  function notifyNext(){
+    const nf=(typeof nextFixture==='function')?nextFixture():null;
+    const match=nf?(nf.home+' v '+nf.away):'';
+    const send=(email)=>{ if(LIVE_ENDPOINT)fetch(LIVE_ENDPOINT+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,match})}).catch(()=>{}); };
+    if(fhUser&&fhUser.email){ send(fhUser.email); toast("🔔 Done — we'll email you before "+(match||'kickoff')+"!"); return; }
+    const email=(prompt("Enter your email — we'll remind you before kickoff:")||'').trim();
+    if(!email)return;
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast('Please enter a valid email');return;}
+    send(email); toast("🔔 You're on the list! We'll email you before kickoff.");
+  }
+  // sponsor inquiry form → POST /sponsor (stores + emails us the lead)
+  (function(){const f=document.getElementById('sponsorForm');if(!f)return;
+    const val=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
+    f.addEventListener('submit',async e=>{e.preventDefault();
+      const note=document.getElementById('sfNote');
+      const name=val('sfName'),company=val('sfCompany'),email=val('sfEmail'),budget=val('sfBudget'),message=val('sfMsg');
+      if(!name||!company||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){if(note){note.style.color='#ff8080';note.textContent='Please fill in your name, company and a valid email.';}return;}
+      const btn=f.querySelector('button[type=submit]');if(btn)btn.disabled=true;
+      if(note){note.style.color='';note.textContent='Sending…';}
+      try{
+        const r=await fetch((LIVE_ENDPOINT||'')+'/sponsor',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,company,email,budget,message})});
+        if(r.ok){if(note){note.style.color='#7CFFB2';note.textContent="✅ Thanks! We'll be in touch within 48 hours.";}f.reset();}
+        else{if(note){note.style.color='#ff8080';note.innerHTML='Something went wrong — email us at <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a>';}}
+      }catch(_){if(note){note.style.color='#ff8080';note.innerHTML='Something went wrong — email us at <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a>';}}
+      if(btn)btn.disabled=false;
+    });
+  })();
+  // avatar lightbox — click a persona photo to enlarge; click the background (outside the photo) to close
+  (function(){
+    const lb=document.createElement('div');lb.id='avatarLightbox';lb.hidden=true;
+    const big=document.createElement('img');big.alt='';lb.appendChild(big);document.body.appendChild(lb);
+    function openLb(src,alt){big.src=src;big.alt=alt||'';lb.hidden=false;document.body.style.overflow='hidden';if(window.lenis)lenis.stop();}
+    function closeLb(){lb.hidden=true;big.removeAttribute('src');document.body.style.overflow='';if(window.lenis)lenis.start();}
+    document.addEventListener('click',function(e){
+      const ph=e.target.closest('.fp-photo,.hs-av img,.hf-avatar img,.pc-av img,.mcast-av img,.sq-av img');
+      if(ph&&!ph.classList.contains('isflag')){e.stopPropagation();e.preventDefault();openLb(ph.getAttribute('src'),ph.getAttribute('alt'));}
+    },true); // capture phase → intercept before the card's data-action
+    lb.addEventListener('click',function(e){if(e.target!==big)closeLb();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden)closeLb();});
+  })();
   document.addEventListener('click',function(e){
     if(e.target.closest('[data-hear]'))return; // the Hear button plays audio, never navigates
     const el=e.target.closest('[data-action],a[href^="#"]'); if(!el) return;
@@ -2465,6 +2646,7 @@
       else if(act==='watch'){showPage('watch');}
       else if(act==='partners'){showPage('partnersPage');}
       else if(act==='predict'){showPage('predict');if(typeof renderDayMatches==='function')renderDayMatches();}
+      else if(act==='notifynext'){notifyNext();}
       else if(act==='menu'){openMenu();}
       return;}
     const href=el.getAttribute('href');
