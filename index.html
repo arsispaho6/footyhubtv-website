@@ -307,6 +307,18 @@
   .ios-steps li b{color:#fff}
   .ios-shr{display:inline-block;color:#5ec8ff;font-weight:800}
   .ios-note{font-size:.78rem;color:#caa9ff;margin:0}
+  .cmodal{position:fixed;inset:0;z-index:270;display:flex;align-items:center;justify-content:center;background:rgba(8,4,18,.92);backdrop-filter:blur(16px);padding:20px;animation:mhubFade .25s ease}
+  .cmodal[hidden]{display:none}
+  .cm-panel{position:relative;width:100%;max-width:400px;background:#120a22;border:1px solid rgba(150,70,255,.32);border-radius:20px;padding:30px 26px;text-align:center}
+  .cm-ic{font-size:2.3rem;margin-bottom:6px}
+  .cm-panel h3{font-size:1.3rem;font-weight:800;color:#fff;margin:0 0 8px}
+  .cm-panel>p{font-size:.86rem;color:var(--txt-2);line-height:1.5;margin:0 0 18px}
+  .cm-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;margin-bottom:10px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(150,70,255,.2);text-decoration:none;cursor:pointer;transition:border-color .2s,background .2s}
+  .cm-row:hover{border-color:var(--violet);background:rgba(150,70,255,.1)}
+  .cm-k{font-weight:700;color:#fff;font-size:.9rem}
+  .cm-v{color:#caa9ff;font-size:.84rem}
+  .cm-note{font-size:.74rem;color:var(--txt-3);margin:8px 0 0}
+  [data-contact]{cursor:pointer}
   .termsmodal{position:fixed;inset:0;z-index:260;display:flex;align-items:center;justify-content:center;background:rgba(8,4,18,.92);backdrop-filter:blur(16px);padding:20px;animation:mhubFade .25s ease}
   .termsmodal[hidden]{display:none}
   .tm-panel{position:relative;width:100%;max-width:620px;max-height:84vh;display:flex;flex-direction:column;background:#120a22;border:1px solid rgba(150,70,255,.32);border-radius:20px;padding:26px}
@@ -1742,7 +1754,7 @@
       <a data-vprem>🏆 Victor Premium</a>
       <a data-action="mundial">Mundial 2026</a>
       <a data-action="partners">Sponsors</a>
-      <a href="mailto:contact@footyhub.tv">Contact</a>
+      <a data-contact>Contact</a>
     </div>
   </div>
 </div>
@@ -1860,6 +1872,20 @@
   </div>
 </div>
 
+<!-- contact modal -->
+<div class="cmodal" id="contactModal" hidden>
+  <div class="cm-panel" data-lenis-prevent>
+    <button class="lbm-x" id="cmClose">&#10005;</button>
+    <div class="cm-ic">✉️</div>
+    <h3>Get in touch</h3>
+    <p>Questions, press or partnerships — we'd love to hear from you.</p>
+    <a class="cm-row" href="mailto:contact@footyhub.tv"><span class="cm-k">📧 Email us</span><span class="cm-v">contact@footyhub.tv</span></a>
+    <a class="cm-row" href="https://www.youtube.com/@FootyHub_TV" target="_blank" rel="noopener"><span class="cm-k">▶ YouTube</span><span class="cm-v">@FootyHub_TV</span></a>
+    <a class="cm-row" data-action="partners"><span class="cm-k">💼 Sponsorship</span><span class="cm-v">Become a sponsor →</span></a>
+    <p class="cm-note">Twitch &amp; TikTok launching soon — for now we're live on YouTube.</p>
+  </div>
+</div>
+
 <footer class="f">
   <div class="f-grid">
     <div class="f-col">
@@ -1869,7 +1895,7 @@
     </div>
     <div class="f-col"><h5>Watch</h5><a data-action="live">Live</a><a data-action="schedule">Schedule</a><a data-action="predict">Predictor</a><a data-action="watch">Clips</a><a data-action="watch">Replays</a></div>
     <div class="f-col"><h5>The Cast</h5><a data-action="hosts">LIA</a><a data-action="hosts">Victor</a><a data-action="hosts">The 48 fans</a></div>
-    <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a href="mailto:contact@footyhub.tv">Contact</a></div>
+    <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a data-contact>Contact</a></div>
   </div>
   <div class="f-bottom">© 2026 FootyHub TV. All rights reserved. · Voice AI powered by ElevenLabs · Entertainment only · 18+</div>
 </footer>
@@ -2434,6 +2460,8 @@
   function closeVprem(){const m=document.getElementById('vpremModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
   function openIos(){const m=document.getElementById('iosModal');if(!m)return;m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();}
   function closeIos(){const m=document.getElementById('iosModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
+  function openContact(){const mn=document.getElementById('menu');if(mn)mn.hidden=true;const m=document.getElementById('contactModal');if(!m)return;m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();}
+  function closeContact(){const m=document.getElementById('contactModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
   function fhShare(){
     const url='https://footyhub.tv';
     const text='⚽ FootyHub TV — AI commentators call every Mundial 2026 match LIVE & free on YouTube. Predict scores & win prizes 🏆';
@@ -2480,6 +2508,9 @@
     if(e.target.closest('[data-alerts]'))return enableAlerts();
     if(e.target.closest('#iosClose')||e.target===document.getElementById('iosModal'))return closeIos();
     if(e.target.closest('#cinBar'))return openYtChat();
+    if(e.target.closest('[data-contact]')){e.preventDefault();return openContact();}
+    if(e.target.closest('#cmClose')||e.target===document.getElementById('contactModal'))return closeContact();
+    if(e.target.closest('#contactModal .cm-row[data-action]'))closeContact();
     if(e.target.closest('#rkEdit'))return openJoinModal();
     if(e.target.closest('#predict .lb-card'))return openLbModal();
     if(e.target.closest('#lbmClose')||e.target===document.getElementById('lbModal'))return closeLb();
