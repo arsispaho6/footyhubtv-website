@@ -19,11 +19,14 @@
     --txt:#fff; --txt-2:rgba(255,255,255,.55); --txt-3:rgba(255,255,255,.32);
     --green:#3ddc84; --amber:#ffb845; --red:#ff5c6c; --live:#ff3b3b;
   }
-  body{min-height:100vh;background:#000;color:var(--txt);
+  html{overflow-x:hidden;overflow-x:clip;overscroll-behavior-x:none;width:100%}
+  body{min-height:100vh;min-height:100dvh;background:#000;color:var(--txt);overscroll-behavior-x:none;
     font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;
-    position:relative;overflow-x:hidden;padding-top:0;
+    position:relative;overflow-x:hidden;overflow-x:clip;max-width:100%;padding-top:0;
     -webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
   input,textarea,[contenteditable]{-webkit-user-select:text;-moz-user-select:text;user-select:text}
+  /* iOS Safari zooms in when you focus an input under 16px — force 16px on mobile to stop the jarring zoom */
+  @media(max-width:768px){.notify input,.sponsor-form input,.sponsor-form select,.sponsor-form textarea,.np-select,.chat .cin input{font-size:16px}}
   #gl{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
   .reveal{opacity:0;transform:translateY(32px);transition:opacity .85s ease,transform .85s cubic-bezier(.2,.8,.2,1)}
   .reveal.in{opacity:1;transform:none}
@@ -66,6 +69,52 @@
   .particle{position:absolute;border-radius:50%;background:rgba(170,120,255,.5);
     box-shadow:0 0 6px rgba(150,90,255,.6);animation:float linear infinite}
   @keyframes float{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+  /* ── MOBILE PERFORMANCE ── touch devices: kill the heavy GPU layers (WebGL shader, animated blur orbs, grain/grid, backdrop blur) so scrolling stays smooth instead of lagging ── */
+  @media(pointer:coarse){
+    #gl{display:none}
+    .bg-aurora span{animation:none}
+    .bg-grain,.bg-grid,.bg-pitch{display:none}
+    .nav,.ticker,.menu,.mhub,.pmodal,.lbmodal,.joinmodal,.iosmodal,.cmodal,.termsmodal,.vpmodal,#avatarLightbox{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+    .nav{background:rgba(8,4,16,.96)}
+    .ticker{background:rgba(10,5,20,.96)}
+    .menu,.pmodal,.lbmodal,.joinmodal,.iosmodal,.cmodal,.termsmodal,.vpmodal,#avatarLightbox{background:rgba(8,4,18,.985)}
+    .mhub{background:rgba(5,3,12,.975)}
+  }
+  /* ── MOBILE: card centering + overflow (CSS grid min-width:auto bug) — Victor's Triple Bet + Next-match never clip, sit dead-centre ── */
+  @media(max-width:860px){
+    .hb-left,.hb-right{min-width:0}
+    .vtease{max-width:min(100%,368px);margin-left:auto;margin-right:auto;box-sizing:border-box}
+    .poster{width:100%;max-width:min(100%,560px);margin-left:auto;margin-right:auto;box-sizing:border-box}
+    .countdown,.m-count{flex-wrap:wrap}
+    .cd-box{flex:0 1 62px;min-width:0;text-align:center}
+    .poster-cd{justify-content:center}
+    .poster-cast>.pc{min-width:0}
+    .vt-head{flex-wrap:wrap}
+    .vt-title{min-width:0}
+    .vt-pre{white-space:nowrap}
+    .vt-step,.vt-st-tx{min-width:0}
+    .notify{flex-wrap:wrap;width:100%}
+    .notify input{flex:1 1 140px;min-width:0}
+    .hb-notify{max-width:min(100%,380px);margin-left:auto;margin-right:auto}
+    .live-grid>div{min-width:0}
+    .lb-row .nm{min-width:0;flex:1}
+    .clips{overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+  }
+  /* ── MOBILE: freeze per-frame paint/layout animations on touch → buttery native scroll ── */
+  @media(pointer:coarse){
+    body::before{animation:none}
+    .particle{display:none}
+    .nav::after{animation:none;display:none}
+    .eq i,.pc-eq i{animation:none;height:5px}
+    .mhpulse{animation:none}
+    .pin.tonight::before,.intro-scroll::after{animation:none}
+  }
+  /* ── MOBILE: kill ALL horizontal drift at the touch-input level (works even where iOS Safari ignores overflow-x:clip on scroll containers). Keeps vertical scroll + pinch-zoom; the clips strip still swipes sideways ── */
+  @media(pointer:coarse){
+    html,body{touch-action:pan-y pinch-zoom}
+    .menu,.mhub,.pmodal,.lbmodal,.joinmodal,.iosmodal,.cmodal,.termsmodal,.vpmodal,#avatarLightbox{touch-action:pan-y pinch-zoom;overflow-x:hidden;overscroll-behavior:contain}
+    .clips{touch-action:pan-x pinch-zoom}
+  }
 
   /* ── NAV ── */
   .nav{position:fixed;top:0;left:0;right:0;height:64px;z-index:20;
@@ -670,7 +719,7 @@
   .mundial-variant .btn{display:block;width:max-content;margin:0 auto}
 
   /* ═══ INTRO HERO (full-screen landing) ═══ */
-  .intro{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:22px}
+  .intro{position:relative;z-index:1;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:22px}
   .intro-logo{width:min(86vw,400px);height:auto;filter:drop-shadow(0 0 42px rgba(150,70,255,.5));opacity:0;transform:translateY(20px) scale(.96);animation:introRise 1s cubic-bezier(.2,.8,.2,1) .1s forwards}
   .intro-kicker{font-size:clamp(.66rem,1.6vw,.84rem);letter-spacing:.42em;text-transform:uppercase;color:rgba(220,200,255,.82);min-height:1.2em}
   .intro-h1{font-size:clamp(1.9rem,6.5vw,4.4rem);font-weight:800;line-height:1.02;letter-spacing:-.02em;max-width:14ch;text-shadow:0 2px 40px rgba(120,40,220,.4);opacity:0;animation:introRise 1s ease .5s forwards}
@@ -680,7 +729,7 @@
   .intro-now .live{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff3b3b;box-shadow:0 0 10px #ff3b3b;margin-right:8px;animation:blink 1.2s infinite;vertical-align:middle}
   .intro-cta{margin-top:6px;opacity:0;animation:introRise 1s ease .9s forwards}
   .intro-cta .pdot{width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 8px #fff;animation:blink 1.2s infinite}
-  .intro-scroll{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.4);opacity:0;animation:introRise 1s ease 1.2s forwards}
+  .intro-scroll{position:absolute;bottom:24px;left:0;right:0;width:fit-content;margin-inline:auto;font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.4);opacity:0;animation:introRise 1s ease 1.2s forwards}
   .intro-scroll::after{content:'';display:block;width:1px;height:26px;margin:8px auto 0;background:linear-gradient(rgba(255,255,255,.5),transparent);animation:scrolldrop 1.8s ease-in-out infinite}
   @keyframes introRise{to{opacity:1;transform:translateY(0) scale(1)}}
   @keyframes scrolldrop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}50.1%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
@@ -945,6 +994,12 @@
   .menu-close:hover{background:rgba(255,70,70,.2);border-color:rgba(255,90,90,.5)}
   .menu-inner{display:grid;grid-template-columns:repeat(3,minmax(140px,1fr));gap:50px;max-width:760px;padding:24px}
   @media(max-width:680px){.menu-inner{grid-template-columns:1fr;gap:26px;text-align:center}}
+  /* mobile: menu scrolls internally (content taller than screen) + stays put behind it, sign-in at top reachable */
+  @media(max-width:680px){
+    .menu{align-items:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+    .menu-inner{padding:82px 22px 64px;width:100%;max-width:none}
+    .menu-close{position:fixed;top:15px;right:15px;z-index:3}
+  }
   .menu-col h5{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(200,170,255,.55);margin-bottom:18px}
   .menu-col a{display:block;font-size:1.45rem;font-weight:700;color:rgba(255,255,255,.85);text-decoration:none;margin-bottom:14px;cursor:pointer;transition:color .2s,transform .2s}
   .menu-col a:hover{color:#fff}
@@ -1958,7 +2013,8 @@
 <script>
   // particles
   const c=document.getElementById('particles');
-  for(let i=0;i<58;i++){const p=document.createElement('div');p.className='particle';
+  const _NP=matchMedia('(pointer:coarse)').matches?16:58; // fewer floating particles on phones
+  for(let i=0;i<_NP;i++){const p=document.createElement('div');p.className='particle';
     const s=1+Math.random()*2.4;
     p.style.left=Math.random()*100+'%';p.style.animationDuration=(9+Math.random()*14)+'s';
     p.style.animationDelay=(Math.random()*12)+'s';p.style.width=p.style.height=s+'px';
@@ -1973,9 +2029,28 @@
   // Worker is deployed, set this to its URL so the deployed site polls fresh live data.
   const LIVE_ENDPOINT='https://footyhub-live.footyhubtv.workers.dev';
 
+  // Robust scroll lock for overlays. iOS Safari ignores body{overflow:hidden} on touch (the page
+  // behind keeps scrolling), so on touch devices we pin the body (position:fixed) and restore the
+  // scroll position when the overlay closes. Desktop keeps simple overflow:hidden (+ Lenis).
+  let _scrollY=0;
+  function _lockScroll(){
+    if(document.body.classList.contains('noscroll'))return;
+    _scrollY=window.scrollY||window.pageYOffset||0;
+    document.body.classList.add('noscroll');
+    if(COARSE){document.body.style.top=(-_scrollY)+'px';document.body.style.position='fixed';document.body.style.left='0';document.body.style.right='0';document.body.style.width='100%';}
+    else{document.body.style.overflow='hidden';}
+  }
+  function _unlockScroll(){
+    if(!document.body.classList.contains('noscroll'))return;
+    document.body.classList.remove('noscroll');
+    if(COARSE){document.body.style.position='';document.body.style.top='';document.body.style.left='';document.body.style.right='';document.body.style.width='';window.scrollTo(0,_scrollY);}
+    else{document.body.style.overflow='';}
+  }
+
   // WebGL violet shader background
   (function(){
     const cv=document.getElementById('gl'); if(!cv) return;
+    if(COARSE){cv.style.display='none';return;} // no animated shader on phones — biggest scroll-lag source
     const gl=cv.getContext('webgl',{antialias:false,alpha:false}); if(!gl) return;
     const VS='attribute vec2 a;void main(){gl_Position=vec4(a,0.0,1.0);}';
     const FS=`precision highp float;uniform float uTime;uniform vec2 uRes;uniform vec2 uMouse;
@@ -2144,8 +2219,8 @@
     gh:{age:31,job:"Logistics coordinator",home:"Kumasi",trait:"Warm organizer",bio:"Kwame plans shipping routes for work and the neighbourhood group-watch on match nights. He's the friend who starts texting everyone a countdown three days before kickoff."},
     pa:{age:55,job:"Coffee roaster",home:"Boquete",trait:"Sentimental veteran",bio:"Roberto remembers exactly where he stood when Panama first reached the big stage, and he's been hooked ever since. He names each new coffee batch after a player who impressed him that week."},
   };
-  function _pmOpen(html){const m=document.getElementById('personaModal'),b=document.getElementById('pmBody');if(!m||!b)return;b.innerHTML=html;m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();m.scrollTop=0;fhPush();}
-  function closePersona(){const m=document.getElementById('personaModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
+  function _pmOpen(html){const m=document.getElementById('personaModal'),b=document.getElementById('pmBody');if(!m||!b)return;b.innerHTML=html;m.hidden=false;_lockScroll();if(lenis)lenis.stop();m.scrollTop=0;fhPush();}
+  function closePersona(){const m=document.getElementById('personaModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function openHost(key){const h=HOSTBIO[key];if(!h)return;
     _pmOpen('<div class="pm-hero"><img class="pm-photo" src="avatars/'+key+'.png" alt="'+h.name+'"><div class="pm-h-info"><div class="pm-name">'+h.name+'</div><div class="pm-role">'+h.role+'</div></div></div>'
       +'<div class="pm-body-tx">'+h.paras.map(p=>'<p class="pm-p">'+p+'</p>').join('')
@@ -2202,8 +2277,8 @@
   const mhBack=document.getElementById('mhBack');if(mhBack)mhBack.addEventListener('click',backToGrid);
   const mhPrev=document.getElementById('mhPrev');if(mhPrev)mhPrev.addEventListener('click',()=>showGroup(curG-1));
   const mhNext=document.getElementById('mhNext');if(mhNext)mhNext.addEventListener('click',()=>showGroup(curG+1));
-  function openHub(){if(mhub){mhub.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();fhPush();}}
-  function closeHub(){if(mhub){mhub.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}}
+  function openHub(){if(mhub){mhub.hidden=false;_lockScroll();if(lenis)lenis.stop();fhPush();}}
+  function closeHub(){if(mhub){mhub.hidden=true;_unlockScroll();if(lenis)lenis.start();}}
   if(mOpen)mOpen.addEventListener('click',openHub);
   if(mClose)mClose.addEventListener('click',closeHub);
   if(mhub)mhub.addEventListener('click',e=>{if(e.target===mhub)closeHub();});
@@ -2262,7 +2337,7 @@
   function fhCloseOverlays(){
     const ids=['personaModal','menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal'];
     let closed=false;ids.forEach(id=>{const el=document.getElementById(id);if(el&&!el.hidden){el.hidden=true;closed=true;}});
-    if(closed){document.body.style.overflow='';if(lenis)lenis.start();}
+    if(closed){_unlockScroll();if(lenis)lenis.start();}
     return closed;
   }
   function goHome(){if(!_atHome()){history.back();}else{fhCloseOverlays();backHome();}}
@@ -2310,6 +2385,7 @@
 
   // ── Mundial fixtures (window.FIXTURES from fixtures.js) — every time rendered in the VISITOR'S local timezone ──
   const FIX=Array.isArray(window.FIXTURES)?window.FIXTURES:[];
+  const DEMO=/[?&]demo=live/i.test(location.search); // ad/demo mode: render the site as if a match is LIVE now
   const RES=window.RESULTS||{standings:{},ko:{}};
   let fhUser=null; // signed-in Google user (or null)
   const TZ=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
@@ -2318,7 +2394,7 @@
   const fmtDayShort=ms=>new Date(ms).toLocaleDateString([],{day:'numeric',month:'short'});
   const tzN=document.getElementById('tzName'); if(tzN)tzN.textContent=TZ.replace(/_/g,' ');
   const MATCH_MS=2.5*3600*1000; // a match window ≈ 2.5h
-  function nextFixture(){const now=Date.now();return FIX.find(f=>Date.parse(f.utc)+MATCH_MS>now)||FIX[FIX.length-1]||null;}
+  function nextFixture(){const now=Date.now();if(DEMO){const g=FIX.filter(f=>f.stage!=='ko');return g[1]||g[0]||null;}return FIX.find(f=>Date.parse(f.utc)+MATCH_MS>now)||FIX[FIX.length-1]||null;}
   function castMember(src,name,role,flag){
     return '<div class="mcast"><div class="mcast-av"><img loading="lazy" src="'+src+'" alt="'+name+'"></div><div class="mcast-n">'+name+(flag?' <img class="tkflag" src="'+flag+'">':'')+'</div><div class="mcast-r">'+role+'</div></div>';
   }
@@ -2571,7 +2647,7 @@
   function needsJoin(){return !fhSession()||!fhUname;}
   function openJoinModal(){
     const m=document.getElementById('joinModal');if(!m)return;
-    m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();
+    m.hidden=false;_lockScroll();if(lenis)lenis.stop();
     const si=document.getElementById('jmSignin'),un=document.getElementById('jmUname');
     if(!fhSession()){
       if(si)si.hidden=false;if(un)un.hidden=true;
@@ -2584,7 +2660,12 @@
       if(inp)setTimeout(()=>inp.focus(),60);
     }
   }
-  function closeJoin(){const m=document.getElementById('joinModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
+  function closeJoin(){const m=document.getElementById('joinModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
+  // Predict "Play now" CTAs require sign-in first — tapping the banner opens the sign-in gate (funnels visitors into the Predictor); signed-in users go straight to play.
+  document.addEventListener('click',function(e){
+    const t=e.target.closest('.pred-teaser,.poster-predict');
+    if(t && !fhSession()){ e.preventDefault(); e.stopPropagation(); openJoinModal(); }
+  },true);
   const _UERR={short:'At least 3 characters.',invalid:'Letters, numbers, _ - only.',blocked:'Please choose a different name.',taken:'That username is taken — try another.'};
   async function saveUsername(){
     if(!fhSession()){openJoinModal();return;}
@@ -2601,7 +2682,7 @@
   }
   function openLbModal(){
     const m=document.getElementById('lbModal');if(!m||!LIVE_ENDPOINT)return;
-    m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();
+    m.hidden=false;_lockScroll();if(lenis)lenis.stop();
     const list=document.getElementById('lbmList');if(list)list.innerHTML='<div class="lb-empty">Loading…</div>';
     fetch(LIVE_ENDPOINT+'/predict/leaderboard?full=1',{cache:'no-store'}).then(r=>r.json()).then(d=>{
       const rows=(d&&d.leaderboard)||[],me=predUser();let mine=false;
@@ -2610,20 +2691,20 @@
       const jb=document.getElementById('lbmJump');if(jb)jb.hidden=!mine;
     }).catch(()=>{});
   }
-  function closeLb(){const m=document.getElementById('lbModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
+  function closeLb(){const m=document.getElementById('lbModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function jumpToMe(){
     const me=predUser();if(!me)return;
     const row=document.querySelector('#lbmList .lb-row[data-u="'+me.replace(/["\\]/g,'')+'"]');
     if(row){row.scrollIntoView({block:'center'});row.classList.remove('flash');void row.offsetWidth;row.classList.add('flash');}
   }
-  function openTerms(){const m=document.getElementById('termsModal');if(!m)return;m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();}
-  function closeTerms(){const m=document.getElementById('termsModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
-  function openVprem(){const m=document.getElementById('vpremModal');if(!m)return;m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();}
-  function closeVprem(){const m=document.getElementById('vpremModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
-  function openIos(){const m=document.getElementById('iosModal');if(!m)return;m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();}
-  function closeIos(){const m=document.getElementById('iosModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
-  function openContact(){const mn=document.getElementById('menu');if(mn)mn.hidden=true;const m=document.getElementById('contactModal');if(!m)return;m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();}
-  function closeContact(){const m=document.getElementById('contactModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
+  function openTerms(){const m=document.getElementById('termsModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
+  function closeTerms(){const m=document.getElementById('termsModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
+  function openVprem(){const m=document.getElementById('vpremModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
+  function closeVprem(){const m=document.getElementById('vpremModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
+  function openIos(){const m=document.getElementById('iosModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
+  function closeIos(){const m=document.getElementById('iosModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
+  function openContact(){const mn=document.getElementById('menu');if(mn)mn.hidden=true;const m=document.getElementById('contactModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
+  function closeContact(){const m=document.getElementById('contactModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function fhShare(){
     const url='https://footyhub.tv';
     const text='⚽ FootyHub TV — AI commentators call every Mundial 2026 match LIVE & free on YouTube. Predict scores & win prizes 🏆';
@@ -2751,10 +2832,17 @@
   let _chatVid='';
   function renderChat(videoId){_chatVid=videoId||'';}   // keep the chat preview; just track the live id for the redirect
   function openYtChat(){window.open(_chatVid?('https://www.youtube.com/watch?v='+_chatVid):'https://www.youtube.com/@FootyHub_TV/live','_blank','noopener');}
+  const DEMO_DATA={is_live:true,
+    match:{home:'Mexico',away:'South Africa',home_code:'mx',away_code:'za',score_home:1,score_away:0,minute:63,kickoff:'2026-06-11T19:00:00Z'},
+    viewers:2418,youtube_video_id:'',
+    match_center:{win_prob:{home:58,draw:24,away:18},
+      stats:[{label:'Possession',home:'58%',away:'42%'},{label:'Shots',home:'9',away:'4'},{label:'Shots on target',home:'4',away:'1'},{label:'Corners',home:'6',away:'2'},{label:'xG',home:'1.7',away:'0.6'}],
+      timeline:[{minute:58,side:'home',icon:'🔄',text:'Substitution — Mexico'},{minute:41,side:'home',icon:'⚽',text:'GOAL — Mexico, 1–0!'},{minute:33,side:'away',icon:'🟨',text:'Yellow card — South Africa'},{minute:18,side:'home',icon:'⚽',text:'Off the post — Mexico'}]}};
   async function syncLive(){
     try{
-      const r=await fetch(LIVE_ENDPOINT||'live.json',{cache:'no-store'}); if(!r.ok)return;
-      const data=await r.json();
+      let data;
+      if(DEMO){data=DEMO_DATA;}
+      else{const r=await fetch(LIVE_ENDPOINT||'live.json',{cache:'no-store'}); if(!r.ok)return; data=await r.json();}
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);if(!isNaN(k)){kickoffTs=k;updateCountdown();}}
       if(typeof data.is_live==='boolean')setMatchLive(data.is_live);
       renderLiveMatch(data.match);
@@ -2776,6 +2864,7 @@
       '<div class="leg safe"><span class="st">✓</span><span class="info"><div class="sel">'+s.label+'</div><div class="mk">Victor\'s model pick</div></span><span class="odd">'+(+s.odds).toFixed(2)+'</span></div>').join('');
     const tot=document.querySelector('#victorLive .vt-to');if(tot)tot.textContent=(+safe.combined_odds).toFixed(2);
   }
+  if(DEMO){showWatch();}
   syncLive();setInterval(syncLive,10000);
 
   // ── site-wide link wiring: every link goes somewhere / opens something ──
@@ -2931,8 +3020,8 @@
   if(vCount){let v=2418;setInterval(()=>{v+=Math.round((Math.random()-0.42)*16);if(v<1900)v=1900;vCount.textContent=v.toLocaleString();},3200);}
 
   // ── full-screen menu ──
-  function openMenu(){const m=document.getElementById('menu');if(m){m.hidden=false;renderMenuAuth();document.body.style.overflow='hidden';if(lenis)lenis.stop();fhPush();}}
-  function closeMenu(){const m=document.getElementById('menu');if(m){m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}}
+  function openMenu(){const m=document.getElementById('menu');if(m){m.hidden=false;renderMenuAuth();_lockScroll();if(lenis)lenis.stop();fhPush();}}
+  function closeMenu(){const m=document.getElementById('menu');if(m){m.hidden=true;_unlockScroll();if(lenis)lenis.start();}}
   const menuEl=document.getElementById('menu');
   if(menuEl)menuEl.addEventListener('click',e=>{if(e.target===menuEl||e.target.closest('a'))closeMenu();});
   const menuCloseB=document.getElementById('menuClose');if(menuCloseB)menuCloseB.addEventListener('click',closeMenu);
