@@ -579,6 +579,7 @@
   .hs-play{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:50px;cursor:pointer;
     font-size:.72rem;font-weight:600;color:#fff;background:rgba(150,70,255,.18);border:1px solid rgba(150,70,255,.4);transition:.2s}
   .hs-play:hover{background:rgba(150,70,255,.3)}
+  .hear-ic{font-size:.6rem;line-height:1;display:inline-block}
 
   .map-panel{position:relative;width:100%;aspect-ratio:95/62;max-height:480px;border-radius:20px;overflow:hidden;
     background:radial-gradient(ellipse at center,rgba(60,30,120,.30),rgba(8,4,20,.72));border:1px solid rgba(150,70,255,.2)}
@@ -697,7 +698,8 @@
   .fp-flag.sel{outline-color:#b06bff;opacity:1}
   .fp-flag.tonight{box-shadow:0 0 0 1.5px rgba(255,90,90,.85),0 0 12px rgba(255,60,60,.5)}
   .fp-card{min-height:130px;border-radius:16px;background:rgba(150,70,255,.05);border:1px solid rgba(150,70,255,.14);display:flex;align-items:center;gap:20px;padding:22px 26px;transition:background .3s,border-color .3s}
-  .fp-card.filled{background:linear-gradient(180deg,rgba(150,70,255,.12),rgba(150,70,255,.03));border-color:rgba(150,70,255,.3)}
+  .fp-card.filled{background:linear-gradient(180deg,rgba(150,70,255,.12),rgba(150,70,255,.03));border-color:rgba(150,70,255,.3);cursor:pointer;transition:border-color .2s,transform .2s}
+  .fp-card.filled:hover{border-color:rgba(150,70,255,.55);transform:translateY(-2px)}
   .fp-empty{color:var(--txt-3);font-size:.92rem;text-align:center;width:100%}
   .fp-bigflag{width:90px;height:60px;object-fit:cover;border-radius:8px;flex:0 0 90px;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 6px 18px rgba(0,0,0,.5)}
   .fp-photo{width:104px;height:104px;flex:0 0 104px;object-fit:cover;object-position:top center;border-radius:16px;background:radial-gradient(circle at 30% 22%,rgba(150,90,255,.45),rgba(70,25,150,.28));box-shadow:0 0 0 1px rgba(255,255,255,.18),0 8px 22px rgba(0,0,0,.5)}
@@ -1383,7 +1385,7 @@
             <h3>LIA</h3>
             <div class="hs-role">Lead Commentator · permanent</div>
             <div class="hs-q">"Oh, that is SENSATIONAL!"</div>
-            <span class="hs-play" data-hear="lia"><span class="eq"><i></i><i></i><i></i><i></i></span> Hear LIA</span>
+            <span class="hs-play" data-hear="lia"><span class="hear-ic">▶</span> Hear LIA</span>
           </div>
         </div>
         <div class="host-star" data-persona="victor">
@@ -1392,7 +1394,7 @@
             <h3>Victor</h3>
             <div class="hs-role">Analyst &amp; Tipster · permanent</div>
             <div class="hs-q">"The numbers don't lie."</div>
-            <span class="hs-play" data-hear="victor"><span class="eq"><i></i><i></i><i></i><i></i></span> Hear Victor</span>
+            <span class="hs-play" data-hear="victor"><span class="hear-ic">▶</span> Hear Victor</span>
           </div>
         </div>
       </div>
@@ -1568,7 +1570,7 @@
         <div class="hf-traits"><span>Passionate</span><span>Witty</span><span>Multilingual</span><span>Always on</span></div>
         <div class="hf-row">
           <div class="hf-quote">"Oh, that is SENSATIONAL!"</div>
-          <a class="hf-hear hs-play" data-hear="lia"><span class="eq"><i></i><i></i><i></i><i></i></span> Hear LIA</a>
+          <a class="hf-hear hs-play" data-hear="lia"><span class="hear-ic">▶</span> Hear LIA</a>
         </div>
       </div>
     </div>
@@ -1586,7 +1588,7 @@
         </div>
         <div class="hf-row">
           <div class="hf-quote">"The numbers don't lie."</div>
-          <a class="hf-hear hs-play" data-hear="victor"><span class="eq"><i></i><i></i><i></i><i></i></span> Hear Victor</a>
+          <a class="hf-hear hs-play" data-hear="victor"><span class="hear-ic">▶</span> Hear Victor</a>
         </div>
         <div class="hf-foot">Entertainment only · 18+ · Not financial advice</div>
       </div>
@@ -2069,8 +2071,8 @@
     'gb-eng':['Harry','It\'s Coming Home!'],hr:['Marko','Vatreni!'],gh:['Kwame','Black Stars!'],pa:['Roberto','¡La Marea Roja!']
   };
   function showFanIn(card,c,n){if(!card)return;const f=FANS[c];const nm=f?f[0]:n+' fan';const q=f?f[1]:'Loud and proud for '+n+'.';const tn=TONIGHT.includes(c)?' <span class="fp-tonight">Tonight</span>':'';
-    card.innerHTML='<img class="fp-photo" src="avatars/'+c+'.png" alt="'+nm+'" onerror="this.onerror=null;this.src=\'flags/'+c+'.svg\';this.classList.add(\'isflag\')"><div class="fp-fi"><div class="fp-name">'+nm+tn+'</div><div class="fp-role"><img class="fp-roleflag" src="flags/'+c+'.svg" alt="">'+n+' fan</div><div class="fp-quote">"'+q+'"</div><span class="eq fp-eq"><i></i><i></i><i></i><i></i></span><span class="fp-hear">▶ Hear '+nm+'</span></div>';
-    card.classList.add('filled');}
+    card.innerHTML='<img class="fp-photo" src="avatars/'+c+'.png" alt="'+nm+'" onerror="this.onerror=null;this.src=\'flags/'+c+'.svg\';this.classList.add(\'isflag\')"><div class="fp-fi"><div class="fp-name">'+nm+tn+'</div><div class="fp-role"><img class="fp-roleflag" src="flags/'+c+'.svg" alt="">'+n+' fan</div><div class="fp-quote">"'+q+'"</div><span class="fp-hear hs-play" data-hear="'+c+'"><span class="hear-ic">▶</span> Hear '+nm+'</span></div>';
+    card.classList.add('filled');card.setAttribute('data-fan',c);}
   function initFanpick(flagsEl,cardEl){
     if(!flagsEl)return;
     NATIONS.forEach(([c,n])=>{const im=document.createElement('img');im.src='flags/'+c+'.svg';im.alt=n;im.title=n;im.className='fp-flag'+(TONIGHT.includes(c)?' tonight':'');im.addEventListener('click',()=>{flagsEl.querySelectorAll('.fp-flag').forEach(x=>x.classList.remove('sel'));im.classList.add('sel');showFanIn(cardEl,c,n);});flagsEl.appendChild(im);});
@@ -2149,7 +2151,7 @@
       +'<div class="pm-body-tx">'+h.paras.map(p=>'<p class="pm-p">'+p+'</p>').join('')
       +'<div class="pm-traits">'+h.traits.map(t=>'<span>'+t+'</span>').join('')+'</div>'
       +'<div class="pm-quote">"'+h.quote+'"</div></div>'
-      +'<div class="pm-foot"><span class="fp-hear hs-play" data-hear="'+key+'"><span class="eq"><i></i><i></i><i></i><i></i></span> Hear '+h.name+'</span></div>');}
+      +'<div class="pm-foot"><span class="fp-hear hs-play" data-hear="'+key+'"><span class="hear-ic">▶</span> Hear '+h.name+'</span></div>');}
   function openFan(code){const nat=(NATIONS.find(x=>x[0]===code)||[code,code])[1];const f=FANS[code]||[code,''];const b=FANBIO[code];
     const meta=b?('<b style="color:#fff">'+b.age+'</b> &middot; '+b.job+' &middot; '+b.home):'';
     const bio=b?b.bio:('A born-and-raised '+nat+' supporter who lives for the national team.');
@@ -2157,7 +2159,7 @@
       +'<div class="pm-body-tx"><p class="pm-p">'+bio+'</p>'
       +(b&&b.trait?'<div class="pm-traits"><span>'+b.trait+'</span></div>':'')
       +'<div class="pm-quote">"'+f[1]+'"</div></div>'
-      +'<div class="pm-foot pm-foot-fan"><button class="pm-like'+(_liked().has(code)?' on':'')+'" data-like="'+code+'">'+(_liked().has(code)?'❤️':'🤍')+' <b>'+(FANLIKES[code]||0)+'</b></button><span class="fp-hear" data-hear="'+code+'">▶ Hear '+f[0]+'</span></div>');}
+      +'<div class="pm-foot pm-foot-fan"><button class="pm-like'+(_liked().has(code)?' on':'')+'" data-like="'+code+'">'+(_liked().has(code)?'❤️':'🤍')+' <b>'+(FANLIKES[code]||0)+'</b></button><span class="fp-hear hs-play" data-hear="'+code+'"><span class="hear-ic">▶</span> Hear '+f[0]+'</span></div>');}
   // ── Favorite-fan likes (like as many fans as you want, one each) ──
   const LIKE_URL=(LIVE_ENDPOINT||'')+'/like';
   let FANLIKES={};
@@ -2908,16 +2910,16 @@
     }catch(e){}
   })();
 
-  // ── Hear LIA / Victor — play the real ElevenLabs voice sample ──
+  // ── Hear: play/pause the ElevenLabs voice clip (LIA, Victor, every fan) ──
   const hostAudio={};
+  function _hearMark(who,on){document.querySelectorAll('[data-hear="'+who+'"]').forEach(function(x){x.classList.toggle('hearing',on);var ic=x.querySelector('.hear-ic');if(ic)ic.textContent=on?'⏸':'▶';});}
   function playHear(who){
-    if(!hostAudio[who])hostAudio[who]=new Audio('audio/'+who+'.mp3');
-    Object.keys(hostAudio).forEach(k=>{hostAudio[k].pause();hostAudio[k].currentTime=0;
-      document.querySelectorAll('[data-hear="'+k+'"]').forEach(x=>x.classList.remove('hearing'));});
-    const a=hostAudio[who];a.currentTime=0;
-    const mark=on=>document.querySelectorAll('[data-hear="'+who+'"]').forEach(x=>x.classList.toggle('hearing',on));
-    mark(true); a.onended=()=>mark(false);
-    a.play().catch(()=>{mark(false);toast('🔊 Tap again to play');});
+    if(!hostAudio[who]){hostAudio[who]=new Audio('audio/'+who+'.mp3');hostAudio[who].addEventListener('ended',function(){_hearMark(who,false);});}
+    const a=hostAudio[who];
+    if(!a.paused){a.pause();_hearMark(who,false);return;}   // toggle: pause if already playing
+    Object.keys(hostAudio).forEach(function(k){if(k!==who){hostAudio[k].pause();hostAudio[k].currentTime=0;_hearMark(k,false);}});
+    a.currentTime=0;_hearMark(who,true);
+    a.play().catch(function(){_hearMark(who,false);toast('🔊 Tap again to play');});
   }
   document.addEventListener('click',function(e){const h=e.target.closest('[data-hear]');if(h){e.preventDefault();playHear(h.getAttribute('data-hear'));}});
 
