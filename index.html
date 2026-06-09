@@ -74,7 +74,11 @@
     border-bottom:1px solid rgba(150,70,255,.14)}
   .nav .brand{font-weight:700;letter-spacing:.04em;font-size:1.05rem;
     background:linear-gradient(90deg,#fff,#c9a8ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .nav .brand{cursor:pointer}
   .nav .brand img{height:34px;width:auto;display:block}
+  .nav-back{display:none;align-items:center;font-size:.78rem;font-weight:600;color:var(--txt-2);text-decoration:none;border:1px solid rgba(150,70,255,.4);background:rgba(150,70,255,.08);padding:7px 15px;border-radius:50px;cursor:pointer;margin-left:10px;transition:.2s;white-space:nowrap}
+  .nav-back:hover{border-color:var(--violet);color:#fff;background:rgba(150,70,255,.18)}
+  body.subpage .nav-back{display:inline-flex}
   .nav .links{display:flex;gap:22px;margin-left:8px}
   .nav .links a{color:var(--txt-2);text-decoration:none;font-size:.82rem;
     letter-spacing:.06em;text-transform:uppercase;transition:color .25s}
@@ -319,6 +323,40 @@
   .cm-v{color:#caa9ff;font-size:.84rem}
   .cm-note{font-size:.74rem;color:var(--txt-3);margin:8px 0 0}
   [data-contact]{cursor:pointer}
+  .pmodal{position:fixed;inset:0;z-index:280;display:flex;align-items:flex-start;justify-content:center;background:rgba(8,4,18,.93);backdrop-filter:blur(18px);padding:30px 18px;animation:mhubFade .25s ease;overflow-y:auto}
+  .pmodal[hidden]{display:none}
+  .pm-panel{position:relative;width:100%;max-width:560px;margin:auto;background:linear-gradient(180deg,#160c2a,#0e0820);border:1px solid rgba(150,70,255,.35);border-radius:24px;padding:0 0 6px}
+  .pm-hero{display:flex;gap:20px;align-items:center;padding:30px 28px 18px}
+  .pm-photo{width:118px;height:118px;flex:0 0 118px;border-radius:22px;object-fit:cover;object-position:top center;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.55),rgba(70,25,150,.4));border:1px solid rgba(150,70,255,.5)}
+  .pm-h-info{text-align:left}
+  .pm-name{font-size:1.85rem;font-weight:800;color:#fff;line-height:1.1}
+  .pm-role{font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:rgba(200,170,255,.75);margin-top:6px;display:flex;align-items:center;gap:7px}
+  .pm-meta{font-size:.82rem;color:var(--txt-2);margin-top:9px}
+  .pm-body-tx{padding:4px 28px 0;text-align:left}
+  .pm-p{font-size:.92rem;color:var(--txt-2);line-height:1.65;margin:0 0 13px}
+  .pm-p b{color:#fff}.pm-p i{color:#caa9ff;font-style:italic}
+  .pm-traits{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 16px}
+  .pm-traits span{font-size:.72rem;color:#caa9ff;background:rgba(150,70,255,.14);border:1px solid rgba(150,70,255,.3);padding:5px 12px;border-radius:50px}
+  .pm-quote{font-style:italic;color:#fff;font-size:1rem;border-left:3px solid var(--violet);padding-left:14px;margin:0 0 16px}
+  .pm-foot{padding:8px 28px 24px}
+  .pm-foot-fan{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .pm-like{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:50px;background:rgba(255,255,255,.05);border:1px solid rgba(150,70,255,.3);color:#fff;font:inherit;font-size:.9rem;cursor:pointer;transition:.2s}
+  .pm-like:hover{border-color:var(--violet);background:rgba(150,70,255,.12)}
+  .pm-like.on{background:rgba(255,70,120,.16);border-color:rgba(255,70,120,.55)}
+  .pm-like b{font-weight:800}
+  .like-board{max-width:560px;margin:32px auto 0}
+  .lb-h{font-size:.92rem;font-weight:800;color:#fff;text-align:center;margin-bottom:14px}
+  .lb-hs{font-size:.72rem;color:var(--txt-3);font-weight:400}
+  .lb-empty{text-align:center;color:var(--txt-3);font-size:.84rem;padding:14px}
+  .lbf{display:flex;align-items:center;gap:12px;padding:9px 14px;margin-bottom:8px;border-radius:12px;background:rgba(150,70,255,.05);border:1px solid rgba(150,70,255,.14);cursor:pointer;transition:.2s}
+  .lbf:hover{border-color:rgba(150,70,255,.4);background:rgba(150,70,255,.1)}
+  .lbf-r{font-weight:800;color:#caa9ff;width:20px;text-align:center;flex:0 0 20px}
+  .lbf-av{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:top center;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.5),rgba(80,30,160,.4));flex:0 0 40px}
+  .lbf-n{flex:1;font-weight:600;font-size:.88rem;display:flex;align-items:center;gap:7px}
+  .lbf-n .tkflag{width:18px;height:12px}
+  .lbf-c{font-size:.85rem;color:#fff;font-weight:700;white-space:nowrap}
+  .pm-flag{width:21px;height:14px;border-radius:3px;object-fit:cover;vertical-align:middle}
+  @media(max-width:520px){.pm-hero{flex-direction:column;text-align:center}.pm-h-info{text-align:center}.pm-role{justify-content:center}}
   .termsmodal{position:fixed;inset:0;z-index:260;display:flex;align-items:center;justify-content:center;background:rgba(8,4,18,.92);backdrop-filter:blur(16px);padding:20px;animation:mhubFade .25s ease}
   .termsmodal[hidden]{display:none}
   .tm-panel{position:relative;width:100%;max-width:620px;max-height:84vh;display:flex;flex-direction:column;background:#120a22;border:1px solid rgba(150,70,255,.32);border-radius:20px;padding:26px}
@@ -490,7 +528,7 @@
   .pc{padding:12px 8px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(150,70,255,.15);text-align:center}
   .pc-av{width:42px;height:42px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-weight:700;
     background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.6),rgba(80,30,160,.4));border:1px solid rgba(150,70,255,.4);overflow:hidden}
-  .pc-av img:not(.tkflag){width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:zoom-in}
+  .pc-av img:not(.tkflag){width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:pointer}
   .pc-n{font-size:.78rem;font-weight:600}
   .pc-r{font-size:.58rem;color:var(--txt-3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px}
   .pc-eq{display:inline-flex;align-items:flex-end;gap:2px;height:11px}
@@ -663,7 +701,7 @@
   .fp-photo{width:104px;height:104px;flex:0 0 104px;object-fit:cover;object-position:top center;border-radius:16px;background:radial-gradient(circle at 30% 22%,rgba(150,90,255,.45),rgba(70,25,150,.28));box-shadow:0 0 0 1px rgba(255,255,255,.18),0 8px 22px rgba(0,0,0,.5)}
   .fp-photo.isflag{height:70px;border-radius:8px;background:none}
   .fp-roleflag{display:inline-block;width:20px;height:14px;object-fit:cover;border-radius:2px;vertical-align:middle;margin-right:7px;box-shadow:0 0 0 1px rgba(255,255,255,.22)}
-  .fp-photo,.hs-av img,.hf-avatar img{cursor:zoom-in}
+  .fp-photo,.hs-av img,.hf-avatar img{cursor:pointer}
   #avatarLightbox{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;background:rgba(8,4,18,.9);backdrop-filter:blur(14px);cursor:zoom-out;animation:mhubFade .25s ease;padding:30px}
   #avatarLightbox[hidden]{display:none}
   #avatarLightbox img{width:min(74vmin,380px);height:min(74vmin,380px);object-fit:cover;object-position:top center;border-radius:50%;background:radial-gradient(circle at 30% 22%,rgba(150,90,255,.55),rgba(70,25,150,.35));border:1px solid rgba(150,70,255,.5);box-shadow:0 0 90px rgba(140,60,255,.5),0 24px 70px rgba(0,0,0,.6);cursor:default}
@@ -855,14 +893,14 @@
   @media(max-width:520px){.se-cast{grid-template-columns:repeat(2,1fr)}}
   .mcast{text-align:center;padding:12px 6px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(150,70,255,.15)}
   .mcast-av{width:54px;height:54px;border-radius:50%;margin:0 auto 8px;overflow:hidden;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.6),rgba(80,30,160,.4));border:1px solid rgba(150,70,255,.4)}
-  .mcast-av img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:zoom-in}
+  .mcast-av img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:pointer}
   .mcast-n{font-size:.76rem;font-weight:600}
   .mcast-r{font-size:.56rem;color:var(--txt-3);text-transform:uppercase;letter-spacing:.08em}
   .squad-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:14px;margin-top:22px}
   .sq{text-align:center}
   .sq-av{width:74px;height:74px;border-radius:50%;margin:0 auto 7px;overflow:hidden;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.5),rgba(80,30,160,.32));border:1px solid rgba(150,70,255,.35);transition:transform .2s,border-color .2s,box-shadow .2s}
   .sq:hover .sq-av{transform:translateY(-3px);border-color:var(--violet);box-shadow:0 0 16px rgba(150,90,255,.5)}
-  .sq-av img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:zoom-in}
+  .sq-av img{width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;cursor:pointer}
   .sq-n{font-size:.7rem;color:var(--txt-2);display:flex;align-items:center;justify-content:center;gap:5px}
   .sq-n .tkflag{width:16px;height:11px}
   .vod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
@@ -958,7 +996,7 @@
   .poster-upnext b{color:#fff}
   .upnext-bell{margin-left:8px;font-size:.74rem;color:rgba(200,170,255,.9);text-decoration:none;border:1px solid rgba(150,70,255,.35);padding:4px 10px;border-radius:50px;cursor:pointer;white-space:nowrap}
   .upnext-bell:hover{color:#fff;border-color:rgba(150,70,255,.6)}
-  .watch-back{position:fixed;bottom:22px;left:22px;z-index:30;display:inline-flex;align-items:center;font-size:.8rem;color:var(--txt-2);text-decoration:none;border:1px solid rgba(150,70,255,.4);background:rgba(16,9,30,.92);backdrop-filter:blur(8px);padding:10px 18px;border-radius:50px;cursor:pointer;transition:.2s;box-shadow:0 6px 22px rgba(0,0,0,.45)}
+  .watch-back{display:none}
   .watch-back:hover{border-color:var(--violet);color:#fff}
   .watch-back:hover{color:#fff;border-color:rgba(150,70,255,.6)}
   #live{padding-top:120px}
@@ -1186,7 +1224,8 @@
 
 <!-- NAV -->
 <nav class="nav">
-  <span class="brand"><img src="logo-trans.png" alt="FootyHub TV"></span>
+  <span class="brand" data-action="home"><img src="logo-trans.png" alt="FootyHub TV"></span>
+  <a class="nav-back" data-action="home">&larr; Home</a>
   <span class="onair" id="onair" data-action="live">
     <span class="eq"><i></i><i></i><i></i><i></i></span>
     <span class="oa-label" id="oaLabel">Next</span>
@@ -1335,7 +1374,7 @@
     <section class="sect cast" id="cast">
       <div class="sect-title">Your AI broadcast team</div>
       <div class="hosts2">
-        <div class="host-star" data-action="hosts">
+        <div class="host-star" data-persona="lia">
           <div class="hs-av"><img src="avatars/lia.png" alt="LIA"></div>
           <div class="hs-info">
             <h3>LIA</h3>
@@ -1344,7 +1383,7 @@
             <span class="hs-play" data-hear="lia"><span class="eq"><i></i><i></i><i></i><i></i></span> Hear LIA</span>
           </div>
         </div>
-        <div class="host-star" data-action="hosts">
+        <div class="host-star" data-persona="victor">
           <div class="hs-av"><img src="avatars/victor.png" alt="Victor"></div>
           <div class="hs-info">
             <h3>Victor</h3>
@@ -1518,7 +1557,7 @@
       <p class="hp-sub">Permanent. Opinionated. Always live. LIA calls it, Victor breaks it down — and they never stay neutral.</p>
     </div>
 
-    <div class="host-full">
+    <div class="host-full" data-persona="lia">
       <div class="hf-avatar"><img src="avatars/lia.png" alt="LIA"></div>
       <div class="hf-body">
         <div class="hf-name">LIA <span class="hf-tag">Lead Commentator · permanent</span></div>
@@ -1531,7 +1570,7 @@
       </div>
     </div>
 
-    <div class="host-full">
+    <div class="host-full" data-persona="victor">
       <div class="hf-avatar v"><img src="avatars/victor.png" alt="Victor"></div>
       <div class="hf-body">
         <div class="hf-name">Victor <span class="hf-tag">Analyst &amp; Tipster · permanent</span></div>
@@ -1554,6 +1593,7 @@
       <div class="hfs-title">The Fan Squad</div>
       <p>48 nations, one voice each. The right fans are fielded for every match — your country, in the booth.</p>
       <div class="squad-grid" id="squadGrid"></div>
+      <div class="like-board"><div class="lb-h">❤️ Most-loved fans <span class="lb-hs">· tap ❤️ on any profile to vote</span></div><div id="likeBoard"></div></div>
     </div>
   </div>
 </main>
@@ -1746,9 +1786,9 @@
     </div>
     <div class="menu-col">
       <h5>The Cast</h5>
-      <a data-action="hosts">LIA</a>
-      <a data-action="hosts">Victor</a>
-      <a data-action="hosts">The 48 fans</a>
+      <a data-persona="lia">LIA</a>
+      <a data-persona="victor">Victor</a>
+      <a data-action="fans">The 48 fans</a>
     </div>
     <div class="menu-col">
       <h5>More</h5>
@@ -1873,6 +1913,14 @@
   </div>
 </div>
 
+<!-- persona profile modal -->
+<div class="pmodal" id="personaModal" hidden>
+  <div class="pm-panel" data-lenis-prevent>
+    <button class="lbm-x" id="pmClose">&#10005;</button>
+    <div id="pmBody"></div>
+  </div>
+</div>
+
 <!-- contact modal -->
 <div class="cmodal" id="contactModal" hidden>
   <div class="cm-panel" data-lenis-prevent>
@@ -1895,7 +1943,7 @@
       <div class="f-social"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener">YouTube</a><a href="#">Twitch</a><a href="#">TikTok</a></div>
     </div>
     <div class="f-col"><h5>Watch</h5><a data-action="live">Live</a><a data-action="schedule">Schedule</a><a data-action="predict">Predictor</a><a data-action="watch">Clips</a><a data-action="watch">Replays</a></div>
-    <div class="f-col"><h5>The Cast</h5><a data-action="hosts">LIA</a><a data-action="hosts">Victor</a><a data-action="hosts">The 48 fans</a></div>
+    <div class="f-col"><h5>The Cast</h5><a data-action="hosts">LIA</a><a data-action="hosts">Victor</a><a data-action="fans">The 48 fans</a></div>
     <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a data-contact>Contact</a></div>
   </div>
   <div class="f-bottom">© 2026 FootyHub TV. All rights reserved. · Voice AI powered by ElevenLabs · Entertainment only · 18+</div>
@@ -1983,7 +2031,7 @@
   let iri=0;
   if(iRot&&!RM){setInterval(()=>{iRot.style.transition='opacity .35s ease, filter .35s ease';iRot.style.opacity='0';iRot.style.filter='blur(4px)';
     setTimeout(()=>{iri=(iri+1)%ROT.length;iRot.textContent=ROT[iri];iRot.style.opacity='1';iRot.style.filter='blur(0px)';},370);},2800);}
-  function navReveal(){if((window.scrollY||document.documentElement.scrollTop)>innerHeight*0.55)document.body.classList.add('scrolled');else document.body.classList.remove('scrolled');}
+  function navReveal(){if(document.body.classList.contains('subpage')||(window.scrollY||document.documentElement.scrollTop)>innerHeight*0.55)document.body.classList.add('scrolled');else document.body.classList.remove('scrolled');}
   addEventListener('scroll',navReveal,{passive:true});navReveal();
 
   // magnetic buttons
@@ -2028,7 +2076,104 @@
   // hosts page: the whole 48-face squad wall (different from the homepage flags→reveal)
   (function(){const el=document.getElementById('squadGrid');if(!el)return;
     el.innerHTML=NATIONS.map(([c,n])=>{const f=FANS[c];const nm=f?f[0]:n;
-      return '<div class="sq"><div class="sq-av"><img loading="lazy" src="avatars/'+c+'.png" alt="'+nm+'"></div><div class="sq-n"><img class="tkflag" src="flags/'+c+'.svg"> '+nm+'</div></div>';}).join('');})();
+      return '<div class="sq" data-fan="'+c+'"><div class="sq-av"><img loading="lazy" src="avatars/'+c+'.png" alt="'+nm+'"></div><div class="sq-n"><img class="tkflag" src="flags/'+c+'.svg"> '+nm+'</div></div>';}).join('');})();
+
+  // ── Persona profiles (LIA/Victor rich · fans lighter) ──
+  const HOSTBIO={
+    lia:{name:'LIA',role:'Lead Commentator · Permanent',quote:'Oh, that is SENSATIONAL!',traits:['Passionate','Witty','Multilingual','Always on'],paras:[
+      "Meet <b>LIA</b> — the voice of FootyHub TV and the world's first AI football commentator built with a <b>real personality</b>. She doesn't read stats off a screen; she <i>feels</i> the game.",
+      "Fast, fearless and a little cheeky, LIA calls every kick with genuine emotion — she celebrates, she despairs, she gasps at a near-miss and roasts a lazy back-pass. She reads the room, answers the live chat by name, and <b>never, ever plays it neutral</b>.",
+      "She works every match of the tournament, in multiple languages, and she's only getting started. Love her or argue with her — you won't be able to ignore her."]},
+    victor:{name:'Victor',role:'Analyst & Tipster · Permanent',quote:"The numbers don't lie.",traits:['Tactical','Data-driven','Community tipster'],paras:[
+      "<b>Victor</b> is the cool head beside LIA's fire — FootyHub TV's analyst and tipster. He reads the <b>xG</b>, breaks down the tactics, and tells you <i>why</i> a game is turning before it turns.",
+      "Every call he makes is built by a real statistical model — live odds, team form, expected goals. He works out the edge… then picks a side anyway, live on air, with his <b>Triple Bet</b>. Medium &amp; Max drop in the pre-game, so you've time to play along.",
+      "He shows his reasoning every single time — no hunches, no hindsight. Entertainment only, 18+, never financial advice — but always worth hearing out."]},
+  };
+  const FANBIO={
+    mx:{age:34,job:"Pediatric physiotherapist",home:"Guadalajara",trait:"Tender mentor",bio:"Diego learned the game on his abuela's couch and now coaches a Sunday kids' team between hospital shifts — half rehab, half football clinic. He still texts his old patients on matchday to ask if they saw that last-minute equalizer."},
+    za:{age:41,job:"Solar panel installer",home:"Pietermaritzburg",trait:"Steady soul",bio:"Sipho fell for the national side during a power cut, glued to a crackly radio on a borrowed transistor, and has chased that feeling ever since. He hosts a rooftop watch party for the neighbours whenever the grid holds and the sun has done its work."},
+    kr:{age:23,job:"Indie game sound designer",home:"Daejeon",trait:"Quiet creative",bio:"Joon-ho records crowd roars at home qualifiers and folds them into his game soundtracks, treating the terraces like a living instrument. He celebrates goals by air-conducting the chants, completely unbothered by who's watching."},
+    cz:{age:29,job:"Craft brewery lab technician",home:"Olomouc",trait:"Hopeful romantic",bio:"Tomáš inherited his grandfather's match-day scarf along with a soft spot for hopeless underdog runs. He keeps a notebook of every promising young winger he spots, convinced he'll one day call a breakout before the pundits do."},
+    ca:{age:19,job:"Apprentice wind-turbine electrician",home:"Halifax",trait:"Earnest rookie",bio:"Liam caught the bug watching dawn qualifiers before winter shifts and fell hard for the new generation. He'll happily talk your ear off about an obscure full-back, then sheepishly admit nobody asked."},
+    ch:{age:47,job:"Mountain rescue dispatcher",home:"Chur",trait:"Warm anchor",bio:"Sandro keeps his cool through real emergencies but goes to pieces the second the anthem starts before kickoff. He brings a thermos of homemade soup to every away viewing and shares it with strangers, dodging every question about the recipe."},
+    qa:{age:38,job:"Desalination plant engineer",home:"Al Wakrah",trait:"Generous host",bio:"Ahmed runs the neighbourhood viewing nights and shows up hours early to fuss over the projector so nobody misses a second. He's first on his feet for a goal and last to leave when the post-match debate runs long."},
+    ba:{age:55,job:"Vinyl record shop owner",home:"Tuzla",trait:"Gentle showman",bio:"Edin has followed the national team since the very first official match and frames each ticket stub on his shop wall like a prized sleeve. He commentates games aloud even when watching alone, giving every defender his own distinct voice."},
+    br:{age:34,job:"Pediatric physiotherapist",home:"Belo Horizonte",trait:"Joyful optimist",bio:"Rafael got hooked watching matches on a borrowed phone in the clinic break room, and now times rehab sessions with sprained-ankle kids around kickoff. He keeps a playlist of stoppage-time goals to play whenever a young patient gets discouraged."},
+    ma:{age:27,job:"Solar panel installer",home:"Tangier",trait:"Quietly intense",bio:"Youssef wires up rooftops all day and replays the cleverest passing moves in his head on the long drive home. He narrates the buildup to goals out loud to his cat, who remains profoundly unimpressed."},
+    ht:{age:41,job:"Refrigeration technician",home:"Cap-Haïtien",trait:"Loyal heart",bio:"Wilson picked up the team's old stories from his late grandfather and now hosts a rotating crew of friends for every broadcast. He insists on arranging the snack table in a formation — defenders at the back, strikers up front — before anyone's allowed to eat."},
+    'gb-sct':{age:22,job:"Veterinary nurse",home:"Dundee",trait:"Cheerful underdog",bio:"Callum streams match commentary on one earbud while monitoring puppies coming out of anesthesia. He's convinced his terrible off-key singing is good luck, so he commits to it with full, shameless volume."},
+    us:{age:19,job:"Community college esports coach",home:"Columbus, Ohio",trait:"Hyped believer",bio:"Tyler came to the sport through a teammate's stream and got pulled in by the tactical chess of it all. He keeps a meticulous spreadsheet ranking stadium hot dogs and will defend his rankings like a thesis."},
+    py:{age:38,job:"Freight train dispatcher",home:"Encarnación",trait:"Steady fire",bio:"Mateo trades night shifts with a coworker so he's always free when kickoff lands — a ritual since his mother first parked him in front of a match at five. He argues calls with the referee through the TV as if a reply might actually come through."},
+    au:{age:49,job:"Marine biology lab technician",home:"Newcastle, NSW",trait:"Easygoing diehard",bio:"Jack logs water samples by day and won't apologize for the absurd alarms he sets to catch overseas kickoffs. He keeps a battered notebook tallying every match he's watched and refuses to copy it into anything cleaner."},
+    tr:{age:55,job:"Ceramics studio owner",home:"Eskişehir",trait:"Warm sage",bio:"Mehmet has thrown pots for thirty years and schedules his kiln firings so nothing overlaps with a match. He swears he can sense a goal coming by how the room goes quiet — and he's annoyingly often right."},
+    de:{age:41,job:"Wind-turbine maintenance technician",home:"Bremen",trait:"Steady optimist",bio:"Stefan caught the bug during the 2006 home summer and has kept a hand-drawn bracket for every tournament since. He live-texts a group chat of friends across three time zones, all of them silenced the moment he predicts the score wrong."},
+    cw:{age:27,job:"Marine biologist",home:"Willemstad",trait:"Joyful underdog",bio:"Anthony fell for the national team watching tiny Curaçao punch up against far bigger names, and treats every qualifier like the whole island holding its breath. He's the friend who learns the opposition's lineup just so he can argue about it."},
+    ci:{age:35,job:"Civil engineer",home:"Bouaké",trait:"Analytical fire",bio:"Serge grew up sketching stadiums in his school notebooks and now lives for the roar when the Elephants break forward. He pauses the stream to redraw moves on a whiteboard, then unpauses and gets it completely wrong."},
+    ec:{age:22,job:"Physiotherapy student",home:"Cuenca",trait:"Restless energy",bio:"Ricardo learned the squad's names before his times tables and still calls his grandmother at half-time to relive every chance. He's convinced he can read a match from the players' body language and narrates his theories to anyone within earshot."},
+    nl:{age:19,job:"Graphic-design apprentice",home:"Eindhoven",trait:"Quietly intense",bio:"Daan inherited his obsession from a grandfather who never missed a tournament, and now designs match-day posters he's too shy to post anywhere. He keeps a private rating for every player's haircut, entirely separate from how they actually play."},
+    jp:{age:48,job:"High-school science teacher",home:"Sendai",trait:"Patient devotion",bio:"Hiroshi has followed the national team through every heartbreak since the early World Cup runs and keeps a binder of ticket stubs. He sneaks tactical examples into his physics lessons and is mildly offended when his students don't care."},
+    se:{age:55,job:"Ferry captain",home:"Gothenburg",trait:"Calm veteran",bio:"Oscar has watched the Blågult from harbours and living rooms across four decades and still gets goosebumps at the first whistle. He delivers full, unsolicited half-time monologues to whoever is nearest, on or off the boat."},
+    tn:{age:31,job:"Pastry chef",home:"Sousse",trait:"Warm rival",bio:"Walid started supporting the Eagles of Carthage to bond with his late father, whose old scarf still hangs by his TV. He keeps up a fierce, years-long match-day rivalry with a friend over who called the result first."},
+    be:{age:34,job:"Wind turbine technician",home:"Leuven",trait:"Steady optimist",bio:"Lars got hooked in 2018 watching the team claw back from two goals down, and hasn't missed a qualifier since. He swears his mismatched socks are lucky and absolutely will not wash them on a match day."},
+    eg:{age:22,job:"Physiotherapy student",home:"Mansoura",trait:"Analytical spark",bio:"Mohamed filled school notebooks with hand-drawn match maps and now breaks down every set-piece like it's an exam. He can recall obscure stoppage-time goals in vivid detail but never remembers where he parked his bike."},
+    ir:{age:41,job:"Renewable energy consultant",home:"Shiraz",trait:"Calm devotion",bio:"Reza talked his way into a twelve-hour ride to his first match as a teenager and decided then and there that this was his life. He brews a fresh pot of tea at exactly the 60th minute, win or lose."},
+    nz:{age:27,job:"Marine biologist",home:"Tauranga",trait:"Plucky believer",bio:"Mason fell hard during a gritty underdog run and loves any side that punches above its weight. He gives full running commentary out loud to his deeply unimpressed cat."},
+    es:{age:19,job:"Apprentice pastry chef",home:"Valladolid",trait:"Passionate rookie",bio:"Sergio learned the team's history from his grandmother before he could read a league table. He bakes a themed dessert before every match and takes it personally when the sponge doesn't rise."},
+    cv:{age:48,job:"Maritime logistics coordinator",home:"Mindelo",trait:"Proud veteran",bio:"Mário has tracked the Blue Sharks since their earliest qualifying campaigns and treasures every milestone they've reached. During tense shootouts he goes quiet and hums under his breath to steady his nerves."},
+    sa:{age:31,job:"Air traffic controller",home:"Dammam",trait:"Precise enthusiast",bio:"Khalid blocks out his shift calendar a year ahead just to be free for national-team fixtures. He keeps a meticulous spreadsheet of every lineup and gets gently teased for it at work."},
+    uy:{age:55,job:"High-school music teacher",home:"Salto",trait:"Warm soul",bio:"Federico has followed the Celeste through every generation of players since his childhood. He brings a battered accordion to watch parties and launches into a celebratory tune the second they score."},
+    fr:{age:34,job:"Pediatric nurse",home:"Nantes",trait:"Steady-hearted",bio:"Luis started watching France on a tiny TV in the hospital break room during a night shift and never looked back, calling every match a family reunion. He keeps a lucky enamel pin from his first stadium trip clipped inside his work badge."},
+    sn:{age:27,job:"Solar panel installer",home:"Saint-Louis",trait:"Infectious joy",bio:"Sadio fell for the national team the summer a late winner sent his whole block dancing, and has hosted rooftop viewing parties ever since. He cannot start a match without first lining up his three coffee cups in size order."},
+    no:{age:41,job:"Ferry mechanic",home:"Ålesund",trait:"Dry humour",bio:"Magnus grew up fixing engines between the fjords and treats every Norway qualifier like a public holiday he invented himself. He narrates games out loud to his cat, who he insists is a tactical genius."},
+    iq:{age:22,job:"App developer",home:"Basra",trait:"Bright optimism",bio:"Hassan ships code by day but counts down to kickoff like it's a release deadline, often debugging with a match streaming in the corner of his screen. He swears his decade-old jersey still fits and refuses all evidence to the contrary."},
+    ar:{age:49,job:"High-school geography teacher",home:"Rosario",trait:"Warm sage",bio:"Sebastián has taught three generations of students the difference between latitude and a perfect through-ball — usually in the same lesson. He still keeps the scorebook his daughter decorated as a kid and fills it in by hand every match."},
+    dz:{age:19,job:"Barista",home:"Oran",trait:"Eager spark",bio:"Yacine learned the team's history from his grandfather's stories and now pulls espresso shots between checking the score. He has a habit of accidentally drawing formations in the milk foam."},
+    at:{age:55,job:"Train conductor",home:"Graz",trait:"Gentle loyalty",bio:"Markus has timed his shifts around Austria fixtures for over thirty years and knows exactly which platform gets the best phone reception for live updates. He insists on wearing the same scarf his late father gave him, lucky or not."},
+    jo:{age:31,job:"Physiotherapist",home:"Irbid",trait:"Buoyant pride",bio:"Omar tapes up athletes all week, then trades the quiet clinic for a living room packed with cousins on match day. He keeps a running notebook of bold predictions, none of which he ever admits getting wrong."},
+    pt:{age:34,job:"Wind turbine technician",home:"Aveiro",trait:"Steady optimist",bio:"Tiago climbs turbines for a living but plans his whole calendar around the national team's fixture list. He keeps a lucky scarf folded in his toolbox and refuses to wash it during tournament runs."},
+    cd:{age:27,job:"Pediatric nurse",home:"Lubumbashi",trait:"Gentle livewire",bio:"Yannick fell for the Leopards during night shifts, catching matches on his phone between rounds on the ward. He narrates games in a hushed running commentary even when watching alone, crowd noise and all."},
+    uz:{age:41,job:"High-school physics teacher",home:"Samarkand",trait:"Methodical dreamer",bio:"Bobur turns every match into a lesson, sketching set-piece angles on the same chalkboard he uses for projectile motion. He insists on arriving exactly 88 minutes before kickoff — no more, no less."},
+    co:{age:22,job:"Indie game developer",home:"Bucaramanga",trait:"Buzzing creative",bio:"Andrés codes through the night but always blocks out the calendar for the national team, building tiny pixel tributes to his favourite goals. He hums to himself when he's nervous and has no idea he's doing it."},
+    'gb-eng':{age:19,job:"Apprentice electrician",home:"Sheffield",trait:"Earnest believer",bio:"Harry inherited his season tickets and his stubborn hope from a nan who never once stopped believing. He keeps a running spreadsheet of every penalty England has ever taken, colour-coded by outcome."},
+    hr:{age:48,job:"Marine biologist",home:"Split",trait:"Quiet intensity",bio:"Marko studies the Adriatic by day but tracks Croatia's fortunes with the same patient attention every tournament. He brews one specific herbal tea only on match days and swears it changes results."},
+    gh:{age:31,job:"Logistics coordinator",home:"Kumasi",trait:"Warm organizer",bio:"Kwame plans shipping routes for work and the neighbourhood group-watch on match nights. He's the friend who starts texting everyone a countdown three days before kickoff."},
+    pa:{age:55,job:"Coffee roaster",home:"Boquete",trait:"Sentimental veteran",bio:"Roberto remembers exactly where he stood when Panama first reached the big stage, and he's been hooked ever since. He names each new coffee batch after a player who impressed him that week."},
+  };
+  function _pmOpen(html){const m=document.getElementById('personaModal'),b=document.getElementById('pmBody');if(!m||!b)return;b.innerHTML=html;m.hidden=false;document.body.style.overflow='hidden';if(lenis)lenis.stop();m.scrollTop=0;fhPush();}
+  function closePersona(){const m=document.getElementById('personaModal');if(m)m.hidden=true;document.body.style.overflow='';if(lenis)lenis.start();}
+  function openHost(key){const h=HOSTBIO[key];if(!h)return;
+    _pmOpen('<div class="pm-hero"><img class="pm-photo" src="avatars/'+key+'.png" alt="'+h.name+'"><div class="pm-h-info"><div class="pm-name">'+h.name+'</div><div class="pm-role">'+h.role+'</div></div></div>'
+      +'<div class="pm-body-tx">'+h.paras.map(p=>'<p class="pm-p">'+p+'</p>').join('')
+      +'<div class="pm-traits">'+h.traits.map(t=>'<span>'+t+'</span>').join('')+'</div>'
+      +'<div class="pm-quote">"'+h.quote+'"</div></div>'
+      +'<div class="pm-foot"><span class="fp-hear hs-play" data-hear="'+key+'"><span class="eq"><i></i><i></i><i></i><i></i></span> Hear '+h.name+'</span></div>');}
+  function openFan(code){const nat=(NATIONS.find(x=>x[0]===code)||[code,code])[1];const f=FANS[code]||[code,''];const b=FANBIO[code];
+    const meta=b?('<b style="color:#fff">'+b.age+'</b> &middot; '+b.job+' &middot; '+b.home):'';
+    const bio=b?b.bio:('A born-and-raised '+nat+' supporter who lives for the national team.');
+    _pmOpen('<div class="pm-hero"><img class="pm-photo" src="avatars/'+code+'.png" alt="'+f[0]+'"><div class="pm-h-info"><div class="pm-name">'+f[0]+'</div><div class="pm-role"><img class="pm-flag" src="flags/'+code+'.svg" alt=""> '+nat+' superfan</div>'+(meta?'<div class="pm-meta">'+meta+'</div>':'')+'</div></div>'
+      +'<div class="pm-body-tx"><p class="pm-p">'+bio+'</p>'
+      +(b&&b.trait?'<div class="pm-traits"><span>'+b.trait+'</span></div>':'')
+      +'<div class="pm-quote">"'+f[1]+'"</div></div>'
+      +'<div class="pm-foot pm-foot-fan"><button class="pm-like'+(_liked().has(code)?' on':'')+'" data-like="'+code+'">'+(_liked().has(code)?'❤️':'🤍')+' <b>'+(FANLIKES[code]||0)+'</b></button><span class="fp-hear" data-hear="'+code+'">▶ Hear '+f[0]+'</span></div>');}
+  // ── Favorite-fan likes (like as many fans as you want, one each) ──
+  const LIKE_URL=(LIVE_ENDPOINT||'')+'/like';
+  let FANLIKES={};
+  function _voter(){let v=localStorage.getItem('fhVoter');if(!v){v=Date.now().toString(36)+Math.random().toString(36).slice(2,10);localStorage.setItem('fhVoter',v);}return v;}
+  function _liked(){try{return new Set(JSON.parse(localStorage.getItem('fhLikes')||'[]'));}catch(e){return new Set();}}
+  function _saveLiked(s){localStorage.setItem('fhLikes',JSON.stringify([...s]));}
+  function _updLikeBtn(b,code){const on=_liked().has(code);b.classList.toggle('on',on);b.innerHTML=(on?'❤️':'🤍')+' <b>'+(FANLIKES[code]||0)+'</b>';}
+  function toggleLike(code,btn){const set=_liked();const was=set.has(code);
+    if(was){set.delete(code);FANLIKES[code]=Math.max(0,(FANLIKES[code]||0)-1);}else{set.add(code);FANLIKES[code]=(FANLIKES[code]||0)+1;}
+    _saveLiked(set);if(btn)_updLikeBtn(btn,code);renderLikeBoard();
+    fetch(LIKE_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code,voter:_voter(),action:was?'unlike':'like'})}).then(r=>r.json()).then(d=>{if(d&&typeof d.count==='number'){FANLIKES[code]=d.count;if(btn)_updLikeBtn(btn,code);renderLikeBoard();}}).catch(function(){});}
+  function loadLikes(){fetch(LIKE_URL,{cache:'no-store'}).then(r=>r.json()).then(d=>{FANLIKES=d||{};renderLikeBoard();}).catch(function(){});}
+  function renderLikeBoard(){const el=document.getElementById('likeBoard');if(!el)return;
+    const arr=Object.keys(FANLIKES).map(c=>[c,FANLIKES[c]]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,10);
+    if(!arr.length){el.innerHTML='<div class="lb-empty">Be the first — open any fan and tap ❤️</div>';return;}
+    el.innerHTML=arr.map(function(p,i){const c=p[0],n=p[1];const f=FANS[c]||[c,''];
+      return '<div class="lbf" data-fan="'+c+'"><span class="lbf-r">'+(i+1)+'</span><img class="lbf-av" src="avatars/'+c+'.png" alt=""><span class="lbf-n">'+f[0]+' <img class="tkflag" src="flags/'+c+'.svg"></span><span class="lbf-c">❤️ '+n+'</span></div>';}).join('');}
+  document.addEventListener('click',function(e){const b=e.target.closest('[data-like]');if(b){e.preventDefault();e.stopPropagation();toggleLike(b.getAttribute('data-like'),b);}});
+  loadLikes();setInterval(loadLikes,30000);
 
   // ── Mundial hub overlay ──
   const mhub=document.getElementById('mhub'),mOpen=document.getElementById('mundialOpen'),mClose=document.getElementById('mhubClose');
@@ -2100,17 +2245,17 @@
   function showPage(pid){const o=document.getElementById('offair'),i=document.getElementById('intro');
     if(o)o.classList.remove('on');if(i)i.style.display='none';
     ['live','hosts','schedule','watch','partnersPage','predict'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
-    document.body.classList.add('scrolled');window.scrollTo({top:0});fhPush();}
+    document.body.classList.add('scrolled');document.body.classList.add('subpage');window.scrollTo({top:0});fhPush();}
   function showWatch(){showPage('live');}
   function showHosts(){showPage('hosts');}
   function backHome(){const o=document.getElementById('offair'),i=document.getElementById('intro');
     ['live','hosts','schedule','watch','partnersPage','predict'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('on');});
-    if(o)o.classList.add('on');if(i)i.style.display='';}
+    if(o)o.classList.add('on');if(i)i.style.display='';document.body.classList.remove('subpage');navReveal();}
   // ── SPA browser-back: keep users inside the site (back → close overlay / home, not Google) ──
   function _atHome(){return !(history.state&&history.state.fhNav);}
   function fhPush(){try{if(_atHome())history.pushState({fhNav:1},'');}catch(e){}}
   function fhCloseOverlays(){
-    const ids=['menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal','avatarLightbox'];
+    const ids=['personaModal','menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal'];
     let closed=false;ids.forEach(id=>{const el=document.getElementById(id);if(el&&!el.hidden){el.hidden=true;closed=true;}});
     if(closed){document.body.style.overflow='';if(lenis)lenis.start();}
     return closed;
@@ -2657,18 +2802,18 @@
       if(btn)btn.disabled=false;
     });
   })();
-  // avatar lightbox — click a persona photo to enlarge; click the background (outside the photo) to close
+  // persona profiles — click any persona avatar/card → open their profile modal
   (function(){
-    const lb=document.createElement('div');lb.id='avatarLightbox';lb.hidden=true;
-    const big=document.createElement('img');big.alt='';lb.appendChild(big);document.body.appendChild(lb);
-    function openLb(src,alt){big.src=src;big.alt=alt||'';lb.hidden=false;document.body.style.overflow='hidden';if(window.lenis)lenis.stop();}
-    function closeLb(){lb.hidden=true;big.removeAttribute('src');document.body.style.overflow='';if(window.lenis)lenis.start();}
     document.addEventListener('click',function(e){
-      const ph=e.target.closest('.fp-photo,.hs-av img,.hf-avatar img,.pc-av img,.mcast-av img,.sq-av img');
-      if(ph&&!ph.classList.contains('isflag')){e.stopPropagation();e.preventDefault();openLb(ph.getAttribute('src'),ph.getAttribute('alt'));}
-    },true); // capture phase → intercept before the card's data-action
-    lb.addEventListener('click',function(e){if(e.target!==big)closeLb();});
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden)closeLb();});
+      if(e.target.closest('#pmClose')||e.target===document.getElementById('personaModal')){closePersona();return;}
+      if(e.target.closest('[data-hear],.fp-hear,.hf-hear,.hs-play'))return; // let Hear/audio work
+      const pe=e.target.closest('[data-persona]');if(pe){e.stopPropagation();e.preventDefault();return openHost(pe.getAttribute('data-persona'));}
+      const fe=e.target.closest('[data-fan]');if(fe){e.stopPropagation();e.preventDefault();return openFan(fe.getAttribute('data-fan'));}
+      const img=e.target.closest('.fp-photo,.hs-av img,.hf-avatar img,.pc-av img,.mcast-av img,.sq-av img');
+      if(img&&!img.classList.contains('isflag')){const mm=(img.getAttribute('src')||'').match(/avatars\/([a-z-]+)\.png/);
+        if(mm){e.stopPropagation();e.preventDefault();const c=mm[1];return (c==='lia'||c==='victor')?openHost(c):openFan(c);}}
+    },true);
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){const m=document.getElementById('personaModal');if(m&&!m.hidden)closePersona();}});
   })();
   document.addEventListener('click',function(e){
     if(e.target.closest('[data-hear]'))return; // the Hear button plays audio, never navigates
@@ -2677,6 +2822,7 @@
     if(act){e.preventDefault();
       if(act==='live'){showWatch();}
       else if(act==='hosts'){showHosts();}
+      else if(act==='fans'){showHosts();setTimeout(function(){const el=document.querySelector('.hosts-fans-soon');if(el){if(lenis&&lenis.scrollTo)lenis.scrollTo(el,{offset:-90});else el.scrollIntoView({behavior:'smooth',block:'start'});}},90);}
       else if(act==='home'){goHome();}
       else if(act==='mundial'){openHub();}
       else if(act==='schedule'){showPage('schedule');}
@@ -2770,7 +2916,7 @@
     mark(true); a.onended=()=>mark(false);
     a.play().catch(()=>{mark(false);toast('🔊 Tap again to play');});
   }
-  document.querySelectorAll('[data-hear]').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();playHear(b.getAttribute('data-hear'));}));
+  document.addEventListener('click',function(e){const h=e.target.closest('[data-hear]');if(h){e.preventDefault();playHear(h.getAttribute('data-hear'));}});
 
   // ── live watch page: animated chat + viewer count ──
   const liveStream=document.getElementById('liveStream'),vCount=document.getElementById('vCount');
