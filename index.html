@@ -667,8 +667,8 @@
   /* ── CLIPS STRIP ── */
   .clips{display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;padding:12px 4px 20px}
   .clip{flex:0 0 150px;height:266px;border-radius:16px;position:relative;overflow:hidden;
-    background:linear-gradient(160deg,rgba(90,40,170,.5),rgba(20,10,40,.8));
-    border:1px solid rgba(150,70,255,.18);display:flex;align-items:flex-end;padding:12px}
+    background:#0b0617;
+    border:1px solid rgba(255,255,255,.09);display:flex;align-items:flex-end;padding:12px}
   .clip .tag{position:absolute;top:10px;left:10px;font-size:.6rem;letter-spacing:.1em;
     text-transform:uppercase;background:rgba(0,0,0,.5);padding:4px 8px;border-radius:6px;color:#e6d4ff}
   .clip .cap{font-size:.78rem;font-weight:600;line-height:1.3}
@@ -684,12 +684,12 @@
   /* real clip cards: poster + readability overlay + hover */
   .clip{cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);
     transition:transform .32s cubic-bezier(.2,.7,.3,1),box-shadow .32s ease,border-color .32s ease}
-  .clip:hover{transform:scale(1.055);border-color:rgba(175,105,255,.75);box-shadow:0 18px 46px rgba(150,70,255,.42)}
+  .clip:hover{transform:scale(1.055);border-color:rgba(255,255,255,.4);box-shadow:0 18px 44px rgba(0,0,0,.55)}
   .clip .poster{transition:transform .55s cubic-bezier(.2,.7,.3,1)}
   .clip:hover .poster{transform:scale(1.06)}
   .clip .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
   .clip::after{content:'';position:absolute;inset:0;z-index:1;
-    background:linear-gradient(to top,rgba(10,5,25,.94) 0%,rgba(10,5,25,.35) 42%,rgba(10,5,25,.08) 100%)}
+    background:linear-gradient(to top,rgba(10,5,24,.86) 0%,rgba(10,5,24,.12) 48%,rgba(10,5,24,0) 70%)}
   .clip .tag,.clip .play{z-index:3}
   .clip .cap{position:relative;z-index:3}
   .clip .play{transition:transform .2s,background .2s}
@@ -1162,6 +1162,14 @@
     background:linear-gradient(135deg,#1a0d33,#0a0518);border:1px solid rgba(150,70,255,.25);
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
   .player[hidden],.watch-next[hidden],.rank-card[hidden]{display:none}
+  /* Live player click-to-play facade — keeps the YouTube view USER-INITIATED so it counts (+ starts with sound, + loads faster) */
+  .yt-facade{position:absolute;inset:0;width:100%;height:100%;border:0;padding:0;margin:0;cursor:pointer;background:#000;display:block;overflow:hidden}
+  .yt-facade .yt-thumb{width:100%;height:100%;object-fit:cover;display:block;opacity:.82;transition:opacity .2s,transform .35s ease}
+  .yt-facade:hover .yt-thumb{opacity:1;transform:scale(1.03)}
+  .yt-facade .yt-live{position:absolute;top:12px;left:12px;background:#ff2020;color:#fff;font-size:.6rem;font-weight:800;letter-spacing:.09em;padding:4px 9px;border-radius:5px;display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+  .yt-facade .yt-playbtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:49px;background:rgba(20,20,20,.6);border-radius:14px;transition:background .2s}
+  .yt-facade:hover .yt-playbtn{background:#ff0000}
+  .yt-facade .yt-playbtn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-38%,-50%);border-style:solid;border-width:11px 0 11px 20px;border-color:transparent transparent transparent #fff}
   .player .pp{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.12);
     display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.25)}
   .player .ptxt{font-size:.8rem;color:var(--txt-3);letter-spacing:.06em}
@@ -2831,7 +2839,16 @@
   let _ytVid='';
   function renderYouTube(vid){
     const p=document.getElementById('watchPlayer'); if(!p||!vid||vid===_ytVid)return; _ytVid=vid;
-    p.innerHTML='<iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0" title="FootyHub TV — live" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;border-radius:16px;display:block"></iframe>';
+    // Click-to-play facade: the play is USER-INITIATED → YouTube counts the view + it starts WITH SOUND,
+    // and the heavy iframe loads only on click (faster page). The embed still feeds YouTube views/watch-hours/concurrents.
+    p.innerHTML='<button class="yt-facade" type="button" aria-label="Watch the live stream">'+
+      '<img class="yt-thumb" src="https://i.ytimg.com/vi/'+vid+'/maxresdefault.jpg" '+
+      'onerror="this.onerror=null;this.src=\'https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg\'" alt="FootyHub TV live">'+
+      '<span class="yt-live">● LIVE</span><span class="yt-playbtn"></span></button>';
+    const fac=p.querySelector('.yt-facade');
+    if(fac)fac.addEventListener('click',function(){
+      p.innerHTML='<iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&playsinline=1" title="FootyHub TV — live" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;border-radius:16px;display:block"></iframe>';
+    },{once:true});
   }
   // push the live score + minute (from live.json.match) into the watch page + nav
   function renderLiveMatch(m){
