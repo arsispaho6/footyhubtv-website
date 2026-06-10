@@ -666,7 +666,7 @@
 
   /* ── CLIPS STRIP ── */
   .clips{display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;padding:12px 4px 20px}
-  .clip{flex:0 0 150px;height:266px;border-radius:16px;position:relative;overflow:hidden;
+  .clip{flex:0 0 300px;aspect-ratio:16/9;border-radius:16px;position:relative;overflow:hidden;
     background:#0b0617;
     border:1px solid rgba(255,255,255,.09);display:flex;align-items:flex-end;padding:12px}
   .clip .tag{position:absolute;top:10px;left:10px;font-size:.6rem;letter-spacing:.1em;
@@ -696,8 +696,8 @@
   .clip:hover .play{transform:translate(-50%,-50%) scale(1.1);background:rgba(150,70,255,1)}
   /* Clips library page grid */
   .clip-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;max-width:1040px;margin:34px auto 90px}
-  .clip-grid .clip{flex:0 0 172px;height:305px}
-  @media(max-width:560px){.clip-grid{gap:13px}.clip-grid .clip{flex:0 0 150px;height:266px}}
+  .clip-grid .clip{flex:0 0 340px;aspect-ratio:16/9;max-width:88vw}
+  @media(max-width:560px){.clip-grid{gap:13px}.clip-grid .clip{flex:0 0 280px;aspect-ratio:16/9;max-width:88vw}}
   /* Clip lightbox player */
   .cliplb{position:fixed;inset:0;z-index:1200;background:rgba(5,2,12,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
     display:flex;align-items:center;justify-content:center;padding:24px;animation:lbfade .2s ease}
@@ -933,7 +933,7 @@
   @media(max-width:460px){
     .nav .social a[title]{display:none}
     .intro-h1{font-size:clamp(1.6rem,9vw,2.3rem)}
-    .clip{flex:0 0 132px;height:234px}
+    .clip{flex:0 0 264px;aspect-ratio:16/9}
     .toast{bottom:72px;font-size:.78rem;padding:11px 16px;white-space:normal}
     .host-full,.poster,.m-banner{padding:20px 16px}
     .hb-headline{font-size:clamp(1.7rem,8vw,2.4rem)}
