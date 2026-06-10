@@ -665,8 +665,8 @@
     letter-spacing:.1em;background:var(--live);color:#fff;padding:2px 7px;border-radius:50px;font-weight:700;white-space:nowrap}
 
   /* ── CLIPS STRIP ── */
-  .clips{display:flex;gap:14px;overflow-x:auto;padding-bottom:8px}
-  .clip{flex:0 0 150px;height:266px;border-radius:14px;position:relative;overflow:hidden;
+  .clips{display:flex;gap:16px;overflow-x:auto;overflow-y:hidden;padding:12px 4px 20px}
+  .clip{flex:0 0 150px;height:266px;border-radius:16px;position:relative;overflow:hidden;
     background:linear-gradient(160deg,rgba(90,40,170,.5),rgba(20,10,40,.8));
     border:1px solid rgba(150,70,255,.18);display:flex;align-items:flex-end;padding:12px}
   .clip .tag{position:absolute;top:10px;left:10px;font-size:.6rem;letter-spacing:.1em;
@@ -680,7 +680,35 @@
   .clips-follow{font-size:.78rem;color:rgba(210,185,255,.9);text-decoration:none;border:1px solid rgba(150,70,255,.4);
     padding:8px 16px;border-radius:50px;white-space:nowrap;transition:.2s}
   .clips-follow:hover{background:rgba(150,70,255,.15);color:#fff;border-color:rgba(150,70,255,.7)}
-  .clip .dur{position:absolute;top:10px;right:10px;font-size:.58rem;background:rgba(0,0,0,.6);padding:2px 6px;border-radius:5px;color:#fff;z-index:2}
+  .clip .dur{position:absolute;top:10px;right:10px;font-size:.58rem;background:rgba(0,0,0,.6);padding:2px 6px;border-radius:5px;color:#fff;z-index:3}
+  /* real clip cards: poster + readability overlay + hover */
+  .clip{cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);
+    transition:transform .32s cubic-bezier(.2,.7,.3,1),box-shadow .32s ease,border-color .32s ease}
+  .clip:hover{transform:scale(1.055);border-color:rgba(175,105,255,.75);box-shadow:0 18px 46px rgba(150,70,255,.42)}
+  .clip .poster{transition:transform .55s cubic-bezier(.2,.7,.3,1)}
+  .clip:hover .poster{transform:scale(1.06)}
+  .clip .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+  .clip::after{content:'';position:absolute;inset:0;z-index:1;
+    background:linear-gradient(to top,rgba(10,5,25,.94) 0%,rgba(10,5,25,.35) 42%,rgba(10,5,25,.08) 100%)}
+  .clip .tag,.clip .play{z-index:3}
+  .clip .cap{position:relative;z-index:3}
+  .clip .play{transition:transform .2s,background .2s}
+  .clip:hover .play{transform:translate(-50%,-50%) scale(1.1);background:rgba(150,70,255,1)}
+  /* Clips library page grid */
+  .clip-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;max-width:1040px;margin:34px auto 90px}
+  .clip-grid .clip{flex:0 0 172px;height:305px}
+  @media(max-width:560px){.clip-grid{gap:13px}.clip-grid .clip{flex:0 0 150px;height:266px}}
+  /* Clip lightbox player */
+  .cliplb{position:fixed;inset:0;z-index:1200;background:rgba(5,2,12,.93);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:center;padding:24px;animation:lbfade .2s ease}
+  .cliplb[hidden]{display:none}
+  @keyframes lbfade{from{opacity:0}to{opacity:1}}
+  .cliplb-stage{position:relative;display:flex;align-items:center;justify-content:center;max-width:min(94vw,1080px);max-height:88vh;width:100%}
+  .cliplb video{max-width:100%;max-height:88vh;width:auto;height:auto;border-radius:14px;background:#000;box-shadow:0 24px 90px rgba(0,0,0,.7)}
+  .cliplb-close{position:fixed;top:20px;right:24px;z-index:2;width:46px;height:46px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.55);color:#fff;font-size:1.25rem;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:.2s}
+  .cliplb-close:hover{background:rgba(150,70,255,.7);border-color:rgba(150,70,255,.9)}
 
   /* ── MUNDIAL 2026 ── */
   .m-toggle{display:flex;align-items:center;gap:6px;justify-content:center;margin-bottom:22px}
@@ -1466,14 +1494,7 @@
         <div class="sect-title">The moments we'll clip</div>
         <a class="clips-follow" href="#">▶ Shorts · Reels · TikTok — from 11 June</a>
       </div>
-      <div class="clips">
-        <div class="clip"><span class="tag">Goal call</span><span class="dur">0:18</span><div class="play">▶</div><span class="cap">LIA loses it over a last-minute winner</span></div>
-        <div class="clip"><span class="tag">Victor</span><span class="dur">0:24</span><div class="play">▶</div><span class="cap">"I told you so" — the Triple Bet lands</span></div>
-        <div class="clip"><span class="tag">Banter</span><span class="dur">0:21</span><div class="play">▶</div><span class="cap">Two rival fans go at it over VAR</span></div>
-        <div class="clip"><span class="tag">Shoutout</span><span class="dur">0:15</span><div class="play">▶</div><span class="cap">LIA reads a viewer's comment live</span></div>
-        <div class="clip"><span class="tag">Top moment</span><span class="dur">0:27</span><div class="play">▶</div><span class="cap">The save of the season, AI-called</span></div>
-        <div class="clip"><span class="tag">Mic drop</span><span class="dur">0:19</span><div class="play">▶</div><span class="cap">Victor's brutal half-time verdict</span></div>
-      </div>
+      <div class="clips" id="clipStrip"></div>
     </section>
 
     <section class="sect mundial" id="mundial">
@@ -1689,6 +1710,19 @@
   </div>
 </main>
 
+<!-- ════════ CLIPS page ════════ -->
+<main id="clipsPage">
+  <div class="wrap">
+    <a class="watch-back" data-action="home">&larr; Back to home</a>
+    <div class="hosts-hero">
+      <div class="hp-kicker">Watch</div>
+      <h1 class="hp-title">Clips &amp; <span class="ai">shorts</span></h1>
+      <p class="hp-sub">Quick hits from FootyHub TV — promos, the cast, the big moments. New drops all the time.</p>
+    </div>
+    <div class="clip-grid" id="clipGrid"></div>
+  </div>
+</main>
+
 <!-- ════════ SPONSORS page ════════ -->
 <main id="partnersPage">
   <div class="wrap">
@@ -1827,6 +1861,14 @@
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="toast" id="toast"></div>
 
+<!-- CLIP LIGHTBOX PLAYER -->
+<div class="cliplb" id="clipLb" hidden>
+  <button class="cliplb-close" id="clipLbClose" aria-label="Close">&#10005;</button>
+  <div class="cliplb-stage">
+    <video id="clipLbVid" controls playsinline preload="metadata"></video>
+  </div>
+</div>
+
 <!-- FULL-SCREEN MENU -->
 <div class="menu" id="menu" hidden>
   <button class="menu-close" id="menuClose">&#10005;</button>
@@ -1841,7 +1883,7 @@
       <a data-action="live">Live</a>
       <a data-action="predict">🏆 Predictor</a>
       <a data-action="schedule">Schedule</a>
-      <a data-action="watch">Clips</a>
+      <a data-action="clips">Clips</a>
       <a data-action="watch">Replays</a>
     </div>
     <div class="menu-col">
@@ -2002,7 +2044,7 @@
       <p class="f-tag">The AI football channel with actual opinions.</p>
       <div class="f-social"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener">YouTube</a><a href="#">Twitch</a><a href="#">TikTok</a></div>
     </div>
-    <div class="f-col"><h5>Watch</h5><a data-action="live">Live</a><a data-action="schedule">Schedule</a><a data-action="predict">Predictor</a><a data-action="watch">Clips</a><a data-action="watch">Replays</a></div>
+    <div class="f-col"><h5>Watch</h5><a data-action="live">Live</a><a data-action="schedule">Schedule</a><a data-action="predict">Predictor</a><a data-action="clips">Clips</a><a data-action="watch">Replays</a></div>
     <div class="f-col"><h5>The Cast</h5><a data-action="hosts">LIA</a><a data-action="hosts">Victor</a><a data-action="fans">The 48 fans</a></div>
     <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a data-contact>Contact</a></div>
   </div>
@@ -2028,6 +2070,9 @@
   // Live data source. Empty = same-folder live.json (local preview). After the Cloudflare
   // Worker is deployed, set this to its URL so the deployed site polls fresh live data.
   const LIVE_ENDPOINT='https://footyhub-live.footyhubtv.workers.dev';
+  // Live-data poll is served EDGE-CACHED from R2 (cdn.footyhub.tv) → scales to 100k+ viewers
+  // without touching the Worker. Votes/likes/predictor POSTs still go to LIVE_ENDPOINT (the Worker).
+  const LIVE_READ='https://cdn.footyhub.tv/live.json';
 
   // Robust scroll lock for overlays. iOS Safari ignores body{overflow:hidden} on touch (the page
   // behind keeps scrolling), so on touch devices we pin the body (position:fixed) and restore the
@@ -2324,12 +2369,12 @@
   // the watch page (player + chat + score + bet) — opened by "Watch now" / "Watch Live"
   function showPage(pid){const o=document.getElementById('offair'),i=document.getElementById('intro');
     if(o)o.classList.remove('on');if(i)i.style.display='none';
-    ['live','hosts','schedule','watch','partnersPage','predict'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
+    ['live','hosts','schedule','watch','partnersPage','predict','clipsPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
     document.body.classList.add('scrolled');document.body.classList.add('subpage');window.scrollTo({top:0});fhPush();}
   function showWatch(){showPage('live');}
   function showHosts(){showPage('hosts');}
   function backHome(){const o=document.getElementById('offair'),i=document.getElementById('intro');
-    ['live','hosts','schedule','watch','partnersPage','predict'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('on');});
+    ['live','hosts','schedule','watch','partnersPage','predict','clipsPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('on');});
     if(o)o.classList.add('on');if(i)i.style.display='';document.body.classList.remove('subpage');navReveal();}
   // ── SPA browser-back: keep users inside the site (back → close overlay / home, not Google) ──
   function _atHome(){return !(history.state&&history.state.fhNav);}
@@ -2842,7 +2887,7 @@
     try{
       let data;
       if(DEMO){data=DEMO_DATA;}
-      else{const r=await fetch(LIVE_ENDPOINT||'live.json',{cache:'no-store'}); if(!r.ok)return; data=await r.json();}
+      else{const r=await fetch(LIVE_READ||LIVE_ENDPOINT||'live.json',{cache:'no-store'}); if(!r.ok)return; data=await r.json();}
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);if(!isNaN(k)){kickoffTs=k;updateCountdown();}}
       if(typeof data.is_live==='boolean')setMatchLive(data.is_live);
       renderLiveMatch(data.match);
@@ -2921,6 +2966,7 @@
       else if(act==='mundial'){openHub();}
       else if(act==='schedule'){showPage('schedule');}
       else if(act==='watch'){showPage('watch');}
+      else if(act==='clips'){showPage('clipsPage');renderClips();}
       else if(act==='partners'){showPage('partnersPage');}
       else if(act==='predict'){showPage('predict');if(typeof renderDayMatches==='function')renderDayMatches();}
       else if(act==='notifynext'){notifyNext();}
@@ -2931,10 +2977,37 @@
       if(tgt){e.preventDefault();if(lenis&&lenis.scrollTo)lenis.scrollTo(tgt,{offset:-90});else tgt.scrollIntoView({behavior:'smooth'});}}
   });
 
+  // ── CLIPS: single source of truth. Add one entry here → it appears in both the homepage strip AND the Clips page. ──
+  const CLIPS=[
+    {f:'clips/big-one.mp4',   p:'clips/big-one-poster.jpg',   tag:'The Trailer',      dur:'0:48', cap:'Meet FootyHub TV — the world&rsquo;s first AI football channel', portrait:true},
+    {f:'clips/the-cast.mp4',  p:'clips/the-cast-poster.jpg',  tag:'The Cast',         dur:'0:14', cap:'Meet LIA &amp; Victor — your AI broadcast team'},
+    {f:'clips/winner.mp4',    p:'clips/winner-poster.jpg',    tag:'Predict &amp; Win',dur:'0:40', cap:'Top the leaderboard, win Victor Premium'},
+    {f:'clips/48-fans.mp4',   p:'clips/48-fans-poster.jpg',   tag:'48 Nations',       dur:'0:13', cap:'48 AI fans, 48 voices — every match'},
+    {f:'clips/notify.mp4',    p:'clips/notify-poster.jpg',    tag:'Never miss a kick',dur:'0:18', cap:'Mundial 2026 — kicks off 11 June'},
+  ];
+  function _clipCard(c,i){return '<div class="clip'+(c.portrait?' portrait':'')+'" data-clip="'+i+'">'+
+    '<img class="poster" src="'+c.p+'" alt="" loading="lazy">'+
+    '<span class="tag">'+c.tag+'</span><span class="dur">'+c.dur+'</span>'+
+    '<div class="play">&#9654;</div><span class="cap">'+c.cap+'</span></div>';}
+  function renderClipStrip(){const el=document.getElementById('clipStrip');if(el)el.innerHTML=CLIPS.map(_clipCard).join('');}
+  function renderClips(){const el=document.getElementById('clipGrid');if(el)el.innerHTML=CLIPS.map(_clipCard).join('');}
+  function openClip(i){const c=CLIPS[i];if(!c)return;const lb=document.getElementById('clipLb'),v=document.getElementById('clipLbVid');
+    if(!lb||!v)return;v.src=c.f;v.setAttribute('poster',c.p);lb.hidden=false;document.body.style.overflow='hidden';
+    const pr=v.play();if(pr&&pr.catch)pr.catch(function(){});}
+  function closeClip(){const lb=document.getElementById('clipLb'),v=document.getElementById('clipLbVid');
+    if(lb)lb.hidden=true;if(v){v.pause();v.removeAttribute('src');v.load();}document.body.style.overflow='';}
+  document.addEventListener('click',function(e){
+    const card=e.target.closest('.clip[data-clip]');if(card){e.preventDefault();openClip(+card.getAttribute('data-clip'));return;}
+    if(e.target.closest('#clipLbClose')){closeClip();return;}
+    if(e.target.id==='clipLb'){closeClip();}
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){const lb=document.getElementById('clipLb');if(lb&&!lb.hidden)closeClip();}});
+  renderClipStrip();
+
   // ── toast + placeholder actions (so every click gives correct feedback) ──
   let toastT;
   function toast(msg){const el=document.getElementById('toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2600);}
-  const SOON=[['.lang','🌐 More languages coming soon'],['.social a:not(.lang), .f-social a','Twitch & TikTok launching soon — we\'re live on YouTube @FootyHub_TV 🟣'],['.clips-follow','Follow us on YouTube — @FootyHub_TV'],['.clip','▶ Clip player coming soon'],['.also a','Also live on Twitch & TikTok soon'],['.vod','▶ Replay player coming soon']];
+  const SOON=[['.lang','🌐 More languages coming soon'],['.social a:not(.lang), .f-social a','Twitch & TikTok launching soon — we\'re live on YouTube @FootyHub_TV 🟣'],['.clips-follow','Follow us on YouTube — @FootyHub_TV'],['.also a','Also live on Twitch & TikTok soon'],['.vod','▶ Replay player coming soon']];
   document.addEventListener('click',function(e){
     if(e.target.closest('[data-action]'))return;
     if(e.target.closest('a[href^="http"]'))return; // real external links (YouTube channel) navigate
