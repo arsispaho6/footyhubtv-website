@@ -1047,6 +1047,47 @@
   footer.f .f-col a:hover{color:#fff}
   footer.f .f-bottom{border-top:1px solid rgba(150,70,255,.12);padding:18px 24px 0;font-size:.74rem;color:var(--txt-3);text-align:center}
 
+  /* ════ MENU + FOOTER polish — entrance animation, hover, mobile ════ */
+  /* MENU: panel + staggered items cascade in every time it opens */
+  @keyframes menuPanelIn{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}
+  @keyframes menuItemIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  .menu .menu-inner{animation:menuPanelIn .42s cubic-bezier(.2,.75,.3,1) both}
+  .menu .menu-auth{animation:menuItemIn .5s .02s both cubic-bezier(.2,.75,.3,1)}
+  .menu .menu-cta{animation:menuItemIn .5s .09s both cubic-bezier(.2,.75,.3,1)}
+  .menu .menu-col:nth-child(3){animation:menuItemIn .5s .16s both cubic-bezier(.2,.75,.3,1)}
+  .menu .menu-col:nth-child(4){animation:menuItemIn .5s .23s both cubic-bezier(.2,.75,.3,1)}
+  .menu .menu-col:nth-child(5){animation:menuItemIn .5s .30s both cubic-bezier(.2,.75,.3,1)}
+  .menu-col h5{color:rgba(190,150,255,.72)}
+  .menu-col a:hover{color:#fff;text-shadow:0 0 18px rgba(150,70,255,.55)}
+  .menu-close{transition:background .25s,border-color .25s,transform .35s cubic-bezier(.2,.75,.3,1)}
+  .menu-close:hover{transform:rotate(90deg)}
+  .menu-cta{transition:transform .25s,border-color .25s,box-shadow .25s}
+  .menu-cta:hover{box-shadow:0 14px 34px rgba(150,70,255,.28)}
+  /* FOOTER: hover lift + subtle separation */
+  footer.f{border-top:1px solid rgba(150,70,255,.09)}
+  footer.f .f-col a{transition:color .2s,transform .2s}
+  footer.f .f-col a:hover{color:#fff;transform:translateX(3px)}
+  footer.f .f-col h5{color:rgba(190,150,255,.7)}
+  footer.f .f-social a{transition:color .2s,border-color .2s,transform .2s,background .2s}
+  footer.f .f-social a:hover{transform:translateY(-2px);background:rgba(150,70,255,.12)}
+  /* FOOTER mobile: brand full-width on top, link cols clean, then stack */
+  @media(max-width:720px){
+    footer.f .f-grid{grid-template-columns:repeat(3,1fr);gap:28px 16px}
+    footer.f .f-col:first-child{grid-column:1/-1;text-align:center;margin-bottom:2px}
+    footer.f .f-col:first-child .f-tag{max-width:none;margin-inline:auto}
+    footer.f .f-col:first-child .f-social{justify-content:center}
+  }
+  @media(max-width:460px){
+    footer.f .f-grid{grid-template-columns:1fr;text-align:center;gap:24px}
+    footer.f .f-col a:hover{transform:none}
+  }
+  /* mobile menu: fully opaque (no blur on touch screens → keep it clean, no page bleed-through) */
+  @media(pointer:coarse){ .menu{background:#080412} }
+  /* respect reduced-motion */
+  @media(prefers-reduced-motion:reduce){
+    .menu .menu-inner,.menu .menu-auth,.menu .menu-cta,.menu .menu-col{animation:none!important}
+  }
+
   /* ── LIVE watch experience ── */
   .live-match{font-size:.92rem;color:var(--txt-2)}
   .live-match b{color:#fff;font-variant-numeric:tabular-nums}
