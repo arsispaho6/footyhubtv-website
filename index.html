@@ -2049,8 +2049,8 @@
     <button class="lbm-x" id="iosClose">&#10005;</button>
     <div class="ios-ic">📲</div>
     <h3>Get alerts on iPhone</h3>
-    <p>iPhone needs one quick step first — add FootyHub to your Home Screen:</p>
-    <ol class="ios-steps">
+    <p id="iosIntro">iPhone needs one quick step first — add FootyHub to your Home Screen (Apple requires this in every browser):</p>
+    <ol class="ios-steps" id="iosSteps">
       <li>In <b>Safari</b>, tap <b>Share</b> <span class="ios-shr">&#x2191;</span> (bottom of the screen)</li>
       <li>Scroll down → tap <b>Add to Home Screen</b></li>
       <li>Open <b>FootyHub</b> from your Home Screen</li>
@@ -2792,7 +2792,21 @@
   function closeTerms(){const m=document.getElementById('termsModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function openVprem(){const m=document.getElementById('vpremModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
   function closeVprem(){const m=document.getElementById('vpremModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
-  function openIos(){const m=document.getElementById('iosModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
+  function openIos(){const m=document.getElementById('iosModal');if(!m)return;
+    // browser-aware steps: Chrome/Firefox/Edge on iOS can Add-to-Home-Screen themselves — never send users to Safari
+    const ua=navigator.userAgent||'';
+    const br=/CriOS/i.test(ua)?'Chrome':(/FxiOS/i.test(ua)?'Firefox':(/EdgiOS/i.test(ua)?'Edge':'Safari'));
+    const ol=document.getElementById('iosSteps');
+    if(ol){
+      const share=(br==='Safari')
+        ? 'In <b>Safari</b>, tap <b>Share</b> <span class="ios-shr">&#x2191;</span> (bottom of the screen)'
+        : 'In <b>'+br+'</b>, tap <b>Share</b> <span class="ios-shr">&#x2191;</span> (top of the screen'+(br==='Chrome'?', next to the address bar':'')+')';
+      ol.innerHTML='<li>'+share+'</li>'
+        +'<li>Scroll down → tap <b>Add to Home Screen</b></li>'
+        +'<li>Open <b>FootyHub</b> from your Home Screen</li>'
+        +'<li>Tap <b>🔔 Get match alerts</b> again</li>';
+    }
+    m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
   function closeIos(){const m=document.getElementById('iosModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function openContact(){const mn=document.getElementById('menu');if(mn)mn.hidden=true;const m=document.getElementById('contactModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
   function closeContact(){const m=document.getElementById('contactModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
