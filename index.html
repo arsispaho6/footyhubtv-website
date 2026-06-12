@@ -320,6 +320,11 @@
   .lb-foot{font-size:.64rem;color:var(--txt-3);margin-top:12px;line-height:1.5;border-top:1px solid rgba(255,255,255,.06);padding-top:10px}
   .poster-predict{display:block;text-align:center;margin:12px 0 4px;padding:11px;border-radius:11px;background:linear-gradient(100deg,rgba(150,70,255,.22),rgba(150,70,255,.08));border:1px solid var(--violet-soft);color:#fff;font-weight:800;font-size:.84rem;cursor:pointer;transition:.2s;text-decoration:none}
   .poster-predict:hover{background:rgba(150,70,255,.3)}
+  .live-cta{display:block;text-align:center;margin:14px 0 4px;padding:13px;border-radius:12px;cursor:pointer;text-decoration:none;color:#fff;font-size:.92rem;
+    background:linear-gradient(100deg,rgba(255,45,85,.28),rgba(150,70,255,.16));border:1px solid rgba(255,70,90,.5);animation:livectapulse 2.2s ease-in-out infinite}
+  .live-cta .ldot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff3b3b;margin-right:2px;vertical-align:1px}
+  @keyframes livectapulse{0%,100%{box-shadow:0 0 0 0 rgba(255,59,59,.35)}50%{box-shadow:0 0 22px 2px rgba(255,59,59,.22)}}
+  @media(pointer:coarse){.live-cta{animation:none}}
   .dm-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
   .dm-chip{font:inherit;font-size:.74rem;font-weight:600;color:var(--txt-2);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:50px;padding:6px 12px;cursor:pointer;transition:.15s}
   .dm-chip b{color:#fff;font-weight:700}
@@ -2396,8 +2401,9 @@
     const pOff=document.getElementById('posterOff'),pLive=document.getElementById('posterLive');
     if(pOff)pOff.hidden=live; if(pLive)pLive.hidden=!live;
     const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
-    if(live){onair.classList.add('live');oaL.textContent='On air';oaN.innerHTML="Mexico <b>1–0</b> South Africa &middot; 63'";}
-    else{onair.classList.remove('live');oaL.textContent='Next';oaN.innerHTML='Mexico v South Africa &middot; 11 Jun';}
+    let _nf=null;try{_nf=nextFixture();}catch(_e){}   // guarded: the first call runs before FIX is initialised
+    if(live){onair.classList.add('live');oaL.textContent='On air';oaN.textContent=_nf?(_nf.home+' v '+_nf.away):'LIVE on FootyHub TV';}   // real score lands via renderLiveMatch
+    else{onair.classList.remove('live');oaL.textContent='Next';oaN.textContent=_nf?(_nf.home+' v '+_nf.away+' · '+new Date(Date.parse(_nf.utc)).toLocaleDateString([],{day:'numeric',month:'short'})):'FootyHub TV';}
     // watch page: pre-live (next-match countdown) ↔ live (stream)
     const wP=document.getElementById('watchPlayer'),wN=document.getElementById('watchNext');
     if(wP)wP.hidden=!live; if(wN)wN.hidden=false;   // player only when live; next-match card always (off-air = next, live = up next)
@@ -2877,7 +2883,18 @@
   // live countdown to the next real kickoff (auto-advances as matches pass; live.json can still override)
   let kickoffTs=(function(){const f=nextFixture();return f?Date.parse(f.utc):Date.parse('2026-06-11T19:00:00Z');})();
   const pad=n=>String(n).padStart(2,'0');
-  function updateCountdown(){let diff=Math.max(0,kickoffTs-Date.now());
+  let _liveCtaEl=null;
+  function _liveCta(on){
+    // kickoff reached → swap the dead 00:00:00 for a "watch live" CTA (works with zero backend)
+    if(on&&!_liveCtaEl){
+      const pc=document.querySelector('#posterOff .poster-cd')||document.querySelector('.poster-cd');
+      if(pc){_liveCtaEl=document.createElement('a');_liveCtaEl.className='live-cta';_liveCtaEl.setAttribute('data-action','live');
+        _liveCtaEl.innerHTML='<span class="ldot"></span> <b>Match time!</b> Watch the live show &rarr;';pc.after(_liveCtaEl);}
+    }
+    if(_liveCtaEl)_liveCtaEl.hidden=!on;
+    document.querySelectorAll('#posterOff .poster-cd .cd-box').forEach(e=>e.style.opacity=on?'.35':'');
+  }
+  function updateCountdown(){const raw=kickoffTs-Date.now();let diff=Math.max(0,raw);
     const d=Math.floor(diff/86400000);diff-=d*86400000;
     const h=Math.floor(diff/3600000);diff-=h*3600000;
     const m=Math.floor(diff/60000);diff-=m*60000;
@@ -2886,14 +2903,20 @@
     document.querySelectorAll('.cd-h').forEach(e=>e.textContent=pad(h));
     document.querySelectorAll('.cd-m').forEach(e=>e.textContent=pad(m));
     document.querySelectorAll('.cd-s').forEach(e=>e.textContent=pad(s));
+    // a fixture must actually be in its window — a stale live.json kickoff alone never flips us to "live"
+    let inWin=false;try{inWin=!!liveFixtureNow();}catch(_e){}
     // Mundial banner (mhub-sub): always show seconds so it visibly ticks (prefix days when >0)
-    document.querySelectorAll('.cd-mhub').forEach(e=>e.textContent = (d>0 ? (d+'d ') : '') + pad(h)+' : '+pad(m)+' : '+pad(s));}
+    document.querySelectorAll('.cd-mhub').forEach(e=>e.textContent = (raw<=0&&inWin)?'● LIVE NOW':((d>0 ? (d+'d ') : '') + pad(h)+' : '+pad(m)+' : '+pad(s)));
+    _liveCta(raw<=0&&inWin);
+    if(raw<=0&&inWin){try{maybeLiveFallback();}catch(_e){}}
+  }
   updateCountdown();setInterval(updateCountdown,1000);
   // ── DATA-DRIVEN: poll live.json (the engine writes it from Sofascore). Falls back to the inline real data when unavailable, e.g. opened via file:// ──
   // embed the real YouTube live stream when the engine reports a video id
-  let _ytVid='';
+  let _ytVid='',_ytPlaying=false;
+  const YT_CHANNEL_ID='UCNODmrFpJQZvyc0K_A2xk7w';
   function renderYouTube(vid){
-    const p=document.getElementById('watchPlayer'); if(!p||!vid||vid===_ytVid)return; _ytVid=vid;
+    const p=document.getElementById('watchPlayer'); if(!p||!vid||vid===_ytVid||_ytPlaying)return; _ytVid=vid;
     // Click-to-play facade: the play is USER-INITIATED → YouTube counts the view + it starts WITH SOUND,
     // and the heavy iframe loads only on click (faster page). The embed still feeds YouTube views/watch-hours/concurrents.
     p.innerHTML='<button class="yt-facade" type="button" aria-label="Watch the live stream">'+
@@ -2901,9 +2924,33 @@
       'onerror="this.onerror=null;this.src=\'https://i.ytimg.com/vi/'+vid+'/hqdefault.jpg\'" alt="FootyHub TV live">'+
       '<span class="yt-live">● LIVE</span><span class="yt-playbtn"></span></button>';
     const fac=p.querySelector('.yt-facade');
-    if(fac)fac.addEventListener('click',function(){
+    if(fac)fac.addEventListener('click',function(){_ytPlaying=true;
       p.innerHTML='<iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&playsinline=1" title="FootyHub TV — live" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;border-radius:16px;display:block"></iframe>';
     },{once:true});
+  }
+  // FAIL-OPEN fallback: no video id from the backend while a match should be on →
+  // play the CHANNEL's current live (works even if engine/API/live.json are all dead).
+  function renderYouTubeChannel(){
+    const p=document.getElementById('watchPlayer'); if(!p||_ytVid||_ytPlaying)return; _ytVid='__channel__';
+    p.innerHTML='<button class="yt-facade" type="button" aria-label="Watch the live stream" '+
+      'style="background:radial-gradient(circle at 50% 38%,#2a1448,#0b0617 75%)">'+
+      '<span class="yt-live">● LIVE</span><span class="yt-playbtn"></span>'+
+      '<span style="position:absolute;left:0;right:0;bottom:18%;text-align:center;color:#fff;font-weight:700;font-size:.95rem">Tap to watch the live show</span></button>';
+    const fac=p.querySelector('.yt-facade');
+    if(fac)fac.addEventListener('click',function(){_ytPlaying=true;
+      p.innerHTML='<iframe src="https://www.youtube.com/embed/live_stream?channel='+YT_CHANNEL_ID+'&autoplay=1&rel=0&playsinline=1" title="FootyHub TV — live" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;border-radius:16px;display:block"></iframe>';
+    },{once:true});
+  }
+  // a fixture that should be LIVE right now (kickoff ≤ now < kickoff+2.5h), or null
+  function liveFixtureNow(){const now=Date.now();return FIX.find(f=>{const ms=Date.parse(f.utc);return !isNaN(ms)&&now>=ms&&now<ms+MATCH_MS;})||null;}
+  // engine silent / says off / unreachable while a match window is open → fail open to the channel live
+  function maybeLiveFallback(){
+    const f=liveFixtureNow(); if(!f)return;
+    const wP=document.getElementById('watchPlayer'); if(wP)wP.hidden=false;   // every poll: setMatchLive(false) re-hides it
+    const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
+    if(onair&&!onair.classList.contains('live')){onair.classList.add('live');if(oaL)oaL.textContent='On air';if(oaN)oaN.textContent=f.home+' v '+f.away;}
+    if(_ytVid)return;                      // a player is already up
+    renderYouTubeChannel();
   }
   // push the live score + minute (from live.json.match) into the watch page + nav
   function renderLiveMatch(m){
@@ -2959,18 +3006,22 @@
     try{
       let data;
       if(DEMO){data=DEMO_DATA;}
-      else{const r=await fetch(LIVE_READ||LIVE_ENDPOINT||'live.json',{cache:'no-store'}); if(!r.ok)return; data=await r.json();}
-      if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);if(!isNaN(k)){kickoffTs=k;updateCountdown();}}
+      else{const r=await fetch(LIVE_READ||LIVE_ENDPOINT||'live.json',{cache:'no-store'}); if(!r.ok){maybeLiveFallback();return;} data=await r.json();}
+      if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);
+        if(!isNaN(k)&&k>Date.now()-MATCH_MS){kickoffTs=k;updateCountdown();}}   // ignore a STALE kickoff (frozen live.json) — let the fixture list auto-advance
       if(typeof data.is_live==='boolean')setMatchLive(data.is_live);
       renderLiveMatch(data.match);
       renderViewers(data.viewers);
       renderChat(data.youtube_video_id||'');
       renderMatchCenter(data.match_center,(data.match||{}).home,(data.match||{}).away);
-      {const vid=data.youtube_video_id||(data.platforms&&data.platforms.youtube_video_id)||''; if(data.is_live&&vid)renderYouTube(vid);}
+      {const vid=data.youtube_video_id||(data.platforms&&data.platforms.youtube_video_id)||'';
+       if(data.is_live&&vid)renderYouTube(vid);
+       else maybeLiveFallback();   // engine has no live signal — if a match window is open, fail open to the channel live
+      }
       if(data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
       if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;
         renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
-    }catch(e){/* offline / file:// — inline real data stands */}
+    }catch(e){maybeLiveFallback();/* offline / file:// — inline real data stands */}
   }
   // Victor's bets come from the REAL engine (victor_betting_slip.py → live.json.victor_bets.tiers)
   // live page: SAFE slip only (the bet builder + combined); Medium & Max are teased, live on the broadcast
