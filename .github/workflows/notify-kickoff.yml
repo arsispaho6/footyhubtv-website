@@ -1,0 +1,60 @@
+name: notify-kickoff
+
+# Sends a push + email notification automatically around every Mundial 2026 kickoff,
+# using the FootyHub edge Worker (footyhub-live.workers.dev) that already stores the
+# subscribers. It does NOTHING until you add the repo secret FOOTYHUB_LIVE_SECRET
+# (Settings -> Secrets and variables -> Actions -> New repository secret).
+#
+# Two beats per match:
+#   * T-15 min  -> "kicks off in 15 minutes" reminder
+#   * T-0       -> "LIVE now" go-watch push
+# A committed state file (.notify_state.json) guarantees each beat fires exactly once.
+#
+# Manual test: Actions -> notify-kickoff -> Run workflow -> test = true
+# (sends one test push/email so you can confirm the Worker contract before kickoff).
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'        # every 5 minutes
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Send a single TEST notification now'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write                # to commit .notify_state.json
+
+concurrency:
+  group: notify-kickoff
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Send due kickoff notifications
+        env:
+          FOOTYHUB_LIVE_SECRET: ${{ secrets.FOOTYHUB_LIVE_SECRET }}
+          ENDPOINT: https://footyhub-live.footyhubtv.workers.dev
+          TEST: ${{ inputs.test }}
+        run: |
+          if [ -z "$FOOTYHUB_LIVE_SECRET" ]; then
+            echo "FOOTYHUB_LIVE_SECRET not set — skipping (add it in repo Settings to arm)."
+            exit 0
+          fi
+          python3 .github/scripts/notify_kickoff.py
+
+      - name: Persist notification state
+        if: ${{ inputs.test != true }}
+        run: |
+          if [ -n "$(git status --porcelain .notify_state.json)" ]; then
+            git config user.name "footyhub-bot"
+            git config user.email "bot@footyhub.tv"
+            git add .notify_state.json
+            git commit -m "notify state [skip ci]"
+            git push
+          fi
