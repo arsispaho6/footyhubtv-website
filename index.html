@@ -12,18 +12,40 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <title>FootyHub TV — Live AI Football Commentary</title>
+<link rel="canonical" href="https://footyhub.tv/">
+<!-- Open Graph / social share -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FootyHub TV">
+<meta property="og:title" content="FootyHub TV — Live AI Football Commentary">
+<meta property="og:description" content="LIA &amp; Victor are two AI broadcasters calling every World Cup 2026 (Mundial) match live, free on YouTube — with 48 nations of AI fans in the stands.">
+<meta property="og:url" content="https://footyhub.tv/">
+<meta property="og:image" content="https://footyhub.tv/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="FootyHub TV — the AI football channel. LIA &amp; Victor, Mundial 2026.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="FootyHub TV — Live AI Football Commentary">
+<meta name="twitter:description" content="LIA &amp; Victor call every World Cup 2026 (Mundial) match live, free on YouTube — 48 nations of AI fans in the stands.">
+<meta name="twitter:image" content="https://footyhub.tv/og-image.png">
+<!-- Speed up first interaction with guaranteed third-party origins -->
+<link rel="preconnect" href="https://www.youtube.com">
+<link rel="preconnect" href="https://i.ytimg.com">
+<link rel="preconnect" href="https://accounts.google.com">
+<link rel="dns-prefetch" href="https://lh3.googleusercontent.com">
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   :root{
     --violet:#9646ff; --violet-soft:rgba(150,70,255,.5); --violet-dim:rgba(150,70,255,.12);
-    --txt:#fff; --txt-2:rgba(255,255,255,.55); --txt-3:rgba(255,255,255,.32);
+    --txt:#fff; --txt-2:rgba(255,255,255,.55); --txt-3:rgba(255,255,255,.5);
     --green:#3ddc84; --amber:#ffb845; --red:#ff5c6c; --live:#ff3b3b;
   }
   html{overflow-x:hidden;overflow-x:clip;overscroll-behavior-x:none;width:100%}
   body{min-height:100vh;min-height:100dvh;background:#000;color:var(--txt);overscroll-behavior-x:none;
     font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;
     position:relative;overflow-x:hidden;overflow-x:clip;max-width:100%;padding-top:0;
-    -webkit-user-select:none;-moz-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+    -webkit-tap-highlight-color:transparent}
+  /* chrome (nav/ticker/menus/buttons) isn't selectable; real content (scores, dates, terms, emails) stays copyable */
+  .nav,.ticker,.menu,.mhub,.btn,.si-cta,.cd-box,.m-count,[data-action],[role="button"]{-webkit-user-select:none;-moz-user-select:none;user-select:none}
   input,textarea,[contenteditable]{-webkit-user-select:text;-moz-user-select:text;user-select:text}
   /* iOS Safari zooms in when you focus an input under 16px — force 16px on mobile to stop the jarring zoom */
   @media(max-width:768px){.notify input,.sponsor-form input,.sponsor-form select,.sponsor-form textarea,.np-select,.chat .cin input{font-size:16px}}
@@ -452,6 +474,7 @@
   .terms-link{display:block;text-align:center;margin:2px 0 4px;font-size:.74rem;color:#caa9ff;cursor:pointer;font-weight:600}
   .terms-link:hover{text-decoration:underline}
   a[data-tc]{cursor:pointer}
+  [data-privacy]{cursor:pointer}
   .yt-sub{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:50px;background:#ff0000;color:#fff;font-weight:700;font-size:.85rem;text-decoration:none;transition:background .2s}
   .yt-sub:hover{background:#e60000}
   .yt-sub svg{flex:0 0 auto;fill:currentColor}
@@ -870,6 +893,16 @@
   .cursor-dot{position:fixed;top:0;left:0;width:6px;height:6px;border-radius:50%;background:#fff;pointer-events:none;z-index:10000;will-change:transform;transform:translate(-50%,-50%);box-shadow:0 0 6px rgba(185,130,255,.9)}
   .cursor,.cursor-dot{display:none}
   a[data-action]{cursor:pointer}
+  [data-action]{cursor:pointer}
+  /* keyboard focus ring (a11y — WCAG 2.4.7). Only shows for keyboard users, never on mouse click. */
+  :focus-visible{outline:2px solid #caa9ff;outline-offset:2px;border-radius:4px}
+  *:focus:not(:focus-visible){outline:none}
+  .reveal:focus-within{opacity:1;transform:none}
+  /* desktop reduced-motion: also calm the always-on ambient layers (mobile already freezes them) */
+  @media(prefers-reduced-motion:reduce){
+    body::before,.bg-aurora span,.particle,.nav::after,.eq i,.pc-eq i,.mhpulse{animation:none!important}
+    .particles{display:none}
+  }
   .toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);z-index:300;background:rgba(20,10,38,.96);border:1px solid rgba(150,70,255,.4);color:#fff;padding:13px 22px;border-radius:50px;font-size:.85rem;box-shadow:0 10px 40px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;max-width:90vw;text-align:center}
   .toast.show{opacity:1;transform:translate(-50%,0)}
 
@@ -1336,6 +1369,35 @@
   footer.f{position:relative;z-index:1;text-align:center;padding:46px 20px 90px;color:var(--txt-3);font-size:.74rem}
   footer.f a{color:rgba(200,170,255,.5);text-decoration:none}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://footyhub.tv/#org",
+      "name": "FootyHub TV",
+      "url": "https://footyhub.tv/",
+      "logo": "https://footyhub.tv/icon-512.png",
+      "description": "The AI football channel — LIA & Victor call every World Cup 2026 (Mundial) match live, free on YouTube.",
+      "sameAs": [
+        "https://www.youtube.com/@FootyHub_TV",
+        "https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w",
+        "https://www.twitch.tv/footyhubtv",
+        "https://www.instagram.com/footyhubtv/"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://footyhub.tv/#website",
+      "url": "https://footyhub.tv/",
+      "name": "FootyHub TV",
+      "publisher": { "@id": "https://footyhub.tv/#org" },
+      "inLanguage": "en"
+    }
+  ]
+}
+</script>
 <script src="lenis.min.js"></script>
 <script src="fixtures.js"></script>
 <script src="results.js"></script>
@@ -1364,15 +1426,15 @@
   <span class="onair" id="onair" data-action="live">
     <span class="eq"><i></i><i></i><i></i><i></i></span>
     <span class="oa-label" id="oaLabel">Next</span>
-    <span class="oa-name" id="oaName">Mexico v South Africa &middot; 11 Jun</span>
+    <span class="oa-name" id="oaName">Next on FootyHub TV</span>
   </span>
   <!-- nav links moved into the full-screen menu -->
 
   <span class="social">
     <a class="lang" title="Language">&#127760; EN</a>
-    <a title="YouTube · @FootyHub_TV" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg></a>
-    <a title="Twitch · @footyhubtv" href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 2 2.5 5.7v15h5.2V24h2.9l2.9-3.3h4.3L23 15V2zm16.6 12.3L18 17h-4.3l-2.9 2.9V17H6.4V4h14.2zM16.7 7.6h-1.9v5.6h1.9zm-5 0H9.8v5.6h1.9z"/></svg></a>
-    <a title="Instagram · @footyhubtv" href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm5.3-3.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg></a>
+    <a title="YouTube · @FootyHub_TV" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg></a>
+    <a title="Twitch · @footyhubtv" href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M4 2 2.5 5.7v15h5.2V24h2.9l2.9-3.3h4.3L23 15V2zm16.6 12.3L18 17h-4.3l-2.9 2.9V17H6.4V4h14.2zM16.7 7.6h-1.9v5.6h1.9zm-5 0H9.8v5.6h1.9z"/></svg></a>
+    <a title="Instagram · @footyhubtv" href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm5.3-3.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg></a>
     <a title="TikTok"><svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.7a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.4a3.3 3.3 0 1 0 2.3 3.1V3z"/></svg></a>
     <span class="authbox"><span class="gbtn" id="gSignin"></span><span class="userchip" id="userChip" hidden></span></span>
     <a class="watch-cta" data-action="live">&#9679; Watch Live</a>
@@ -1414,7 +1476,7 @@
           <div class="cd-box"><div class="cd-num cd-s">39</div><div class="cd-unit">sec</div></div>
         </div>
         <form class="notify" onsubmit="return false">
-          <input type="email" placeholder="your@email.com">
+          <input type="email" placeholder="your@email.com" aria-label="Your email for match alerts">
           <button class="btn" type="submit">Notify me</button>
         </form>
       </div>
@@ -1460,11 +1522,11 @@
                   <option>Every FootyHub TV broadcast</option>
                 </select>
                 <form class="notify poster-notify" onsubmit="return false">
-                  <input type="email" placeholder="your@email.com">
+                  <input type="email" placeholder="your@email.com" aria-label="Your email for match alerts">
                   <button class="btn" type="submit">Notify me &#9656;</button>
                 </form>
                 <button class="share-btn np-sub" data-alerts style="width:100%;margin-top:9px">🔔 Get match alerts</button>
-                <a class="yt-sub np-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe on YouTube</a>
+                <a class="yt-sub np-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe on YouTube</a>
               </div>
               <a class="poster-predict" data-action="predict">🏆 Predict the score &amp; win →</a>
               <div class="poster-castlabel">Match cast</div>
@@ -1479,7 +1541,7 @@
             <div id="posterLive" hidden>
               <div class="poster-label live"><span class="ldot"></span>Live now · on FootyHub TV</div>
               <div class="poster-teams">Mexico <b>1&ndash;0</b> South Africa</div>
-              <div class="poster-comp">World Cup 2026 · <span class="live-min">63'</span><span class="poster-watching"></span></div>
+              <div class="poster-comp">Mundial 2026 · <span class="live-min">LIVE</span><span class="poster-watching"></span></div>
               <a class="btn poster-watch" data-action="live"><span class="pdot"></span> Watch now</a>
               <div class="poster-castlabel">On air now</div>
               <div class="poster-cast">
@@ -1488,7 +1550,7 @@
                 <div class="pc"><div class="pc-av"><img src="avatars/mx.png" alt="Diego"></div><div class="pc-n">Diego <img class="tkflag" src="flags/mx.svg"></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
                 <div class="pc"><div class="pc-av"><img src="avatars/za.png" alt="Sipho"></div><div class="pc-n">Sipho <img class="tkflag" src="flags/za.svg"></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
               </div>
-              <div class="poster-upnext">Up next · <b>More Mundial 2026 matches</b> · 12 Jun <a class="upnext-bell" data-action="schedule">🔔 Notify</a></div>
+              <div class="poster-upnext">Up next · <b>More Mundial 2026 matches</b> <a class="upnext-bell" data-action="schedule">🔔 Notify</a></div>
             </div>
           </div>
         </div>
@@ -1541,7 +1603,7 @@
     <section class="sect" id="clips">
       <div class="clips-head">
         <div class="sect-title">The moments we'll clip</div>
-        <a class="clips-follow" href="#">▶ Shorts · Reels · TikTok — from 11 June</a>
+        <a class="clips-follow" href="#">▶ Shorts · Reels · TikTok — coming soon</a>
       </div>
       <div class="clips" id="clipStrip"></div>
     </section>
@@ -1647,13 +1709,13 @@
           <div class="wn-actions">
             <a class="btn wn-notify" data-action="notifynext">🔔 Notify me</a>
             <a class="poster-predict" data-action="predict">🏆 Predict &amp; win</a>
-            <a class="yt-sub wn-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe</a>
+            <a class="yt-sub wn-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe</a>
           </div>
         </div>
         <div class="now-strip" id="nowStrip"><span class="eq"><i></i><i></i><i></i><i></i></span> <b>On air:</b> LIA &amp; Victor break down the penalty</div>
         <div class="also">
-          <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 2 2.5 5.7v15h5.2V24h2.9l2.9-3.3h4.3L23 15V2z"/></svg>Watch on Twitch</a>
-          <a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm5.3-3.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg>Instagram</a>
+          <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M4 2 2.5 5.7v15h5.2V24h2.9l2.9-3.3h4.3L23 15V2z"/></svg>Watch on Twitch</a>
+          <a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm5.3-3.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg>Instagram</a>
           <a><svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.7a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.4a3.3 3.3 0 1 0 2.3 3.1V3z"/></svg>Watch on TikTok</a>
           <button class="share-btn" data-share style="padding:9px 16px;font-size:.78rem">📤 Share</button>
         </div>
@@ -1684,7 +1746,7 @@
     <a class="watch-back" data-action="home">&larr; Back to home</a>
     <div class="hosts-hero">
       <div class="hp-kicker">The Cast</div>
-      <h1 class="hp-title">Meet your <span class="ai">AI broadcast team</span></h1>
+      <h2 class="hp-title">Meet your <span class="ai">AI broadcast team</span></h2>
       <p class="hp-sub">Permanent. Opinionated. Always live. LIA calls it, Victor breaks it down — and they never stay neutral.</p>
     </div>
 
@@ -1693,7 +1755,7 @@
       <div class="hf-body">
         <div class="hf-name">LIA <span class="hf-tag">Lead Commentator · permanent</span></div>
         <p class="hf-bio">The world's first AI football commentator with a <b>real personality</b> — fast, passionate, a little cheeky. LIA calls every kick with genuine emotion, reads the room, reacts to viewers live, and never, ever plays it neutral.</p>
-        <div class="hf-traits"><span>Passionate</span><span>Witty</span><span>Multilingual</span><span>Always on</span></div>
+        <div class="hf-traits"><span>Passionate</span><span>Witty</span><span>Reads your chat</span><span>Always on</span></div>
         <div class="hf-row">
           <div class="hf-quote">"Oh, that is SENSATIONAL!"</div>
           <a class="hf-hear hs-play" data-hear="lia"><span class="hear-ic">▶</span> Hear LIA</a>
@@ -1735,7 +1797,7 @@
     <a class="watch-back" data-action="home">&larr; Back to home</a>
     <div class="hosts-hero">
       <div class="hp-kicker">Schedule</div>
-      <h1 class="hp-title">Every match we're <span class="ai">calling live</span></h1>
+      <h2 class="hp-title">Every match we're <span class="ai">calling live</span></h2>
       <p class="hp-sub">Every Mundial 2026 match — all 104, group to final, live. <b>Times in your local timezone</b> · <span id="tzName">—</span></p>
     </div>
     <div class="sched-list" id="schedList"></div>
@@ -1748,14 +1810,14 @@
     <a class="watch-back" data-action="home">&larr; Back to home</a>
     <div class="hosts-hero">
       <div class="hp-kicker">Watch</div>
-      <h1 class="hp-title">Replays &amp; <span class="ai">highlights</span></h1>
+      <h2 class="hp-title">Replays &amp; <span class="ai">highlights</span></h2>
       <p class="hp-sub">Missed it live? Every FootyHub TV broadcast, on demand.</p>
     </div>
     <div style="text-align:center;max-width:560px;margin:40px auto;padding:48px 28px;border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(255,255,255,.02)">
       <div style="font-size:3rem;line-height:1;margin-bottom:14px">🎬</div>
-      <h3 style="margin:0 0 10px;font-size:1.35rem">No replays yet — our first broadcast is 11 June</h3>
-      <p style="color:var(--txt-2);margin:0 0 22px;line-height:1.6">Every FootyHub TV match is recorded in full and lands here on demand — LIA &amp; Victor's call and all — the moment it ends. The library opens with the Mundial 2026 opener: <b style="color:#fff">Mexico v South Africa</b>.</p>
-      <a class="btn" data-action="schedule">See what's first &#9656;</a>
+      <h3 style="margin:0 0 10px;font-size:1.35rem">Full-match replays — on our YouTube</h3>
+      <p style="color:var(--txt-2);margin:0 0 22px;line-height:1.6">Every FootyHub TV broadcast is recorded in full — LIA &amp; Victor's call and all — and stays up on demand on our channel. Catch up on any match you missed, in full.</p>
+      <a class="btn" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Watch replays on YouTube &#9656;</a>
     </div>
   </div>
 </main>
@@ -1766,7 +1828,7 @@
     <a class="watch-back" data-action="home">&larr; Back to home</a>
     <div class="hosts-hero">
       <div class="hp-kicker">Watch</div>
-      <h1 class="hp-title">Clips &amp; <span class="ai">shorts</span></h1>
+      <h2 class="hp-title">Clips &amp; <span class="ai">shorts</span></h2>
       <p class="hp-sub">Quick hits from FootyHub TV — promos, the cast, the big moments. New drops all the time.</p>
     </div>
     <div class="clip-grid" id="clipGrid"></div>
@@ -1779,7 +1841,7 @@
     <a class="watch-back" data-action="home">&larr; Back to home</a>
     <div class="hosts-hero">
       <div class="hp-kicker">Sponsorship &amp; Advertising</div>
-      <h1 class="hp-title">Put your brand <span class="ai">in the game</span></h1>
+      <h2 class="hp-title">Put your brand <span class="ai">in the game</span></h2>
       <p class="hp-sub">FootyHub TV is the world's first AI football channel — calling every Mundial 2026 match live. Reach a growing, engaged audience of fans who watch, predict and chat through every match.</p>
       <a class="btn pt-cta" href="#sponsorForm">Become a sponsor &rarr;</a>
     </div>
@@ -1812,12 +1874,12 @@
       <p>Get your brand in front of passionate football fans, every single match. Tell us your goals — we'll build a package around them.</p>
       <form class="sponsor-form" id="sponsorForm">
         <div class="sf-row">
-          <input type="text" id="sfName" placeholder="Your name" autocomplete="name">
-          <input type="text" id="sfCompany" placeholder="Company / brand" autocomplete="organization">
+          <input type="text" id="sfName" placeholder="Your name" autocomplete="name" aria-label="Your name">
+          <input type="text" id="sfCompany" placeholder="Company / brand" autocomplete="organization" aria-label="Company or brand">
         </div>
         <div class="sf-row">
-          <input type="email" id="sfEmail" placeholder="Work email" autocomplete="email">
-          <select id="sfBudget">
+          <input type="email" id="sfEmail" placeholder="Work email" autocomplete="email" aria-label="Work email">
+          <select id="sfBudget" aria-label="Budget">
             <option value="">Budget (optional)</option>
             <option>Let's discuss</option>
             <option>Under €1,000</option>
@@ -1826,7 +1888,8 @@
             <option>Title sponsor</option>
           </select>
         </div>
-        <textarea id="sfMsg" rows="3" placeholder="What are you interested in? (a single match, the season, on-screen overlays, the website…)"></textarea>
+        <textarea id="sfMsg" rows="3" placeholder="What are you interested in? (a single match, the season, on-screen overlays, the website…)" aria-label="What are you interested in?"></textarea>
+        <input type="text" id="sfHP" name="company_url" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" placeholder="Leave empty">
         <button class="btn" type="submit">Send inquiry &#9656;</button>
         <div class="sf-note" id="sfNote">Or email us directly at <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a></div>
       </form>
@@ -1840,7 +1903,7 @@
     <a class="watch-back" data-action="home">&larr; Back to home</a>
     <div class="pp-hero">
       <span class="pred-tag">🏆 FootyHub Predictor · Free to play</span>
-      <h1 class="pp-title">Predict &amp; win</h1>
+      <h2 class="pp-title">Predict &amp; win</h2>
       <p class="pp-sub">Call the score of every Mundial 2026 match. Climb the season leaderboard. The sharpest predictors win <b>Victor Premium</b> + <b>surprise prizes</b> 🎁.</p>
     </div>
     <div class="prizes">
@@ -1849,7 +1912,7 @@
       <div class="prize b"><div class="pz-r">🥉 3rd place</div><div class="pz-w">3 months</div><div class="pz-s">Victor Premium</div></div>
     </div>
     <div class="prize-note">🎙️ Top 3 also get a live shoutout from LIA &amp; Victor during the Final · 🎁 plus <b>surprise prizes</b>, revealed during the tournament.</div>
-    <div class="pred-sub-wrap"><a class="yt-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe on YouTube to follow the matches</a></div>
+    <div class="pred-sub-wrap"><a class="yt-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe on YouTube to follow the matches</a></div>
     <div class="pred-sub-wrap"><button class="share-btn" data-share>📤 Invite friends to play</button></div>
     <div class="terms-link" data-vprem>🏆 What is Victor Premium? (the prize)</div>
     <div class="terms-link" data-tc>📜 Read the full contest rules &amp; terms</div>
@@ -1880,7 +1943,7 @@
 </main>
 
 <!-- MUNDIAL HUB overlay -->
-<div class="mhub" id="mhub" hidden>
+<div class="mhub" id="mhub" hidden role="dialog" aria-modal="true" aria-label="Mundial 2026 hub">
   <div class="mhub-panel" data-lenis-prevent>
     <button class="mhub-close" id="mhubClose">&#10005;</button>
     <div class="mhub-head"><h2 class="m-title sm">MUNDIAL 2026</h2><span class="mhub-sub"><span class="cd-mhub">— : — : —</span> to kickoff · 48 nations</span></div>
@@ -1912,7 +1975,7 @@
 <div class="toast" id="toast"></div>
 
 <!-- CLIP LIGHTBOX PLAYER -->
-<div class="cliplb" id="clipLb" hidden>
+<div class="cliplb" id="clipLb" hidden role="dialog" aria-modal="true" aria-label="Clip player">
   <button class="cliplb-close" id="clipLbClose" aria-label="Close">&#10005;</button>
   <div class="cliplb-stage">
     <video id="clipLbVid" controls playsinline preload="metadata"></video>
@@ -1920,7 +1983,7 @@
 </div>
 
 <!-- FULL-SCREEN MENU -->
-<div class="menu" id="menu" hidden>
+<div class="menu" id="menu" hidden role="dialog" aria-modal="true" aria-label="Menu">
   <button class="menu-close" id="menuClose">&#10005;</button>
   <div class="menu-inner">
     <div class="menu-auth" id="menuAuth"></div>
@@ -1953,7 +2016,7 @@
 </div>
 
 <!-- FULL LEADERBOARD MODAL -->
-<div class="lbmodal" id="lbModal" hidden>
+<div class="lbmodal" id="lbModal" hidden role="dialog" aria-modal="true" aria-label="Leaderboard">
   <div class="lbm-panel" data-lenis-prevent>
     <button class="lbm-x" id="lbmClose">&#10005;</button>
     <div class="lbm-head"><span class="lb-title">🏅 Full Leaderboard</span><span class="lb-sub" id="lbmSub"></span></div>
@@ -1963,7 +2026,7 @@
 </div>
 
 <!-- JOIN / USERNAME MODAL -->
-<div class="joinmodal" id="joinModal" hidden>
+<div class="joinmodal" id="joinModal" hidden role="dialog" aria-modal="true" aria-label="Join the Predictor">
   <div class="jm-panel" data-lenis-prevent>
     <button class="jm-x" id="jmClose">&#10005;</button>
     <div class="jm-step" id="jmSignin">
@@ -1971,6 +2034,7 @@
       <h3>Join the Predictor</h3>
       <p>Sign in to play, climb the leaderboard and win prizes. Free to play.</p>
       <div class="jm-gbtn" id="jmGbtn"></div>
+      <p style="font-size:.72rem;color:var(--txt-3);margin-top:12px;line-height:1.5">By signing in you agree to our <a data-tc style="color:#caa9ff;text-decoration:underline">Contest Terms</a> &amp; <a data-privacy style="color:#caa9ff;text-decoration:underline">Privacy Policy</a>. We use your Google name, email &amp; picture only to run the Predictor.</p>
     </div>
     <div class="jm-step" id="jmUname" hidden>
       <div class="jm-ic">🎮</div>
@@ -1979,14 +2043,14 @@
       <input type="text" id="jmInput" maxlength="20" placeholder="e.g. GoalMachine" autocomplete="off" spellcheck="false" pattern="[A-Za-z0-9_\-]+">
       <div class="jm-err" id="jmErr"></div>
       <button class="btn jm-save" id="jmSave">Save &amp; continue</button>
-      <a class="yt-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe to FootyHub TV</a>
+      <a class="yt-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe to FootyHub TV</a>
       <div class="jm-subnote">Subscribe to follow the matches &amp; find out if you won 🏆</div>
     </div>
   </div>
 </div>
 
 <!-- CONTEST TERMS MODAL -->
-<div class="termsmodal" id="termsModal" hidden>
+<div class="termsmodal" id="termsModal" hidden role="dialog" aria-modal="true" aria-label="Predictor rules and terms">
   <div class="tm-panel" data-lenis-prevent>
     <button class="lbm-x" id="tmClose">&#10005;</button>
     <h2 class="tm-title">FootyHub Predictor — Rules &amp; Terms</h2>
@@ -2023,8 +2087,40 @@
   </div>
 </div>
 
+<!-- PRIVACY POLICY MODAL -->
+<div class="termsmodal" id="privacyModal" hidden role="dialog" aria-modal="true" aria-label="Privacy policy">
+  <div class="tm-panel" data-lenis-prevent>
+    <button class="lbm-x" id="pvClose">&#10005;</button>
+    <h2 class="tm-title">FootyHub TV — Privacy Policy</h2>
+    <div class="tm-body" data-lenis-prevent>
+      <h4>1. Who we are</h4>
+      <p>FootyHub TV ("we") runs the website at footyhub.tv and the FootyHub TV broadcast channel. For any privacy question, contact us at <b>contact@footyhub.tv</b>.</p>
+      <h4>2. What we collect</h4>
+      <p>We only collect what we need to run the site:</p>
+      <p>• <b>Predictor sign-in</b> — if you sign in with Google, we receive your name, email address and profile picture, plus the username and score predictions you create.<br>
+      • <b>Match alerts</b> — if you ask to be notified, we store the email address you give us and/or a web-push subscription from your browser.<br>
+      • <b>Sponsor enquiries</b> — if you use the sponsor form, we store the name, company, email, budget and message you submit.<br>
+      • <b>Anonymous IDs</b> — we keep a random identifier in your browser's local storage to remember your poll votes and predictions. This is not linked to your identity unless you sign in.</p>
+      <p>We do <b>not</b> knowingly collect data from anyone under 18, and we do not run third-party advertising or tracking pixels.</p>
+      <h4>3. Why we use it (legal basis)</h4>
+      <p>We use your data to operate the Predictor and leaderboard, contact winners, send the match alerts you asked for, reply to sponsor enquiries, and keep the site working. Where the law requires a legal basis (e.g. GDPR), it is your consent (sign-in, alerts) and our legitimate interest in running the service.</p>
+      <h4>4. Who processes it</h4>
+      <p>Sign-in is provided by <b>Google</b>. Form submissions, predictions and alerts are handled by our infrastructure on <b>Cloudflare</b> (Workers / R2). These providers process data on our behalf; we do not sell or rent your data to anyone.</p>
+      <h4>5. How long we keep it</h4>
+      <p>Predictor and alert data is kept for the duration of the tournament and a reasonable period after, then deleted. Sponsor enquiries are kept while we are in contact. You can ask us to delete your data at any time.</p>
+      <h4>6. Your rights</h4>
+      <p>You can ask to access, correct or delete your data, or withdraw consent, by emailing <b>contact@footyhub.tv</b>. You can clear the anonymous IDs yourself by clearing your browser storage, and turn off push alerts in your browser/OS settings.</p>
+      <h4>7. Cookies &amp; storage</h4>
+      <p>We don't use advertising or analytics cookies. We use your browser's local storage only for the functional IDs described above and for your sign-in session.</p>
+      <h4>8. Changes</h4>
+      <p>We may update this policy; material changes will be posted on this page.</p>
+      <p class="tm-updated">Last updated June 2026 · contact@footyhub.tv</p>
+    </div>
+  </div>
+</div>
+
 <!-- VICTOR PREMIUM MODAL -->
-<div class="vpmodal" id="vpremModal" hidden>
+<div class="vpmodal" id="vpremModal" hidden role="dialog" aria-modal="true" aria-label="Victor Premium">
   <div class="vpm-panel" data-lenis-prevent>
     <button class="lbm-x" id="vpClose">&#10005;</button>
     <div class="vpm-head">
@@ -2049,7 +2145,7 @@
 </div>
 
 <!-- iOS "add to home screen for alerts" helper -->
-<div class="iosmodal" id="iosModal" hidden>
+<div class="iosmodal" id="iosModal" hidden role="dialog" aria-modal="true" aria-label="Get alerts on iPhone">
   <div class="ios-panel" data-lenis-prevent>
     <button class="lbm-x" id="iosClose">&#10005;</button>
     <div class="ios-ic">📲</div>
@@ -2066,7 +2162,7 @@
 </div>
 
 <!-- persona profile modal -->
-<div class="pmodal" id="personaModal" hidden>
+<div class="pmodal" id="personaModal" hidden role="dialog" aria-modal="true" aria-label="Meet the fan">
   <div class="pm-panel" data-lenis-prevent>
     <button class="lbm-x" id="pmClose">&#10005;</button>
     <div id="pmBody"></div>
@@ -2074,16 +2170,16 @@
 </div>
 
 <!-- contact modal -->
-<div class="cmodal" id="contactModal" hidden>
+<div class="cmodal" id="contactModal" hidden role="dialog" aria-modal="true" aria-label="Get in touch">
   <div class="cm-panel" data-lenis-prevent>
     <button class="lbm-x" id="cmClose">&#10005;</button>
     <div class="cm-ic">✉️</div>
     <h3>Get in touch</h3>
     <p>Questions, press or partnerships — we'd love to hear from you.</p>
     <a class="cm-row" href="mailto:contact@footyhub.tv"><span class="cm-k">📧 Email us</span><span class="cm-v">contact@footyhub.tv</span></a>
-    <a class="cm-row" href="https://www.youtube.com/@FootyHub_TV" target="_blank" rel="noopener"><span class="cm-k">▶ YouTube</span><span class="cm-v">@FootyHub_TV</span></a>
+    <a class="cm-row" href="https://www.youtube.com/@FootyHub_TV" target="_blank" rel="noopener noreferrer"><span class="cm-k">▶ YouTube</span><span class="cm-v">@FootyHub_TV</span></a>
     <a class="cm-row" data-action="partners"><span class="cm-k">💼 Sponsorship</span><span class="cm-v">Become a sponsor →</span></a>
-    <p class="cm-note">We're on YouTube, <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener" style="color:#caa9ff">Twitch</a> &amp; <a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener" style="color:#caa9ff">Instagram</a> — TikTok launching soon.</p>
+    <p class="cm-note">We're on YouTube, <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer" style="color:#caa9ff">Twitch</a> &amp; <a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer" style="color:#caa9ff">Instagram</a> — TikTok launching soon.</p>
   </div>
 </div>
 
@@ -2092,11 +2188,11 @@
     <div class="f-col">
       <div class="f-brand">FootyHub TV</div>
       <p class="f-tag">The AI football channel with actual opinions.</p>
-      <div class="f-social"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener">YouTube</a><a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener">Twitch</a><a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener">Instagram</a><a href="#">TikTok</a></div>
+      <div class="f-social"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer">Twitch</a><a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="#">TikTok</a></div>
     </div>
     <div class="f-col"><h5>Watch</h5><a data-action="live">Live</a><a data-action="schedule">Schedule</a><a data-action="predict">Predictor</a><a data-action="clips">Clips</a><a data-action="watch">Replays</a></div>
     <div class="f-col"><h5>The Cast</h5><a data-action="hosts">LIA</a><a data-action="hosts">Victor</a><a data-action="fans">The 48 fans</a></div>
-    <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a data-contact>Contact</a></div>
+    <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-privacy>Privacy</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a data-contact>Contact</a></div>
   </div>
   <div class="f-bottom">© 2026 FootyHub TV. All rights reserved. · Voice AI powered by ElevenLabs · Entertainment only · 18+</div>
 </footer>
@@ -2115,7 +2211,7 @@
 
   // ═══ MODERN INTERACTION LAYER ═══
   const PREFERS_RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const RM=false; // DEMO: motion forced ON so you can judge it (your PC has reduce-motion enabled). Production: set RM=PREFERS_RM (ambient shader can stay animated).
+  const RM=PREFERS_RM; // honor the visitor's OS "reduce motion" setting (accessibility — WCAG 2.3.3)
   const COARSE=matchMedia('(pointer: coarse)').matches;
   // Live data source. Empty = same-folder live.json (local preview). After the Cloudflare
   // Worker is deployed, set this to its URL so the deployed site polls fresh live data.
@@ -2171,9 +2267,13 @@
     addEventListener('resize',rs);rs();
     if(!COARSE)addEventListener('pointermove',e=>{mt=[e.clientX/innerWidth,1.0-e.clientY/innerHeight];});
     const t0=performance.now();
-    (function loop(){const t=(performance.now()-t0)/1000;ms[0]+=(mt[0]-ms[0])*0.05;ms[1]+=(mt[1]-ms[1])*0.05;
-    gl.uniform1f(uT,RM?8.0:t);gl.uniform2f(uR,cv.width,cv.height);gl.uniform2f(uM,ms[0],ms[1]);gl.drawArrays(gl.TRIANGLES,0,3);
-    if(!RM)requestAnimationFrame(loop);})();
+    let _glOn=true;
+    function loop(){if(!_glOn)return;const t=(performance.now()-t0)/1000;ms[0]+=(mt[0]-ms[0])*0.05;ms[1]+=(mt[1]-ms[1])*0.05;
+      gl.uniform1f(uT,RM?8.0:t);gl.uniform2f(uR,cv.width,cv.height);gl.uniform2f(uM,ms[0],ms[1]);gl.drawArrays(gl.TRIANGLES,0,3);
+      if(!RM&&_glOn)requestAnimationFrame(loop);}
+    // pause the shader when the tab is hidden (battery/CPU) — resume on return
+    addEventListener('visibilitychange',()=>{if(document.hidden){_glOn=false;}else if(!_glOn){_glOn=true;if(!RM)requestAnimationFrame(loop);}});
+    loop();
   })();
 
   // Lenis smooth scroll
@@ -2224,7 +2324,7 @@
   // build the nations flag wall (one fan per nation · 48 of World Cup 2026; tonight's two highlighted)
   // Official Mundial 2026 draw (5 Dec 2025) — 48 teams, 12 groups A→L
   const NATIONS=[['mx','Mexico'],['za','S. Africa'],['kr','S. Korea'],['cz','Czechia'],['ca','Canada'],['ch','Switzerland'],['qa','Qatar'],['ba','Bosnia'],['br','Brazil'],['ma','Morocco'],['ht','Haiti'],['gb-sct','Scotland'],['us','USA'],['py','Paraguay'],['au','Australia'],['tr','Türkiye'],['de','Germany'],['cw','Curaçao'],['ci','Ivory Coast'],['ec','Ecuador'],['nl','Netherlands'],['jp','Japan'],['se','Sweden'],['tn','Tunisia'],['be','Belgium'],['eg','Egypt'],['ir','Iran'],['nz','New Zealand'],['es','Spain'],['cv','Cape Verde'],['sa','Saudi Arabia'],['uy','Uruguay'],['fr','France'],['sn','Senegal'],['no','Norway'],['iq','Iraq'],['ar','Argentina'],['dz','Algeria'],['at','Austria'],['jo','Jordan'],['pt','Portugal'],['cd','DR Congo'],['uz','Uzbekistan'],['co','Colombia'],['gb-eng','England'],['hr','Croatia'],['gh','Ghana'],['pa','Panama']];
-  const TONIGHT=['mx','za']; // opening match — Mexico v South Africa
+  let TONIGHT=['mx','za']; // reassigned to the real next fixture's teams in applyNextMatch()
   // ── Cast: pick a nation, meet its fan ──
   const FANS={
     mx:['Diego','Cielito Lindo'],za:['Sipho','Shosholoza'],kr:['Joon-ho','Dae-han-min-guk!'],cz:['Tomáš','Kdo neskáče, není Čech!'],
@@ -2241,7 +2341,7 @@
     'gb-eng':['Harry','It\'s Coming Home!'],hr:['Marko','Vatreni!'],gh:['Kwame','Black Stars!'],pa:['Roberto','¡La Marea Roja!']
   };
   function showFanIn(card,c,n){if(!card)return;const f=FANS[c];const nm=f?f[0]:n+' fan';const q=f?f[1]:'Loud and proud for '+n+'.';const tn=TONIGHT.includes(c)?' <span class="fp-tonight">Tonight</span>':'';
-    card.innerHTML='<img class="fp-photo" src="avatars/'+c+'.png" alt="'+nm+'" onerror="this.onerror=null;this.src=\'flags/'+c+'.svg\';this.classList.add(\'isflag\')"><div class="fp-fi"><div class="fp-name">'+nm+tn+'</div><div class="fp-role"><img class="fp-roleflag" src="flags/'+c+'.svg" alt="">'+n+' fan</div><div class="fp-quote">"'+q+'"</div><span class="fp-hear hs-play" data-hear="'+c+'"><span class="hear-ic">▶</span> Hear '+nm+'</span></div>';
+    card.innerHTML='<img class="fp-photo" loading="lazy" decoding="async" src="avatars/'+c+'.png" alt="'+nm+'" onerror="this.onerror=null;this.src=\'flags/'+c+'.svg\';this.classList.add(\'isflag\')"><div class="fp-fi"><div class="fp-name">'+nm+tn+'</div><div class="fp-role"><img class="fp-roleflag" src="flags/'+c+'.svg" alt="">'+n+' fan</div><div class="fp-quote">"'+q+'"</div><span class="fp-hear hs-play" data-hear="'+c+'"><span class="hear-ic">▶</span> Hear '+nm+'</span></div>';
     card.classList.add('filled');card.setAttribute('data-fan',c);}
   function initFanpick(flagsEl,cardEl){
     if(!flagsEl)return;
@@ -2251,14 +2351,14 @@
   // hosts page: the whole 48-face squad wall (different from the homepage flags→reveal)
   (function(){const el=document.getElementById('squadGrid');if(!el)return;
     el.innerHTML=NATIONS.map(([c,n])=>{const f=FANS[c];const nm=f?f[0]:n;
-      return '<div class="sq" data-fan="'+c+'"><div class="sq-av"><img loading="lazy" src="avatars/'+c+'.png" alt="'+nm+'"></div><div class="sq-n"><img class="tkflag" src="flags/'+c+'.svg"> '+nm+'</div></div>';}).join('');})();
+      return '<div class="sq" data-fan="'+c+'"><div class="sq-av"><img loading="lazy" src="avatars/'+c+'.png" alt="'+nm+'"></div><div class="sq-n"><img class="tkflag" src="flags/'+c+'.svg" alt=""> '+nm+'</div></div>';}).join('');})();
 
   // ── Persona profiles (LIA/Victor rich · fans lighter) ──
   const HOSTBIO={
-    lia:{name:'LIA',role:'Lead Commentator · Permanent',quote:'Oh, that is SENSATIONAL!',traits:['Passionate','Witty','Multilingual','Always on'],paras:[
+    lia:{name:'LIA',role:'Lead Commentator · Permanent',quote:'Oh, that is SENSATIONAL!',traits:['Passionate','Witty','Reads your chat','Always on'],paras:[
       "Meet <b>LIA</b> — the voice of FootyHub TV and the world's first AI football commentator built with a <b>real personality</b>. She doesn't read stats off a screen; she <i>feels</i> the game.",
       "Fast, fearless and a little cheeky, LIA calls every kick with genuine emotion — she celebrates, she despairs, she gasps at a near-miss and roasts a lazy back-pass. She reads the room, answers the live chat by name, and <b>never, ever plays it neutral</b>.",
-      "She works every match of the tournament, in multiple languages, and she's only getting started. Love her or argue with her — you won't be able to ignore her."]},
+      "She works every match of the tournament, reads the live chat and answers viewers by name, and she's only getting started. Love her or argue with her — you won't be able to ignore her."]},
     victor:{name:'Victor',role:'Analyst & Tipster · Permanent',quote:"The numbers don't lie.",traits:['Tactical','Data-driven','Community tipster'],paras:[
       "<b>Victor</b> is the cool head beside LIA's fire — FootyHub TV's analyst and tipster. He reads the <b>xG</b>, breaks down the tactics, and tells you <i>why</i> a game is turning before it turns.",
       "Every call he makes is built by a real statistical model — live odds, team form, expected goals. He works out the edge… then picks a side anyway, live on air, with his <b>Triple Bet</b>. Medium &amp; Max drop in the pre-game, so you've time to play along.",
@@ -2317,7 +2417,7 @@
   function _pmOpen(html){const m=document.getElementById('personaModal'),b=document.getElementById('pmBody');if(!m||!b)return;b.innerHTML=html;m.hidden=false;_lockScroll();if(lenis)lenis.stop();m.scrollTop=0;fhPush();}
   function closePersona(){const m=document.getElementById('personaModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function openHost(key){const h=HOSTBIO[key];if(!h)return;
-    _pmOpen('<div class="pm-hero"><img class="pm-photo" src="avatars/'+key+'.png" alt="'+h.name+'"><div class="pm-h-info"><div class="pm-name">'+h.name+'</div><div class="pm-role">'+h.role+'</div></div></div>'
+    _pmOpen('<div class="pm-hero"><img class="pm-photo" loading="lazy" decoding="async" src="avatars/'+key+'.png" alt="'+h.name+'"><div class="pm-h-info"><div class="pm-name">'+h.name+'</div><div class="pm-role">'+h.role+'</div></div></div>'
       +'<div class="pm-body-tx">'+h.paras.map(p=>'<p class="pm-p">'+p+'</p>').join('')
       +'<div class="pm-traits">'+h.traits.map(t=>'<span>'+t+'</span>').join('')+'</div>'
       +'<div class="pm-quote">"'+h.quote+'"</div></div>'
@@ -2325,7 +2425,7 @@
   function openFan(code){const nat=(NATIONS.find(x=>x[0]===code)||[code,code])[1];const f=FANS[code]||[code,''];const b=FANBIO[code];
     const meta=b?('<b style="color:#fff">'+b.age+'</b> &middot; '+b.job+' &middot; '+b.home):'';
     const bio=b?b.bio:('A born-and-raised '+nat+' supporter who lives for the national team.');
-    _pmOpen('<div class="pm-hero"><img class="pm-photo" src="avatars/'+code+'.png" alt="'+f[0]+'"><div class="pm-h-info"><div class="pm-name">'+f[0]+'</div><div class="pm-role"><img class="pm-flag" src="flags/'+code+'.svg" alt=""> '+nat+' superfan</div>'+(meta?'<div class="pm-meta">'+meta+'</div>':'')+'</div></div>'
+    _pmOpen('<div class="pm-hero"><img class="pm-photo" loading="lazy" decoding="async" src="avatars/'+code+'.png" alt="'+f[0]+'"><div class="pm-h-info"><div class="pm-name">'+f[0]+'</div><div class="pm-role"><img class="pm-flag" src="flags/'+code+'.svg" alt=""> '+nat+' superfan</div>'+(meta?'<div class="pm-meta">'+meta+'</div>':'')+'</div></div>'
       +'<div class="pm-body-tx"><p class="pm-p">'+bio+'</p>'
       +(b&&b.trait?'<div class="pm-traits"><span>'+b.trait+'</span></div>':'')
       +'<div class="pm-quote">"'+f[1]+'"</div></div>'
@@ -2346,7 +2446,7 @@
     const arr=Object.keys(FANLIKES).map(c=>[c,FANLIKES[c]]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,10);
     if(!arr.length){el.innerHTML='<div class="lb-empty">Be the first — open any fan and tap ❤️</div>';return;}
     el.innerHTML=arr.map(function(p,i){const c=p[0],n=p[1];const f=FANS[c]||[c,''];
-      return '<div class="lbf" data-fan="'+c+'"><span class="lbf-r">'+(i+1)+'</span><img class="lbf-av" src="avatars/'+c+'.png" alt=""><span class="lbf-n">'+f[0]+' <img class="tkflag" src="flags/'+c+'.svg"></span><span class="lbf-c">❤️ '+n+'</span></div>';}).join('');}
+      return '<div class="lbf" data-fan="'+c+'"><span class="lbf-r">'+(i+1)+'</span><img class="lbf-av" loading="lazy" decoding="async" src="avatars/'+c+'.png" alt=""><span class="lbf-n">'+f[0]+' <img class="tkflag" src="flags/'+c+'.svg" alt=""></span><span class="lbf-c">❤️ '+n+'</span></div>';}).join('');}
   document.addEventListener('click',function(e){const b=e.target.closest('[data-like]');if(b){e.preventDefault();e.stopPropagation();toggleLike(b.getAttribute('data-like'),b);}});
   loadLikes();setInterval(loadLikes,30000);
 
@@ -2397,13 +2497,15 @@
   // nav On-Air chip shows the LIVE match (off-air shows the next match) — driven by state
   // state toggle
   // is a match currently live? (demo toggle) — drives the poster + nav, NOT the watch page
+  let _isLiveNow=false;
   function setMatchLive(live){
+    _isLiveNow=live;
     const pOff=document.getElementById('posterOff'),pLive=document.getElementById('posterLive');
     if(pOff)pOff.hidden=live; if(pLive)pLive.hidden=!live;
     const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
     let _nf=null;try{_nf=nextFixture();}catch(_e){}   // guarded: the first call runs before FIX is initialised
     if(live){onair.classList.add('live');oaL.textContent='On air';oaN.textContent=_nf?(_nf.home+' v '+_nf.away):'LIVE on FootyHub TV';}   // real score lands via renderLiveMatch
-    else{onair.classList.remove('live');oaL.textContent='Next';oaN.textContent=_nf?(_nf.home+' v '+_nf.away+' · '+new Date(Date.parse(_nf.utc)).toLocaleDateString([],{day:'numeric',month:'short'})):'FootyHub TV';}
+    else{onair.classList.remove('live');oaL.textContent='Next';oaN.textContent=_nf?(_nf.home+' v '+_nf.away+' · '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'FootyHub TV';}
     // watch page: pre-live (next-match countdown) ↔ live (stream)
     const wP=document.getElementById('watchPlayer'),wN=document.getElementById('watchNext');
     if(wP)wP.hidden=!live; if(wN)wN.hidden=false;   // player only when live; next-match card always (off-air = next, live = up next)
@@ -2411,11 +2513,12 @@
     if(wnl)wnl.innerHTML='<span class="ldot"></span>'+(live?'Up next on FootyHub TV':'Next live on FootyHub TV');
     const lb=document.getElementById('liveBadge'),ltm=document.getElementById('liveTopMatch'),lv=document.getElementById('liveViewers'),ls=document.getElementById('liveScore'),lm=document.getElementById('liveMinute'),ns=document.getElementById('nowStrip');
     if(lb)lb.innerHTML='<span class="dot"></span>'+(live?'Live':'Pre-game');
-    if(ltm)ltm.innerHTML=live?'Mexico <b>1&ndash;0</b> South Africa <span class="live-min">63\'</span>':'Mexico vs South Africa <span class="live-min">&middot; 11 Jun</span>';
+    if(ltm){const _ds=_nf?new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+      ltm.innerHTML=live?((_nf?_nf.home+' v '+_nf.away:'FootyHub TV')+' <span class="live-min">&#9679; LIVE</span>'):(_nf?_nf.home+' vs '+_nf.away+' <span class="live-min">&middot; '+_ds+'</span>':'FootyHub TV');}
     if(lv)lv.style.visibility='hidden';   // real viewer count shown only via renderViewers (live.json)
-    if(ls)ls.innerHTML=live?'1&nbsp;&ndash;&nbsp;0':'&ndash;&nbsp;&nbsp;&ndash;';
-    if(lm)lm.textContent=live?'● 63\'':'Kicks off 11 Jun';
-    if(ns)ns.innerHTML=live?'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>On air:</b> LIA &amp; Victor break down the penalty':'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>Pre-game:</b> Victor reveals Medium &amp; Max when the countdown ends';
+    if(ls)ls.innerHTML='&ndash;&nbsp;&nbsp;&ndash;';   // real score lands via renderLiveMatch — never a hardcoded scoreline
+    if(lm)lm.textContent=live?'● LIVE':(_nf?'Kicks off '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'Kicks off soon');
+    if(ns)ns.innerHTML=live?'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>On air:</b> LIA &amp; Victor break down the action':'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>Pre-game:</b> Victor reveals Medium &amp; Max when the countdown ends';
   }
   // the watch page (player + chat + score + bet) — opened by "Watch now" / "Watch Live"
   function showPage(pid){const o=document.getElementById('offair'),i=document.getElementById('intro');
@@ -2431,7 +2534,7 @@
   function _atHome(){return !(history.state&&history.state.fhNav);}
   function fhPush(){try{if(_atHome())history.pushState({fhNav:1},'');}catch(e){}}
   function fhCloseOverlays(){
-    const ids=['personaModal','menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal'];
+    const ids=['personaModal','menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal','privacyModal'];
     let closed=false;ids.forEach(id=>{const el=document.getElementById(id);if(el&&!el.hidden){el.hidden=true;closed=true;}});
     if(closed){_unlockScroll();if(lenis)lenis.start();}
     return closed;
@@ -2449,9 +2552,18 @@
       enter.textContent='Enter the Mundial hub →';
       banner.classList.remove('mlive','mdone');
     }else if(p==='live'){
-      star.innerHTML='<span class="ldot"></span> Live · Group stage · Matchday 1';
-      count.innerHTML='<div class="m-liverow"><span class="m-lr-live">● LIVE</span> <img class="tkflag" src="flags/mx.svg"> Mexico <b>1–0</b> South Africa <img class="tkflag" src="flags/za.svg"> <span class="m-lr-min">63\'</span></div><div class="m-livesub">The Mundial 2026 opener · live on FootyHub TV</div>';
-      sub.innerHTML='Group A &middot; Estadio Azteca &middot; LIA &amp; Victor on the call';
+      star.innerHTML='<span class="ldot"></span> Live · Group stage';
+      const _lf=(typeof liveFixtureNow==='function')?liveFixtureNow():null;
+      const _nf=(typeof nextFixture==='function')?nextFixture():null;
+      if(_lf&&_lf.home_code){
+        count.innerHTML='<div class="m-liverow"><span class="m-lr-live">● LIVE</span> <img class="tkflag" src="flags/'+_lf.home_code+'.svg" alt=""> '+_lf.home+' v '+_lf.away+' <img class="tkflag" src="flags/'+_lf.away_code+'.svg" alt=""></div><div class="m-livesub">On FootyHub TV right now</div>';
+      }else if(_nf){
+        const _d=new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' · '+new Date(Date.parse(_nf.utc)).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+        count.innerHTML='<div class="m-liverow"><span class="m-lr-live" style="background:rgba(150,70,255,.18);color:#caa9ff">NEXT</span> '+(_nf.home_code?'<img class="tkflag" src="flags/'+_nf.home_code+'.svg" alt=""> ':'')+_nf.home+' v '+_nf.away+(_nf.away_code?' <img class="tkflag" src="flags/'+_nf.away_code+'.svg" alt="">':'')+'</div><div class="m-livesub">'+_d+' · live on FootyHub TV</div>';
+      }else{
+        count.innerHTML='<div class="m-livesub">48 nations · 104 matches · live on FootyHub TV</div>';
+      }
+      sub.innerHTML='LIA &amp; Victor on the call &middot; every match, every nation';
       enter.textContent='Enter the live hub →';
       banner.classList.add('mlive');banner.classList.remove('mdone');
     }else{
@@ -2462,18 +2574,7 @@
       banner.classList.add('mdone');banner.classList.remove('mlive');
     }
   }
-  function setHero(h){
-    document.getElementById('heroA').hidden=h!=='a';
-    document.getElementById('heroB').hidden=h!=='b';
-    document.getElementById('hA').classList.toggle('active',h==='a');
-    document.getElementById('hB').classList.toggle('active',h==='b');
-  }
-  function setMundial(m){
-    document.getElementById('mundialA').hidden=m!=='a';
-    document.getElementById('mundialB').hidden=m!=='b';
-    document.getElementById('mA').classList.toggle('active',m==='a');
-    document.getElementById('mB').classList.toggle('active',m==='b');
-  }
+  // (removed dead setHero/setMundial — they referenced #hA/#hB/#mundialA elements that don't exist in the DOM)
   document.querySelectorAll('.m-pickflags img').forEach(img=>{
     img.addEventListener('click',()=>{document.getElementById('mPick').textContent="→ Meet "+img.dataset.n+"'s fan";});
   });
@@ -2485,9 +2586,9 @@
   const RES=window.RESULTS||{standings:{},ko:{}};
   let fhUser=null; // signed-in Google user (or null)
   const TZ=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
-  const fmtTime=ms=>new Date(ms).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-  const fmtDay=ms=>new Date(ms).toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'});
-  const fmtDayShort=ms=>new Date(ms).toLocaleDateString([],{day:'numeric',month:'short'});
+  const fmtTime=ms=>new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const fmtDay=ms=>new Date(ms).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  const fmtDayShort=ms=>new Date(ms).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
   const tzN=document.getElementById('tzName'); if(tzN)tzN.textContent=TZ.replace(/_/g,' ');
   const MATCH_MS=2.5*3600*1000; // a match window ≈ 2.5h
   function nextFixture(){const now=Date.now();if(DEMO){const g=FIX.filter(f=>f.stage!=='ko');return g[1]||g[0]||null;}return FIX.find(f=>Date.parse(f.utc)+MATCH_MS>now)||FIX[FIX.length-1]||null;}
@@ -2501,10 +2602,10 @@
       if(day!==curDay){curDay=day;h+='<div class="sched-day">'+day+'</div>';}
       const live=now>=ms&&now<ms+MATCH_MS, past=now>=ms+MATCH_MS;
       const t=live?'<span style="color:var(--live)">● LIVE</span>':(past?'FT':fmtTime(ms));
-      const cta=live?'<a class="si-cta" data-action="live">Watch &#9656;</a>':(past?'<a class="si-cta ghost" data-action="watch">Replay</a>':'<a class="si-cta ghost">🔔 Notify</a>');
+      const cta=live?'<a class="si-cta" data-action="live">Watch &#9656;</a>':(past?'<a class="si-cta ghost" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Replay ↗</a>':'<a class="si-cta ghost">🔔 Notify</a>');
       const ko=!f.home_code;
-      const hh=ko?f.home:'<img class="tkflag" src="flags/'+f.home_code+'.svg"> '+f.home;
-      const aa=ko?f.away:f.away+' <img class="tkflag" src="flags/'+f.away_code+'.svg">';
+      const hh=ko?f.home:'<img class="tkflag" src="flags/'+f.home_code+'.svg" alt=""> '+f.home;
+      const aa=ko?f.away:f.away+' <img class="tkflag" src="flags/'+f.away_code+'.svg" alt="">';
       const comp=ko?(f.round+(f.venue?' · '+f.venue:'')):'Mundial 2026 · Group '+f.group;
       // expandable panel: live countdown (upcoming) + match cast (LIA, Victor, both fans)
       let exp='';
@@ -2589,6 +2690,46 @@
     const oaN=document.getElementById('oaName');if(oaN&&onair&&!onair.classList.contains('live'))oaN.innerHTML=f.home+' v '+f.away+' &middot; '+fmtDayShort(ms)+' '+fmtTime(ms);
     setupPoll(f);
     renderDayMatches();
+    // keep the watch-page off-air header in sync (setMatchLive's first run happens before FIX is ready)
+    if(!_isLiveNow){
+      const _ds=new Date(ms).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+      const ltm=document.getElementById('liveTopMatch'),lm=document.getElementById('liveMinute');
+      if(ltm)ltm.innerHTML=f.home+' vs '+f.away+' <span class="live-min">&middot; '+_ds+'</span>';
+      if(lm)lm.textContent='Kicks off '+_ds;
+    }
+    try{ TONIGHT=[f.home_code,f.away_code].filter(Boolean); _buildTicker(f); _setPosterCast(f); _setNotifyOption(f); }catch(_e){}
+  }
+  // ── keep every match/fan/date reference in sync with the real next fixture (no hardcoded match anywhere) ──
+  function _fanName(code,fb){const fn=FANS[code];return fn?fn[0]:((fb||code)+' fan');}
+  function _buildTicker(f){
+    const tk=document.getElementById('tkt');if(!tk||!f)return;
+    const d=new Date(Date.parse(f.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    const flag=c=>c?(' <img class="tkflag" src="flags/'+c+'.svg" alt="">'):'';
+    const fans=f.home_code?'<span class="tk"><span class="lbl">Tonight\'s fans</span> '+_fanName(f.home_code,f.home)+flag(f.home_code)+' &middot; '+_fanName(f.away_code,f.away)+flag(f.away_code)+'</span>':'';
+    const items=[
+      '<span class="tk"><span class="lbl">Next on FootyHub TV</span> <b>'+f.home+' v '+f.away+'</b> &middot; Mundial 2026 &middot; <b>'+d+'</b></span>',
+      fans,
+      '<span class="tk"><span class="lbl">Victor\'s Triple Bet</span> &#9656; <b>dropping in the pre-game</b></span>',
+      '<span class="tk"><span class="lbl">Mundial 2026</span> live now &middot; 48 nations &middot; 104 matches</span>',
+      '<span class="tk"><span class="lbl">Predict &amp; win</span> &#9656; <b>free contest</b> &middot; top 3 win prizes</span>',
+      '<span class="tk"><span class="lbl">Live AI commentary</span> LIA &amp; Victor on every kick</span>'
+    ].filter(Boolean).join('');
+    tk.innerHTML=items+items;   // doubled for the seamless infinite-scroll loop
+  }
+  function _setPosterCast(f){
+    if(!f||!f.home_code)return;
+    ['#posterOff','#posterLive'].forEach(sel=>{
+      const cast=document.querySelectorAll(sel+' .poster-cast .pc');if(cast.length<4)return;
+      const put=(pc,code,name)=>{if(!pc)return;const av=pc.querySelector('.pc-av img');if(av){av.src='avatars/'+code+'.png';av.alt=name;av.onerror=function(){this.onerror=null;this.src='flags/'+code+'.svg';};}
+        const n=pc.querySelector('.pc-n');if(n)n.innerHTML=name+' <img class="tkflag" src="flags/'+code+'.svg" alt="">';};
+      put(cast[2],f.home_code,_fanName(f.home_code,f.home));
+      put(cast[3],f.away_code,_fanName(f.away_code,f.away));
+    });
+  }
+  function _setNotifyOption(f){
+    if(!f)return;
+    const d=new Date(Date.parse(f.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+    document.querySelectorAll('.np-select').forEach(sel=>{if(sel.options&&sel.options.length)sel.options[0].textContent=f.home+' v '+f.away+' · '+d;});
   }
 
   // ── Fan poll — 1X2 for the upcoming match (votes stored in the Worker/KV) ──
@@ -2796,6 +2937,8 @@
   }
   function openTerms(){const m=document.getElementById('termsModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
   function closeTerms(){const m=document.getElementById('termsModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
+  function openPrivacy(){const mn=document.getElementById('menu');if(mn)mn.hidden=true;const m=document.getElementById('privacyModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
+  function closePrivacy(){const m=document.getElementById('privacyModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function openVprem(){const m=document.getElementById('vpremModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
   function closeVprem(){const m=document.getElementById('vpremModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function openIos(){const m=document.getElementById('iosModal');if(!m)return;
@@ -2856,6 +2999,8 @@
     if(e.target.closest('#maOut')){signOut();renderMenuAuth();return;}
     if(e.target.closest('[data-tc]'))return openTerms();
     if(e.target.closest('#tmClose')||e.target===document.getElementById('termsModal'))return closeTerms();
+    if(e.target.closest('[data-privacy]'))return openPrivacy();
+    if(e.target.closest('#pvClose')||e.target===document.getElementById('privacyModal'))return closePrivacy();
     if(e.target.closest('[data-vprem]'))return openVprem();
     if(e.target.closest('#vpClose')||e.target===document.getElementById('vpremModal'))return closeVprem();
     if(e.target.closest('[data-share]'))return fhShare();
@@ -2879,6 +3024,8 @@
   setInterval(loadPredictor,30000);
 
   applyNextMatch();
+  // flip the Mundial banner out of the frozen "kicks off" pre-state once the tournament is under way
+  try{ setMundialPhase(Date.now()<Date.parse('2026-06-11T19:00:00Z')?'pre':(Date.now()>Date.parse('2026-07-19T23:00:00Z')?'done':'live')); }catch(_e){}
 
   // live countdown to the next real kickoff (auto-advances as matches pass; live.json can still override)
   let kickoffTs=(function(){const f=nextFixture();return f?Date.parse(f.utc):Date.parse('2026-06-11T19:00:00Z');})();
@@ -3052,6 +3199,7 @@
     const val=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
     f.addEventListener('submit',async e=>{e.preventDefault();
       const note=document.getElementById('sfNote');
+      if(val('sfHP')){if(note){note.style.color='#7CFFB2';note.textContent="✅ Thanks! We'll be in touch within 48 hours.";}f.reset();return;}   // honeypot: silently drop bots
       const name=val('sfName'),company=val('sfCompany'),email=val('sfEmail'),budget=val('sfBudget'),message=val('sfMsg');
       if(!name||!company||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){if(note){note.style.color='#ff8080';note.textContent='Please fill in your name, company and a valid email.';}return;}
       const btn=f.querySelector('button[type=submit]');if(btn)btn.disabled=true;
@@ -3099,6 +3247,31 @@
     if(href&&href.length>1&&href.charAt(0)==='#'){const tgt=document.querySelector(href);
       if(tgt){e.preventDefault();if(lenis&&lenis.scrollTo)lenis.scrollTo(tgt,{offset:-90});else tgt.scrollIntoView({behavior:'smooth'});}}
   });
+
+  // ── keyboard accessibility (WCAG 2.1.1 Keyboard / 2.4.7 Focus Visible) ──
+  function _a11yButtons(root){
+    const r=root||document;
+    const tag=el=>{const t=el.tagName.toLowerCase();
+      if(t==='button'||(t==='a'&&el.hasAttribute('href')))return;          // already keyboard-native
+      if(!el.hasAttribute('tabindex'))el.setAttribute('tabindex','0');
+      if(!el.hasAttribute('role'))el.setAttribute('role','button');};
+    if(r.nodeType===1&&r.hasAttribute&&r.hasAttribute('data-action'))tag(r);
+    r.querySelectorAll&&r.querySelectorAll('[data-action]').forEach(tag);
+  }
+  _a11yButtons();
+  // re-tag dynamically rendered controls (schedule replays, clips, leaderboard…) — rAF-debounced, idempotent
+  let _a11yQueued=false;
+  try{new MutationObserver(()=>{if(_a11yQueued)return;_a11yQueued=true;requestAnimationFrame(()=>{_a11yQueued=false;_a11yButtons();});}).observe(document.body,{childList:true,subtree:true});}catch(_e){}
+  // Enter / Space activates any custom (non-native) [data-action] control
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Enter'&&e.key!==' ')return;
+    const el=e.target.closest&&e.target.closest('[data-action]'); if(!el)return;
+    const t=el.tagName.toLowerCase();
+    if(t==='button'||(t==='a'&&el.hasAttribute('href'))||t==='input'||t==='select'||t==='textarea')return;
+    e.preventDefault(); el.click();
+  });
+  // ESC closes ANY open overlay/modal (contact, vprem, terms, join, ios, menu, hub, leaderboard, persona)
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&typeof fhCloseOverlays==='function')fhCloseOverlays(); });
 
   // ── CLIPS: single source of truth. Add one entry here → it appears in both the homepage strip AND the Clips page. ──
   const CLIPS=[
@@ -3210,10 +3383,11 @@
 
   // ── live watch page: animated chat + viewer count ──
   const liveStream=document.getElementById('liveStream'),vCount=document.getElementById('vCount');
-  const CHATPOOL=[['viewer','joao_10','GOOOOL?? wait no 😅'],['lia','LIA','That run was pure instinct!'],['viewer','amara','first time here, this is wild'],['fan','Santiago','¡MÉXICO! 🔥'],['vic','Victor','xG says the next goal is coming.'],['viewer','kenji','Thabo stay strong'],['fan','Thabo','Bafana till the end!'],['viewer','sam','the AI just clapped back lmao'],['lia','LIA','sam — I heard that!'],['viewer','lucia_07','this chat is chaos 😂']];
+  // Ambient demo chat for the watch page — kept country-neutral so it's never wrong for the live match (real chat happens in the YouTube stream).
+  const CHATPOOL=[['viewer','joao_10','GOOOOL?? wait no 😅'],['lia','LIA','That run was pure instinct!'],['viewer','amara','first time here, this is wild'],['fan','Mateo','this atmosphere is unreal 🔥'],['vic','Victor','xG says the next goal is coming.'],['viewer','kenji','what a save 🧤'],['fan','Noor','we are NOT sitting down tonight!'],['viewer','sam','the AI just clapped back lmao'],['lia','LIA','sam — I heard that!'],['viewer','lucia_07','this chat is chaos 😂']];
   let ci=0;
   if(liveStream){setInterval(()=>{if(!document.getElementById('live').classList.contains('on'))return;const m=CHATPOOL[ci%CHATPOOL.length];ci++;const d=document.createElement('div');d.className='msg';d.innerHTML='<span class="u '+m[0]+'">'+m[1]+'</span>'+m[2];liveStream.appendChild(d);while(liveStream.children.length>9)liveStream.removeChild(liveStream.firstChild);liveStream.scrollTop=liveStream.scrollHeight;},2800);}
-  if(vCount){let v=2418;setInterval(()=>{v+=Math.round((Math.random()-0.42)*16);if(v<1900)v=1900;vCount.textContent=v.toLocaleString();},3200);}
+  // (removed fabricated viewer-count ticker — #vCount is now driven ONLY by renderViewers() from live.json, real numbers, never faked)
 
   // ── full-screen menu ──
   function openMenu(){const m=document.getElementById('menu');if(m){m.hidden=false;renderMenuAuth();_lockScroll();if(lenis)lenis.stop();fhPush();}}

@@ -1,15 +1,23 @@
 {
+  "id": "/",
   "name": "FootyHub TV",
   "short_name": "FootyHub",
   "description": "Live AI football commentary — LIA & Victor call every Mundial 2026 match.",
+  "lang": "en",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "any",
   "background_color": "#0a0514",
   "theme_color": "#0a0514",
+  "categories": ["sports", "entertainment"],
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "screenshots": [
+    { "src": "og-image.png", "sizes": "1200x630", "type": "image/png", "form_factor": "wide", "label": "FootyHub TV — the AI football channel" },
+    { "src": "preview.png", "sizes": "1920x1079", "type": "image/png", "form_factor": "wide", "label": "Live AI commentary with LIA & Victor" }
   ]
 }
