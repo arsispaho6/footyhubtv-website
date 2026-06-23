@@ -21,7 +21,15 @@ def _post(path, payload):
     data = json.dumps(payload).encode()
     req = urllib.request.Request(
         ENDPOINT + path, data=data, method="POST",
-        headers={"Content-Type": "application/json", "Authorization": "Bearer " + SECRET},
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + SECRET,
+            # browser-like UA + Accept so Cloudflare Bot Fight Mode doesn't 403 (error 1010) the runner
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                          "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Language": "en-US,en;q=0.9",
+        },
     )
     try:
         with urllib.request.urlopen(req, timeout=20) as r:
