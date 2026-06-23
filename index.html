@@ -2503,8 +2503,10 @@
     const pOff=document.getElementById('posterOff'),pLive=document.getElementById('posterLive');
     if(pOff)pOff.hidden=live; if(pLive)pLive.hidden=!live;
     const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
-    let _nf=null;try{_nf=nextFixture();}catch(_e){}   // guarded: the first call runs before FIX is initialised
-    if(live){onair.classList.add('live');oaL.textContent='On air';oaN.textContent=_nf?(_nf.home+' v '+_nf.away):'LIVE on FootyHub TV';}   // real score lands via renderLiveMatch
+    let _nf=null;try{_nf=nextFixture();}catch(_e){}   // next not-yet-started match
+    let _lf=null;try{_lf=liveFixtureNow();}catch(_e){}   // the match live right now (or null)
+    if(live){onair.classList.add('live');oaL.textContent='On air';oaN.textContent=_lf?(_lf.home+' v '+_lf.away):(_nf?(_nf.home+' v '+_nf.away):'LIVE on FootyHub TV');
+      if(_lf)document.querySelectorAll('#posterLive .poster-teams').forEach(e=>e.innerHTML=_lf.home+' <b>vs</b> '+_lf.away);}   // real score lands via renderLiveMatch
     else{onair.classList.remove('live');oaL.textContent='Next';oaN.textContent=_nf?(_nf.home+' v '+_nf.away+' · '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'FootyHub TV';}
     // watch page: pre-live (next-match countdown) ↔ live (stream)
     const wP=document.getElementById('watchPlayer'),wN=document.getElementById('watchNext');
@@ -2513,8 +2515,8 @@
     if(wnl)wnl.innerHTML='<span class="ldot"></span>'+(live?'Up next on FootyHub TV':'Next live on FootyHub TV');
     const lb=document.getElementById('liveBadge'),ltm=document.getElementById('liveTopMatch'),lv=document.getElementById('liveViewers'),ls=document.getElementById('liveScore'),lm=document.getElementById('liveMinute'),ns=document.getElementById('nowStrip');
     if(lb)lb.innerHTML='<span class="dot"></span>'+(live?'Live':'Pre-game');
-    if(ltm){const _ds=_nf?new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
-      ltm.innerHTML=live?((_nf?_nf.home+' v '+_nf.away:'FootyHub TV')+' <span class="live-min">&#9679; LIVE</span>'):(_nf?_nf.home+' vs '+_nf.away+' <span class="live-min">&middot; '+_ds+'</span>':'FootyHub TV');}
+    if(ltm){const _ds=_nf?new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';const _cur=_lf||_nf;
+      ltm.innerHTML=live?((_cur?_cur.home+' v '+_cur.away:'FootyHub TV')+' <span class="live-min">&#9679; LIVE</span>'):(_nf?_nf.home+' vs '+_nf.away+' <span class="live-min">&middot; '+_ds+'</span>':'FootyHub TV');}
     if(lv)lv.style.visibility='hidden';   // real viewer count shown only via renderViewers (live.json)
     if(ls)ls.innerHTML='&ndash;&nbsp;&nbsp;&ndash;';   // real score lands via renderLiveMatch — never a hardcoded scoreline
     if(lm)lm.textContent=live?'● LIVE':(_nf?'Kicks off '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'Kicks off soon');
@@ -2591,7 +2593,8 @@
   const fmtDayShort=ms=>new Date(ms).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
   const tzN=document.getElementById('tzName'); if(tzN)tzN.textContent=TZ.replace(/_/g,' ');
   const MATCH_MS=2.5*3600*1000; // a match window ≈ 2.5h
-  function nextFixture(){const now=Date.now();if(DEMO){const g=FIX.filter(f=>f.stage!=='ko');return g[1]||g[0]||null;}return FIX.find(f=>Date.parse(f.utc)+MATCH_MS>now)||FIX[FIX.length-1]||null;}
+  // the NEXT match that hasn't kicked off yet (a live/finished match is never shown as "next")
+  function nextFixture(){const now=Date.now();if(DEMO){const g=FIX.filter(f=>f.stage!=='ko');return g[1]||g[0]||null;}return FIX.find(f=>Date.parse(f.utc)>now)||FIX[FIX.length-1]||null;}
   function castMember(src,name,role,flag){
     return '<div class="mcast"><div class="mcast-av"><img loading="lazy" src="'+src+'" alt="'+name+'"></div><div class="mcast-n">'+name+(flag?' <img class="tkflag" src="'+flag+'">':'')+'</div><div class="mcast-r">'+role+'</div></div>';
   }
@@ -3041,7 +3044,13 @@
     if(_liveCtaEl)_liveCtaEl.hidden=!on;
     document.querySelectorAll('#posterOff .poster-cd .cd-box').forEach(e=>e.style.opacity=on?'.35':'');
   }
-  function updateCountdown(){const raw=kickoffTs-Date.now();let diff=Math.max(0,raw);
+  function updateCountdown(){const now=Date.now();
+    let lf=null;try{lf=liveFixtureNow();}catch(_e){}              // a match in its window right now (client-side, engine-independent)
+    if(kickoffTs-now<=0){                                         // target kicked off → advance the card to the next not-yet-started fixture
+      const nf=nextFixture();const k=nf?Date.parse(nf.utc):0;
+      if(k>now){kickoffTs=k;try{applyNextMatch();}catch(_e){}}
+    }
+    let diff=Math.max(0,kickoffTs-now);
     const d=Math.floor(diff/86400000);diff-=d*86400000;
     const h=Math.floor(diff/3600000);diff-=h*3600000;
     const m=Math.floor(diff/60000);diff-=m*60000;
@@ -3050,12 +3059,8 @@
     document.querySelectorAll('.cd-h').forEach(e=>e.textContent=pad(h));
     document.querySelectorAll('.cd-m').forEach(e=>e.textContent=pad(m));
     document.querySelectorAll('.cd-s').forEach(e=>e.textContent=pad(s));
-    // a fixture must actually be in its window — a stale live.json kickoff alone never flips us to "live"
-    let inWin=false;try{inWin=!!liveFixtureNow();}catch(_e){}
-    // Mundial banner (mhub-sub): always show seconds so it visibly ticks (prefix days when >0)
-    document.querySelectorAll('.cd-mhub').forEach(e=>e.textContent = (raw<=0&&inWin)?'● LIVE NOW':((d>0 ? (d+'d ') : '') + pad(h)+' : '+pad(m)+' : '+pad(s)));
-    _liveCta(raw<=0&&inWin);
-    if(raw<=0&&inWin){try{maybeLiveFallback();}catch(_e){}}
+    document.querySelectorAll('.cd-mhub').forEach(e=>e.textContent = lf?'● LIVE NOW':((d>0 ? (d+'d ') : '') + pad(h)+' : '+pad(m)+' : '+pad(s)));
+    if(lf){try{maybeLiveFallback();}catch(_e){}}                  // a match is live → flip the watch surfaces to live
   }
   updateCountdown();setInterval(updateCountdown,1000);
   // ── DATA-DRIVEN: poll live.json (the engine writes it from Sofascore). Falls back to the inline real data when unavailable, e.g. opened via file:// ──
@@ -3155,8 +3160,9 @@
       if(DEMO){data=DEMO_DATA;}
       else{const r=await fetch(LIVE_READ||LIVE_ENDPOINT||'live.json',{cache:'no-store'}); if(!r.ok){maybeLiveFallback();return;} data=await r.json();}
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);
-        if(!isNaN(k)&&k>Date.now()-MATCH_MS){kickoffTs=k;updateCountdown();}}   // ignore a STALE kickoff (frozen live.json) — let the fixture list auto-advance
-      if(typeof data.is_live==='boolean')setMatchLive(data.is_live);
+        if(!isNaN(k)&&k>Date.now()){kickoffTs=k;updateCountdown();}}   // only a FUTURE kickoff sets the countdown — a past/live kickoff never freezes it at 00:00
+      // live = engine says so OR a fixture is in its window right now (client-side fallback so it flips even when the engine isn't pushing)
+      {let _el=(typeof data.is_live==='boolean')?data.is_live:false;try{_el=_el||!!liveFixtureNow();}catch(_e){}setMatchLive(_el);}
       renderLiveMatch(data.match);
       renderViewers(data.viewers);
       renderChat(data.youtube_video_id||'');
