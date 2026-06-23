@@ -83,10 +83,10 @@ def rows_to_standings(rows: list) -> dict:
     out: dict = {}
     for r in rows:
         grp = (r.get("group") or "").strip()
-        m = re.search(r"group\s*([a-l])", grp, re.I)
-        key = m.group(1).upper() if m else (grp[-1:].upper() if grp else "")
-        if not key:
-            continue
+        m = re.search(r"group\s*([a-l])\b", grp, re.I)
+        if not m:
+            continue   # skip non-group sections (e.g. Sofascore's "ranking of 3rd-placed teams")
+        key = m.group(1).upper()
         code = code_for(r.get("team", ""))
         if not code:
             print(f"  [warn] no flag code for Sofascore team {r.get('team','')!r} — skipped")
@@ -104,19 +104,60 @@ def rows_to_standings(rows: list) -> dict:
     return out
 
 
-# ── push: merge results into live.json on the Worker (preserve everything else) ──
+# ── Cloudflare R2 (the site reads live.json from cdn.footyhub.tv = R2, NOT the Worker) ──
+_R2_READ = "https://cdn.footyhub.tv/live.json"
+_r2_client = None
+
+
+def _r2():
+    global _r2_client
+    if _r2_client is not None:
+        return _r2_client
+    try:
+        import boto3
+        from botocore.config import Config
+        _r2_client = boto3.client(
+            "s3",
+            endpoint_url=getattr(c, "FOOTYHUB_R2_ENDPOINT", "") or "",
+            aws_access_key_id=getattr(c, "FOOTYHUB_R2_ACCESS_KEY", "") or "",
+            aws_secret_access_key=getattr(c, "FOOTYHUB_R2_SECRET_KEY", "") or "",
+            config=Config(signature_version="s3v4", region_name="auto",
+                          connect_timeout=5, read_timeout=8, retries={"max_attempts": 1}),
+        )
+    except Exception:
+        _r2_client = False
+    return _r2_client
+
+
+def _upload_r2(body: str) -> bool:
+    bucket = getattr(c, "FOOTYHUB_R2_BUCKET", "") or ""
+    cli = _r2()
+    if not cli or not bucket:
+        return False
+    try:
+        cli.put_object(Bucket=bucket, Key="live.json", Body=body.encode("utf-8"),
+                       ContentType="application/json; charset=utf-8", CacheControl="public, max-age=5")
+        return True
+    except Exception as e:
+        print(f"  R2 upload failed: {e}")
+        return False
+
+
 def push_results(standings: dict, ko: dict | None = None) -> bool:
     if not ENDPOINT:
         print("FOOTYHUB_LIVE_ENDPOINT not set — cannot push.")
         return False
-    # GET freshest live.json so we never clobber the engine's match/score fields
+    # GET the live.json the SITE actually reads (R2/cdn), fall back to the Worker — so we
+    # merge into the freshest copy and never clobber the engine's match/score fields.
     data = {}
-    try:
-        r = requests.get(ENDPOINT + "/live.json", headers={"User-Agent": _HDRS["User-Agent"]}, timeout=15)
-        if r.ok:
-            data = r.json()
-    except Exception:
-        pass
+    for src in (_R2_READ, ENDPOINT + "/live.json"):
+        try:
+            r = requests.get(src, headers={"User-Agent": _HDRS["User-Agent"]}, timeout=15)
+            if r.ok:
+                data = r.json()
+                break
+        except Exception:
+            pass
     res = data.get("results") or {}
     if standings:
         res["standings"] = standings
@@ -124,22 +165,23 @@ def push_results(standings: dict, ko: dict | None = None) -> bool:
         res["ko"] = ko
     res["updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     data["results"] = res
-    body = json.dumps(data, ensure_ascii=False).encode("utf-8")
+    body_str = json.dumps(data, ensure_ascii=False)
+    teams = sum(len(v) for v in standings.values())
+    ok_w = ok_r2 = False
     try:
-        r = requests.post(ENDPOINT + "/", data=body, headers=_HDRS, timeout=15)
-        ok = r.ok
-        teams = sum(len(v) for v in standings.values())
-        print(f"  push -> {r.status_code} ({len(standings)} groups, {teams} teams)")
-        # also keep the local file in sync for push_live.py / build scripts
-        try:
-            with open(os.path.join(_HERE, "live.json"), "w", encoding="utf-8") as f:
-                f.write(json.dumps(data, indent=2, ensure_ascii=False))
-        except Exception:
-            pass
-        return ok
+        r = requests.post(ENDPOINT + "/", data=body_str.encode("utf-8"), headers=_HDRS, timeout=15)
+        ok_w = r.ok
+        print(f"  worker push -> {r.status_code}")
     except Exception as e:
-        print(f"  push failed: {e}")
-        return False
+        print(f"  worker push failed: {e}")
+    ok_r2 = _upload_r2(body_str)
+    print(f"  R2 (cdn.footyhub.tv) upload -> {'OK' if ok_r2 else 'FAILED'}  ({len(standings)} groups, {teams} teams)")
+    try:
+        with open(os.path.join(_HERE, "live.json"), "w", encoding="utf-8") as f:
+            f.write(json.dumps(data, indent=2, ensure_ascii=False))
+    except Exception:
+        pass
+    return ok_w or ok_r2
 
 
 def settle_match(match_id: str, ah: int, aa: int) -> None:
@@ -226,7 +268,10 @@ async def settle_finished(client, tid: int, sid: int):
 async def amain(args):
     from playwright.async_api import async_playwright
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)   # residential IP + real browser => no 403
+        # headed (residential IP + real browser => no 403), but pushed off-screen so it
+        # never steals focus / appears over OBS during a live broadcast
+        browser = await p.chromium.launch(
+            headless=False, args=["--window-position=12000,12000", "--window-size=900,700"])
         ctx = await browser.new_context(
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                        "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
