@@ -50,62 +50,8 @@ _HDRS = {
                   "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
 }
 
-# ── name -> flag code (handles Sofascore's spellings) ─────────────────────────
-def _norm(s: str) -> str:
-    s = unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode()
-    return re.sub(r"[^a-z0-9]", "", s.lower())
-
-# build lookup from build_fixtures.TEAMS (full name + display name) + Sofascore aliases
-_CODE = {}
-_DISPLAY = {}
-for _full, (_code, _disp) in TEAMS.items():
-    _CODE[_norm(_full)] = _code
-    _CODE[_norm(_disp)] = _code
-    _DISPLAY[_code] = _disp
-_ALIASES = {
-    "korearepublic": "kr", "southkorea": "kr", "iriran": "ir", "iran": "ir",
-    "cotedivoire": "ci", "ivorycoast": "ci", "turkiye": "tr", "turkey": "tr",
-    "czechia": "cz", "czechrepublic": "cz", "unitedstates": "us", "usa": "us",
-    "bosniaherzegovina": "ba", "bosniaandherzegovina": "ba", "drcongo": "cd",
-    "congodr": "cd", "curacao": "cw", "capeverde": "cv", "caboverde": "cv",
-    "newzealand": "nz", "saudiarabia": "sa", "southafrica": "za",
-}
-_CODE.update(_ALIASES)
-
-
-def code_for(name: str) -> str:
-    return _CODE.get(_norm(name), "")
-
-
-def _gd(gf: int, ga: int) -> str:
-    d = int(gf or 0) - int(ga or 0)
-    return ("+" + str(d)) if d > 0 else str(d)
-
-
-def rows_to_standings(rows: list) -> dict:
-    """Sofascore standings rows -> {"A":[{code,name,p,w,d,l,gf,ga,gd,pts}], ...} in site order."""
-    out: dict = {}
-    for r in rows:
-        grp = (r.get("group") or "").strip()
-        m = re.search(r"group\s*([a-l])\b", grp, re.I)
-        if not m:
-            continue   # skip non-group sections (e.g. Sofascore's "ranking of 3rd-placed teams")
-        key = m.group(1).upper()
-        code = code_for(r.get("team", ""))
-        if not code:
-            print(f"  [warn] no flag code for Sofascore team {r.get('team','')!r} — skipped")
-            continue
-        gf, ga = int(r.get("goals_for", 0) or 0), int(r.get("goals_against", 0) or 0)
-        out.setdefault(key, []).append({
-            "code": code, "name": _DISPLAY.get(code, r.get("team", "")),
-            "p": int(r.get("played", 0) or 0), "w": int(r.get("wins", 0) or 0),
-            "d": int(r.get("draws", 0) or 0), "l": int(r.get("losses", 0) or 0),
-            "gf": gf, "ga": ga, "gd": _gd(gf, ga), "pts": int(r.get("points", 0) or 0),
-            "pos": int(r.get("position", 99) or 99),
-        })
-    for key in out:
-        out[key].sort(key=lambda x: x.pop("pos"))
-    return out
+# ── name -> flag code + standings builder (shared with the cloud espn_sync.py) ──
+from fh_standings import code_for, rows_to_standings   # noqa: E402,F401
 
 
 # ── Cloudflare R2 (the site reads live.json from cdn.footyhub.tv = R2, NOT the Worker) ──

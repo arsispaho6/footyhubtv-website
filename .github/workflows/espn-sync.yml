@@ -1,0 +1,53 @@
+name: espn-sync
+
+# CLOUD, PC-OFF auto-updater for FootyHub TV.
+# Every 15 minutes this pulls World Cup 2026 group standings + finished-match results
+# from ESPN's PUBLIC API (no key, and — unlike Sofascore — NOT blocked from datacenters)
+# and writes them to the SAME edge-cached store the public site reads (Cloudflare R2 /
+# cdn.footyhub.tv) plus the Worker. Result: the group tables fill and the Predictor
+# settles 24/7, even when the broadcast PC is completely OFF.
+#
+# Repo secrets it uses (Settings -> Secrets and variables -> Actions):
+#   FOOTYHUB_LIVE_SECRET  — Worker write secret (already set; shared with notify-kickoff)
+#   R2_ENDPOINT R2_ACCESS_KEY R2_SECRET_KEY R2_BUCKET — Cloudflare R2 (the cdn the SITE reads)
+# Without the four R2_* secrets it still updates the Worker, but the public site (which
+# reads the R2 cdn) won't change — so add all four to go fully PC-off.
+#
+# Manual run: Actions -> espn-sync -> Run workflow.
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'        # every 15 minutes
+  workflow_dispatch:
+
+concurrency:
+  group: espn-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install R2 client
+        run: pip install --quiet boto3
+
+      - name: ESPN -> standings + settle -> cdn + Worker
+        env:
+          FOOTYHUB_LIVE_SECRET: ${{ secrets.FOOTYHUB_LIVE_SECRET }}
+          ENDPOINT: https://footyhub-live.footyhubtv.workers.dev
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCESS_KEY: ${{ secrets.R2_ACCESS_KEY }}
+          R2_SECRET_KEY: ${{ secrets.R2_SECRET_KEY }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          if [ -z "$FOOTYHUB_LIVE_SECRET" ]; then
+            echo "FOOTYHUB_LIVE_SECRET not set — add it in repo Settings to arm."
+            exit 0
+          fi
+          python3 espn_sync.py
