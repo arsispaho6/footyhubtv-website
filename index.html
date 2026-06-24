@@ -17,7 +17,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="FootyHub TV">
 <meta property="og:title" content="FootyHub TV — Live AI Football Commentary">
-<meta property="og:description" content="LIA &amp; Victor are two AI broadcasters calling every World Cup 2026 (Mundial) match live, free on YouTube — with 48 nations of AI fans in the stands.">
+<meta property="og:description" content="The AI football channel with actual opinions. LIA &amp; Victor call every World Cup 2026 (Mundial) match live, free on YouTube — with 48 nations of AI fans in the stands.">
 <meta property="og:url" content="https://footyhub.tv/">
 <meta property="og:image" content="https://footyhub.tv/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -1368,6 +1368,115 @@
     background:rgba(15,8,28,.7);padding:5px 14px;border-radius:50px;border:1px solid rgba(150,70,255,.18)}
   footer.f{position:relative;z-index:1;text-align:center;padding:46px 20px 90px;color:var(--txt-3);font-size:.74rem}
   footer.f a{color:rgba(200,170,255,.5);text-decoration:none}
+
+  /* ===== PRO SECTIONS CSS ===== */
+  /* ── ABOUT page ── (reuses .pt-*/.founding/.sect-title; only the prose blocks below are new) */
+  #aboutPage{padding-top:120px}
+  .about-canon{max-width:680px;margin:0 auto 36px;padding:26px 30px;border-radius:18px;border:1px solid rgba(150,70,255,.22);background:rgba(150,70,255,.05)}
+  .about-canon p{font-size:.98rem;color:var(--txt-2);line-height:1.7;margin:0}
+  .about-disclaim{font-size:.82rem;color:var(--txt-2);line-height:1.6;max-width:560px;margin:14px auto 0;padding:14px 18px;border-radius:14px;border:1px solid rgba(150,70,255,.18);background:rgba(150,70,255,.04)}
+  .about-disclaim b{color:#fff}
+  .about-tags .pt-tags a{text-decoration:none;cursor:pointer}
+  .about-tags .pt-tags a:hover{color:#fff;border-color:var(--violet)}
+  /* ── FAQ accordion (native <details>, keyboard-accessible; styled to match .sched-exp) ── */
+  .faq-list{max-width:760px;margin:0 auto}
+  .faq-item{border:1px solid rgba(150,70,255,.22);border-radius:14px;background:rgba(255,255,255,.02);margin-bottom:12px;overflow:hidden;transition:border-color .2s}
+  .faq-item[open]{border-color:rgba(150,70,255,.45);background:rgba(150,70,255,.06)}
+  .faq-item:hover{border-color:rgba(150,70,255,.4)}
+  .faq-q{display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;list-style:none;
+    padding:18px 20px;font-size:1rem;font-weight:700;color:#fff;line-height:1.4}
+  .faq-q::-webkit-details-marker{display:none}
+  .faq-q:focus-visible{outline:2px solid var(--violet);outline-offset:-2px;border-radius:14px}
+  .faq-chev{flex:none;color:var(--txt-3);font-size:.85rem;transition:transform .25s,color .2s}
+  .faq-item[open] .faq-chev{transform:rotate(180deg);color:#caa9ff}
+  .faq-a{padding:0 20px 20px;color:var(--txt-2);font-size:.95rem;line-height:1.65;animation:schedDrop .25s ease}
+  .faq-a a{color:#caa9ff;text-decoration:underline;cursor:pointer}
+  .faq-a a:hover{color:#fff}
+  .faq-a b{color:#fff;font-weight:700}
+  .faq-foot{max-width:760px;margin:34px auto 0;text-align:center;font-size:.9rem;color:var(--txt-3);line-height:1.6}
+  .faq-foot a{color:#caa9ff;text-decoration:underline}
+  .faq-foot a:hover{color:#fff}
+  @media(max-width:560px){.faq-q{font-size:.92rem;padding:15px 16px}.faq-a{padding:0 16px 16px}}
+  /* ── AI & DATA TRANSPARENCY (homepage section) ── */
+  .ai-truth .at-hero{max-width:680px;margin:0 auto 26px;text-align:center}
+  .at-kicker{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#caa9ff;background:rgba(150,70,255,.18);border:1px solid rgba(150,70,255,.4);padding:5px 14px;border-radius:50px;margin-bottom:14px}
+  .at-h{font-size:1.5rem;font-weight:800;color:#fff;line-height:1.25;margin:0 0 12px}
+  .at-h{background:linear-gradient(90deg,#fff,#d9c2ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .ai-truth .at-sub{font-size:.92rem;color:var(--txt-2);line-height:1.65;margin:0 auto;max-width:600px}
+  .ai-truth .at-sub b{color:#fff}
+  .at-grid{margin:24px 0 26px}
+  .at-note{max-width:680px;margin:0 auto}
+  .at-note .founding-p{margin-bottom:14px}
+  .at-note .founding-p b{color:#fff}
+  .at-fineprint{font-size:.74rem;color:var(--txt-3);line-height:1.6;margin:0;letter-spacing:.01em}
+  @media(max-width:768px){.at-h{font-size:1.28rem}}
+  /* ── Upgraded sponsor offer ── */
+  .spon-numbers{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;margin:8px 0 6px;border-radius:16px;overflow:hidden;border:1px solid rgba(150,70,255,.2);background:rgba(150,70,255,.18)}
+  .sn-item{background:#13091f;padding:20px 18px;text-align:center;display:flex;flex-direction:column;gap:5px}
+  .sn-item b{font-size:1.5rem;font-weight:800;color:#fff;letter-spacing:-.01em;line-height:1}
+  .sn-item span{font-size:.74rem;color:var(--txt-2);line-height:1.3}
+  .spon-lead{font-size:.9rem;color:var(--txt-2);line-height:1.6;max-width:560px;margin:0 0 18px}
+  .spon-tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:30px}
+  .spon-tier{position:relative;padding:26px 24px;border-radius:18px;background:rgba(150,70,255,.05);border:1px solid rgba(150,70,255,.16);display:flex;flex-direction:column;transition:.3s}
+  .spon-tier:hover{border-color:rgba(150,70,255,.4);background:rgba(150,70,255,.09)}
+  .spon-tier.feat{border-color:var(--violet);background:linear-gradient(180deg,rgba(150,70,255,.14),rgba(150,70,255,.03))}
+  .st-flag{position:absolute;top:-11px;left:24px;font-size:.66rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#fff;background:var(--violet);padding:4px 12px;border-radius:50px}
+  .st-flag.gold{background:linear-gradient(135deg,#e8b94a,#c8932a);color:#1a0e02}
+  .st-name{font-size:1.12rem;font-weight:800;color:#fff;margin-bottom:4px}
+  .st-price{font-size:.92rem;font-weight:700;color:#caa9ff;margin-bottom:16px}
+  .st-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;flex:1}
+  .st-list li{font-size:.84rem;color:var(--txt-2);line-height:1.45;padding-left:20px;position:relative}
+  .st-list li::before{content:"✓";position:absolute;left:0;top:0;color:var(--violet);font-weight:800}
+  .st-list li b{color:#fff}
+  .spon-place{padding:26px 28px;border-radius:18px;background:rgba(150,70,255,.05);border:1px solid rgba(150,70,255,.16);margin-bottom:24px}
+  .spon-place p{font-size:.9rem;color:var(--txt-2);line-height:1.65;margin:6px 0 0}
+  .spon-trust{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:18px 22px;border-radius:16px;border:1px solid rgba(150,70,255,.2);background:rgba(150,70,255,.04);margin-bottom:24px}
+  .st-badge{display:flex;flex-direction:column;gap:3px;flex-shrink:0}
+  .stb-k{font-size:.64rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3)}
+  .stb-v{font-size:.92rem;color:#fff}
+  .stb-v b{color:#caa9ff}
+  .stb-note{font-size:.76rem;color:var(--txt-3);line-height:1.5;margin:0;flex:1;min-width:220px}
+  .spon-contact{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin-bottom:30px}
+  .spon-cline{font-size:.86rem;color:var(--txt-2)}
+  .spon-cline a{color:#caa9ff;text-decoration:underline}
+  .spon-cline .ph,.st-price .ph{color:#fff;font-style:normal}
+  /* ── ROADMAP (Now → Next → Later) ── */
+  .roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+  @media(max-width:760px){.roadmap{grid-template-columns:1fr}}
+  .rm-col{display:flex;flex-direction:column;gap:14px;padding:24px;border-radius:18px;
+    background:linear-gradient(180deg,rgba(150,70,255,.07),rgba(150,70,255,.02));
+    border:1px solid rgba(150,70,255,.18);transition:transform .3s,border-color .3s,background .3s}
+  .rm-col:hover{transform:translateY(-3px);border-color:rgba(150,70,255,.42);background:rgba(150,70,255,.09)}
+  .rm-col.rm-now{border-color:rgba(185,130,255,.5);box-shadow:0 0 26px rgba(150,90,255,.18)}
+  .rm-phase{align-self:flex-start;font-size:.62rem;font-weight:700;letter-spacing:.06em;color:#caa9ff;
+    background:var(--violet-dim);border:1px solid var(--violet-soft);padding:4px 11px;border-radius:50px;
+    text-transform:uppercase;white-space:nowrap}
+  .rm-phase.live{color:#fff;background:rgba(255,59,59,.16);border-color:rgba(255,59,59,.5)}
+  .rm-col h3{font-size:1.08rem;margin:0;line-height:1.25}
+  .rm-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:11px}
+  .rm-list li{position:relative;padding-left:24px;font-size:.86rem;color:var(--txt-2);line-height:1.45}
+  .rm-list li::before{content:'';position:absolute;left:0;top:6px;width:13px;height:7px;
+    border-left:2px solid var(--violet);border-bottom:2px solid var(--violet);transform:rotate(-45deg)}
+  .rm-now .rm-list li::before{border-color:#b982ff}
+
+  /* ── COMMUNITY CTA ── */
+  .community{position:relative;overflow:hidden;display:flex;align-items:center;gap:22px;max-width:960px;margin:0 auto;
+    text-decoration:none;padding:24px 30px;border-radius:22px;
+    background:linear-gradient(100deg,rgba(150,70,255,.16),rgba(150,70,255,.05));
+    border:1.5px solid rgba(150,70,255,.4);box-shadow:0 0 0 1px rgba(150,70,255,.14),0 10px 40px rgba(140,60,255,.16);
+    transition:transform .25s,box-shadow .25s,border-color .25s}
+  .community:hover{transform:translateY(-3px);border-color:rgba(150,70,255,.78);
+    box-shadow:0 0 0 1px rgba(150,70,255,.3),0 16px 52px rgba(140,60,255,.3)}
+  .cm-ic{flex:0 0 60px;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:1.9rem;background:radial-gradient(circle at 30% 25%,rgba(150,90,255,.6),rgba(80,30,160,.4));
+    border:1px solid rgba(150,70,255,.45);box-shadow:0 0 30px rgba(140,60,255,.3)}
+  .cm-l{flex:1}
+  .cm-l h3{font-size:1.12rem;margin:0 0 5px}
+  .cm-l p{font-size:.9rem;color:var(--txt-2);margin:0;line-height:1.5}
+  .cm-cta{flex:0 0 auto;font-size:.82rem;font-weight:700;color:#fff;background:linear-gradient(90deg,#7a32d2,#9646ff);
+    padding:11px 20px;border-radius:50px;white-space:nowrap}
+  @media(max-width:600px){.community{flex-direction:column;align-items:flex-start;text-align:left;padding:22px}
+    .cm-cta{width:100%;text-align:center}}
 </style>
 <script type="application/ld+json">
 {
@@ -1431,11 +1540,11 @@
   <!-- nav links moved into the full-screen menu -->
 
   <span class="social">
-    <a class="lang" title="Language">&#127760; EN</a>
+    <span class="lang" style="cursor:default">English</span>
     <a title="YouTube · @FootyHub_TV" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg></a>
     <a title="Twitch · @footyhubtv" href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M4 2 2.5 5.7v15h5.2V24h2.9l2.9-3.3h4.3L23 15V2zm16.6 12.3L18 17h-4.3l-2.9 2.9V17H6.4V4h14.2zM16.7 7.6h-1.9v5.6h1.9zm-5 0H9.8v5.6h1.9z"/></svg></a>
     <a title="Instagram · @footyhubtv" href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm5.3-3.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg></a>
-    <a title="TikTok"><svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.7a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.4a3.3 3.3 0 1 0 2.3 3.1V3z"/></svg></a>
+    <a title="TikTok — coming soon"><svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.7a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.4a3.3 3.3 0 1 0 2.3 3.1V3z"/></svg></a>
     <span class="authbox"><span class="gbtn" id="gSignin"></span><span class="userchip" id="userChip" hidden></span></span>
     <a class="watch-cta" data-action="live">&#9679; Watch Live</a>
     <button class="nav-menu" data-action="menu"><span class="nm-bars"><i></i><i></i><i></i></span> <span class="nm-label">Menu</span></button>
@@ -1464,10 +1573,10 @@
     <!-- HERO A: Centered Spotlight -->
     <section class="hero-off heroA" id="heroA" hidden>
       <img class="logo" src="logo-trans.png" alt="FootyHub TV">
-      <div class="kicker">The AI football channel with actual opinions</div>
+      <div class="kicker">The AI football channel with actual opinions.</div>
       <div class="next-card">
         <div class="nm-label">Next Live Match</div>
-        <div class="nm-teams">Mexico <span style="color:var(--txt-3)">vs</span> South Africa</div>
+        <div class="nm-teams">Mexico <span style="color:var(--txt-3)">v</span> South Africa</div>
         <div class="nm-comp">Mundial 2026 · Opening match · 11 Jun</div>
         <div class="countdown">
           <div class="cd-box"><div class="cd-num cd-d">06</div><div class="cd-unit">days</div></div>
@@ -1487,7 +1596,8 @@
       <div class="hb-grid">
         <div class="hb-left">
           <h2 class="hb-headline">LIVE AI FOOTBALL,<br><span class="ai">COMMENTARY &amp; ANALYSIS.</span></h2>
-          <p class="hb-sub">LIA on the call. Victor on the analysis. A fan for every nation.</p>
+          <p class="hb-sub">LIA on the call. Victor on the numbers. A fan for every nation.</p>
+          <p class="hb-sub" style="margin-top:6px;font-size:.8rem;opacity:.72">🤖 AI broadcasters, real football — everything LIA &amp; Victor say is AI-generated live. <a href="#aitruth" style="color:#caa9ff;text-decoration:underline">How it works</a></p>
           <div class="panel vtease" id="vtease">
             <div class="vt-head"><span class="vt-av">V</span><span class="vt-title">Victor's Triple Bet</span><span class="vt-pre">Built by maths</span></div>
             <p class="vt-intro">Every slip is built by Victor's statistical model — live odds, team form and expected goals. Never hunches.</p>
@@ -1496,9 +1606,9 @@
               <div class="vt-step"><span class="vt-dot med"></span><div class="vt-st-tx"><b>+2 tiers — Medium &amp; Max</b><span>Live in the pre-game, before kickoff</span></div></div>
               <div class="vt-step"><span class="vt-dot max"></span><div class="vt-st-tx"><b>+ more bets in-play 🔥</b><span>Dropping all match long</span></div></div>
             </div>
-            <a class="vt-more" data-action="live"><b>Open the live window ▸</b><span>The free safe pick is waiting there</span></a>
+            <a class="vt-more" data-action="live"><b>Open the live window →</b><span>The free safe pick is waiting there</span></a>
             <div class="bet-foot">Entertainment only · 18+ · Not financial advice</div>
-            <div class="bet-teaser" data-vprem><span class="tz">Victor's Premium Tips · coming 2026 ›</span></div>
+            <div class="bet-teaser" data-vprem><span class="tz">Victor's Premium Tips · coming 2026 →</span></div>
           </div>
         </div>
         <div class="hb-right">
@@ -1506,7 +1616,7 @@
             <!-- OFF-AIR: next match -->
             <div id="posterOff">
               <div class="poster-label"><span class="ldot"></span>Next live match · on FootyHub TV</div>
-              <div class="poster-teams">Mexico <span>vs</span> South Africa</div>
+              <div class="poster-teams">Mexico <span>v</span> South Africa</div>
               <div class="poster-comp">Mundial 2026 · Opening match · Estadio Azteca · 11 Jun</div>
               <div class="countdown poster-cd">
                 <div class="cd-box"><div class="cd-num cd-d">06</div><div class="cd-unit">days</div></div>
@@ -1523,7 +1633,7 @@
                 </select>
                 <form class="notify poster-notify" onsubmit="return false">
                   <input type="email" placeholder="your@email.com" aria-label="Your email for match alerts">
-                  <button class="btn" type="submit">Notify me &#9656;</button>
+                  <button class="btn" type="submit">Notify me &rarr;</button>
                 </form>
                 <button class="share-btn np-sub" data-alerts style="width:100%;margin-top:9px">🔔 Get match alerts</button>
                 <a class="yt-sub np-sub" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg> Subscribe on YouTube</a>
@@ -1603,7 +1713,7 @@
     <section class="sect" id="clips">
       <div class="clips-head">
         <div class="sect-title">The moments we'll clip</div>
-        <a class="clips-follow" href="#">▶ Shorts · Reels · TikTok — coming soon</a>
+        <a class="clips-follow">▶ Shorts · Reels · TikTok — coming soon</a>
       </div>
       <div class="clips" id="clipStrip"></div>
     </section>
@@ -1622,6 +1732,70 @@
         <div class="m-enter" id="mEnter">Enter the Mundial hub →</div>
       </div>
     </section>
+<section class="sect ai-truth" id="aitruth">
+      <div class="sect-title">AI &amp; Data · full transparency</div>
+      <div class="at-hero">
+        <div class="at-kicker">🤖 Built with AI, on purpose</div>
+        <h2 class="at-h">The football is real. The broadcasters are AI — and we're proud of it.</h2>
+        <p class="at-sub">FootyHub TV is an AI football channel by design. Everything LIA and Victor say is generated live by AI, in their own ElevenLabs voices, and all 48 nation fans in the stands are AI too. What's <b>100% real</b> is the match itself — the live football, the scores and the stats, straight from public data feeds.</p>
+      </div>
+
+      <div class="pt-grid at-grid">
+        <div class="pt-card"><div class="pt-ic">🎙️</div><h3>LIA &amp; Victor are AI</h3><p>Every line of commentary and analysis is AI-generated live, on the fly — never scripted, never pre-recorded. The voices are synthesised by ElevenLabs.</p></div>
+        <div class="pt-card"><div class="pt-ic">🌍</div><h3>48 fans, all AI</h3><p>Each nation gets its own AI supporter in the stands, reacting in real time. They're characters, not real people — and we say so, out loud.</p></div>
+        <div class="pt-card"><div class="pt-ic">⚽</div><h3>The match is 100% real</h3><p>Real live football. Real scoreline. Real stats. We never invent a result — the AI commentates on the genuine game as it happens.</p></div>
+        <div class="pt-card"><div class="pt-ic">📊</div><h3>Real data, live</h3><p>Scores, line-ups and match stats are pulled from public football data feeds, including Sofascore, and updated throughout every match.</p></div>
+      </div>
+
+      <div class="founding at-note">
+        <div class="founding-tag">📐 On the numbers</div>
+        <p class="founding-p">Expected goals (xG), win-probability and Victor's model outputs are <b>illustrative analysis, not official figures</b> — built from public data to add context and colour, and they can differ from any official source. Live scores and final results always follow the real match.</p>
+        <p class="at-fineprint">Football data via public feeds incl. Sofascore · AI voices by ElevenLabs · Predictor is skill-based, free, 18+ — not gambling.</p>
+      </div>
+    </section>
+
+
+    <section class="sect roadmap-sect" id="roadmap">
+      <div class="sect-title">Where FootyHub TV is heading</div>
+      <div class="roadmap">
+        <div class="rm-col rm-now">
+          <span class="rm-phase live">● Now · live</span>
+          <h3>On air for the Mundial</h3>
+          <ul class="rm-list">
+            <li>AI live commentary on every match — all 104, 48 nations</li>
+            <li>Free FootyHub Predictor + live leaderboard</li>
+            <li>48 home-nation fan voices, one for every flag</li>
+          </ul>
+        </div>
+        <div class="rm-col rm-next">
+          <span class="rm-phase">Next · in build</span>
+          <h3>More ways to watch</h3>
+          <ul class="rm-list">
+            <li>Clips &amp; highlights — Shorts · Reels · TikTok</li>
+            <li>More commentary languages beyond English</li>
+            <li>Victor Premium — deeper tips &amp; pre-match reads</li>
+          </ul>
+        </div>
+        <div class="rm-col rm-later">
+          <span class="rm-phase">Later · on the board</span>
+          <h3>Beyond the Mundial</h3>
+          <ul class="rm-list">
+            <li>Year-round coverage of more leagues</li>
+            <li>A FootyHub mobile app</li>
+            <li>Community features — play &amp; talk together</li>
+          </ul>
+        </div>
+      </div>
+      <a class="community" href="[[OWNER: Discord/community URL]]" target="_blank" rel="noopener">
+        <div class="cm-ic">⚽</div>
+        <div class="cm-l">
+          <h3>Talk football between matches</h3>
+          <p>Join the community — predictions, banter and every Mundial moment with fans worldwide.</p>
+        </div>
+        <span class="cm-cta">Join the community →</span>
+      </a>
+    </section>
+
 
     <div class="ribbon" id="partners">
       <p>Want your brand seen by football fans, every match? Sponsor FootyHub TV.</p>
@@ -1658,7 +1832,7 @@
             <div class="leg safe" style="opacity:.7"><span class="info"><div class="sel">Victor's safe pick drops in the live pre-game ▸</div></span></div>
           </div>
           <div class="vt-total"><span class="vt-tl">Safe combined</span><span class="vt-to">—</span></div>
-          <div class="vlock"><span class="vlock-ic">🔒</span><span class="vlock-tx"><b>Medium &amp; Max — live on FootyHub TV</b><span>Victor drops them in the live pre-game, before kickoff — so you've time to play them too</span></span></div>
+          <div class="vlock"><span class="vlock-ic">🔒</span><span class="vlock-tx"><b>Medium &amp; Max — live on FootyHub TV</b><span>Victor drops them in the live pre-game, before kickoff — so you've got time to play them too</span></span></div>
           <div class="bet-foot">Entertainment only · 18+ · Not financial advice</div>
           <div class="bet-teaser" data-vprem><span class="tz">Coming soon · Victor's Premium Tips</span></div>
         </div>
@@ -1696,7 +1870,7 @@
         </div>
         <div class="watch-next" id="watchNext">
           <div class="wn-label"><span class="ldot"></span>Next live on FootyHub TV</div>
-          <div class="wn-teams">Mexico <span>vs</span> South Africa</div>
+          <div class="wn-teams">Mexico <span>v</span> South Africa</div>
           <div class="wn-comp">Mundial 2026 · Opening match · Estadio Azteca</div>
           <div class="countdown wn-cd">
             <div class="cd-box"><div class="cd-num cd-d">06</div><div class="cd-unit">days</div></div>
@@ -1704,7 +1878,7 @@
             <div class="cd-box"><div class="cd-num cd-m">14</div><div class="cd-unit">min</div></div>
             <div class="cd-box"><div class="cd-num cd-s">39</div><div class="cd-unit">sec</div></div>
           </div>
-          <div class="wn-note">When the clock hits zero, the <b>live pre-game</b> begins — Victor's <b>Medium &amp; Max</b> drop then, before kickoff, so you've time to play them.</div>
+          <div class="wn-note">When the clock hits zero, the <b>live pre-game</b> begins — Victor's <b>Medium &amp; Max</b> drop then, before kickoff, so you've got time to play them.</div>
           <div class="wn-actions">
             <a class="btn wn-notify" data-action="notifynext">🔔 Notify me</a>
             <a class="poster-predict" data-action="predict">🏆 Predict &amp; win</a>
@@ -1715,7 +1889,7 @@
         <div class="also">
           <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M4 2 2.5 5.7v15h5.2V24h2.9l2.9-3.3h4.3L23 15V2z"/></svg>Watch on Twitch</a>
           <a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm5.3-3.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg>Instagram</a>
-          <a><svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.7a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.4a3.3 3.3 0 1 0 2.3 3.1V3z"/></svg>Watch on TikTok</a>
+          <a><svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.7a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.4a3.3 3.3 0 1 0 2.3 3.1V3z"/></svg>TikTok — coming soon</a>
           <button class="share-btn" data-share style="padding:9px 16px;font-size:.78rem">📤 Share</button>
         </div>
       </div>
@@ -1745,7 +1919,7 @@
       <div class="hf-avatar"><img src="avatars/lia.png" alt="LIA"></div>
       <div class="hf-body">
         <div class="hf-name">LIA <span class="hf-tag">Lead Commentator · permanent</span></div>
-        <p class="hf-bio">The world's first AI football commentator with a <b>real personality</b> — fast, passionate, a little cheeky. LIA calls every kick with genuine emotion, reads the room, reacts to viewers live, and never, ever plays it neutral.</p>
+        <p class="hf-bio">A new kind of AI football commentator with a <b>real personality</b> — fast, passionate, a little cheeky. LIA calls every kick with genuine emotion, reads the room, reacts to viewers live, and never, ever plays it neutral.</p>
         <div class="hf-traits"><span>Passionate</span><span>Witty</span><span>Reads your chat</span><span>Always on</span></div>
         <div class="hf-row">
           <div class="hf-quote">"Oh, that is SENSATIONAL!"</div>
@@ -1761,9 +1935,9 @@
         <p class="hf-bio">Cool, sharp and data-driven. Victor breaks down the tactics, reads the xG, and tracks his <b>Triple Bet</b> live on air. He calculates the odds — then picks a side anyway.</p>
         <div class="hf-traits"><span>Tactical</span><span>Data-driven</span><span>Community tipster</span></div>
         <div class="hf-track">
-          <div class="hft-stat"><div class="hft-num">62%</div><div class="hft-lbl">Hit rate</div></div>
-          <div class="hft-stat"><div class="hft-num">+14%</div><div class="hft-lbl">ROI · 30d</div></div>
-          <div class="hft-stat"><div class="hft-num">128</div><div class="hft-lbl">Tips tracked</div></div>
+          <div class="hft-stat"><div class="hft-num">Live</div><div class="hft-lbl">Tracked on air</div></div>
+          <div class="hft-stat"><div class="hft-num">Every pick</div><div class="hft-lbl">Shown in full</div></div>
+          <div class="hft-stat"><div class="hft-num">Win or lose</div><div class="hft-lbl">From match one</div></div>
         </div>
         <div class="hf-row">
           <div class="hf-quote">"The numbers don't lie."</div>
@@ -1808,7 +1982,7 @@
       <div style="font-size:3rem;line-height:1;margin-bottom:14px">🎬</div>
       <h3 style="margin:0 0 10px;font-size:1.35rem">Full-match replays — on our YouTube</h3>
       <p style="color:var(--txt-2);margin:0 0 22px;line-height:1.6">Every FootyHub TV broadcast is recorded in full — LIA &amp; Victor's call and all — and stays up on demand on our channel. Catch up on any match you missed, in full.</p>
-      <a class="btn" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Watch replays on YouTube &#9656;</a>
+      <a class="btn" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Watch replays on YouTube &rarr;</a>
     </div>
   </div>
 </main>
@@ -1833,14 +2007,14 @@
     <div class="hosts-hero">
       <div class="hp-kicker">Sponsorship &amp; Advertising</div>
       <h2 class="hp-title">Put your brand <span class="ai">in the game</span></h2>
-      <p class="hp-sub">FootyHub TV is the world's first AI football channel — calling every Mundial 2026 match live. Reach a growing, engaged audience of fans who watch, predict and chat through every match.</p>
+      <p class="hp-sub">FootyHub TV is a new kind of AI football channel — calling every Mundial 2026 match live. Reach a growing, engaged audience of fans who watch, predict and chat through every match.</p>
       <a class="btn pt-cta" href="#sponsorForm">Become a sponsor &rarr;</a>
     </div>
 
     <div class="founding">
       <div class="founding-tag">🚀 Founding Sponsor · Limited spots</div>
       <h2 class="founding-h">Get in before the Mundial</h2>
-      <p class="founding-p">Be one of the first brands on the world's first AI football channel — at special founding-partner rates. Lock in your spot before kickoff on June 11.</p>
+      <p class="founding-p">Be one of the first brands on a new kind of AI football channel — at special founding-partner rates. Lock in your spot before kickoff on June 11.</p>
       <ul class="founding-list">
         <li><b>🥇 First-mover</b> — your brand tied to the channel from day one</li>
         <li><b>💰 Founding rates</b> — early-partner pricing, before we scale</li>
@@ -1856,6 +2030,75 @@
       <div class="pt-card"><div class="pt-ic">📺</div><h3>Your brand everywhere</h3><p>Your name in our broadcasts, on-screen overlays, website and socials — seen on every match.</p></div>
       <div class="pt-card"><div class="pt-ic">🎯</div><h3>Flexible packages</h3><p>From a single match to a full-season title sponsor — built around your goals and budget.</p></div>
     </div>
+<!-- ════ UPGRADED SPONSOR OFFER ════ -->
+    <div class="spon-numbers">
+      <div class="sn-item"><b>104</b><span>live World Cup matches</span></div>
+      <div class="sn-item"><b>48</b><span>nations</span></div>
+      <div class="sn-item"><b>Jun 11 – Jul 19</b><span>2026</span></div>
+      <div class="sn-item"><b>One window</b><span>continuous broadcast</span></div>
+      <!-- [[OWNER: subscribers]] — uncomment when a real figure is set:
+      <div class="sn-item"><b>[[OWNER: subscribers]]</b><span>subscribers</span></div> -->
+      <!-- [[OWNER: avg concurrent viewers]] — uncomment when a real figure is set:
+      <div class="sn-item"><b>[[OWNER: avg concurrent viewers]]</b><span>avg concurrent viewers</span></div> -->
+    </div>
+
+    <div class="sect-title" style="text-align:left;margin:34px 0 4px">Sponsorship tiers</div>
+    <p class="spon-lead">Three ways to put your brand on the world's first AI football channel. Every tier is built around real on-air placement — not banner impressions.</p>
+    <div class="spon-tiers">
+      <div class="spon-tier">
+        <div class="st-name">Match Sponsor</div>
+        <div class="st-price">from €<span class="ph">[[OWNER: price]]</span></div>
+        <ul class="st-list">
+          <li>Logo on the broadcast overlay for one match</li>
+          <li><b>2</b> verbal mentions from LIA or Victor on air</li>
+          <li>Your logo on the live match page</li>
+          <li>One slot in the on-screen ticker</li>
+        </ul>
+      </div>
+      <div class="spon-tier feat">
+        <div class="st-flag">Most popular</div>
+        <div class="st-name">Group-Stage Partner</div>
+        <div class="st-price">from €<span class="ph">[[OWNER: price]]</span></div>
+        <ul class="st-list">
+          <li>Logo on the broadcast overlay across a full group stage</li>
+          <li><b>6</b> verbal LIA/Victor mentions per match week</li>
+          <li>Persistent logo on the live page &amp; schedule</li>
+          <li>Priority ticker slot, every match day</li>
+          <li>Predictor-prize co-branding (your brand on the prize)</li>
+        </ul>
+      </div>
+      <div class="spon-tier">
+        <div class="st-flag gold">Headline</div>
+        <div class="st-name">Title Sponsor</div>
+        <div class="st-price">On request</div>
+        <ul class="st-list">
+          <li>Top billing on the broadcast overlay, every match</li>
+          <li>Unlimited verbal LIA/Victor mentions, tournament-wide</li>
+          <li>Headline logo on the live page, schedule &amp; socials</li>
+          <li>Premium ticker presence + predictor-prize co-branding</li>
+          <li>A <b>named on-air segment</b> presented by your brand</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="spon-place">
+      <div class="sect-title" style="text-align:left">On air, here's what you get</div>
+      <p>Your logo sits on the live broadcast overlay while LIA and Victor call the match — read aloud at natural moments, not forced. Your name runs in the lower-third ticker between plays, shows on the live match page beside the real-time score and group standings, and — at partner level — co-brands the free Predictor prize that thousands of fans play for. Real football, real data, your brand in frame the whole way through.</p>
+    </div>
+
+    <div class="spon-trust">
+      <div class="st-badge">
+        <span class="stb-k">Tech partner</span>
+        <span class="stb-v">Voice AI powered by <b>ElevenLabs</b></span>
+      </div>
+      <p class="stb-note">Brand-safety &amp; compliance: gambling-related sponsorships are subject to applicable advertising regulations and 18+ age-gating; our AI hosts follow editorial guidelines.</p>
+    </div>
+
+    <div class="spon-contact">
+      <a class="btn" href="media-kit.pdf" target="_blank" rel="noopener noreferrer">Download media kit (PDF) &#9656;</a>
+      <div class="spon-cline">Partnerships — <span class="ph">[[OWNER: partnerships contact name]]</span> · <a href="mailto:partnerships@footyhub.tv">partnerships@footyhub.tv</a></div>
+    </div>
+
     <div class="pt-who">
       <div class="sect-title" style="text-align:left">Perfect for</div>
       <div class="pt-tags"><span>Brands</span><span>Sportsbooks</span><span>Apps &amp; platforms</span><span>Sports &amp; lifestyle</span><span>Anyone reaching football fans</span></div>
@@ -1881,7 +2124,7 @@
         </div>
         <textarea id="sfMsg" rows="3" placeholder="What are you interested in? (a single match, the season, on-screen overlays, the website…)" aria-label="What are you interested in?"></textarea>
         <input type="text" id="sfHP" name="company_url" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" placeholder="Leave empty">
-        <button class="btn" type="submit">Send inquiry &#9656;</button>
+        <button class="btn" type="submit">Send inquiry &rarr;</button>
         <div class="sf-note" id="sfNote">Or email us directly at <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a></div>
       </form>
     </div>
@@ -1889,6 +2132,52 @@
 </main>
 
 <!-- ════════ PREDICTOR ════════ -->
+<!-- ════════ ABOUT / OUR STORY page ════════ -->
+<main id="aboutPage">
+  <div class="wrap">
+    <a class="watch-back" data-action="home">&larr; Back to home</a>
+    <div class="hosts-hero">
+      <div class="hp-kicker">About</div>
+      <h2 class="hp-title">The AI football channel <span class="ai">with actual opinions</span></h2>
+      <p class="hp-sub">Real football, called by AI. FootyHub TV broadcasts live World Cup 2026 (Mundial) matches on YouTube — free, every match, all 104 of them.</p>
+    </div>
+
+    <!-- Canonical "what we are" — reuse this paragraph brand-wide -->
+    <div class="about-canon">
+      <p>FootyHub TV is a live AI football channel. The match is 100% real — real live football, real data from public feeds — but the broadcast booth is AI: LIA hosts and commentates, Victor analyses and calls the tips, and two AI fans bring the colours of each nation into the stands. Every voice is AI (powered by ElevenLabs). We stream every Mundial 2026 match free on YouTube, with a free skill-based Predictor game alongside it. Entertainment only · 18+.</p>
+    </div>
+
+    <div class="sect-title" style="margin-top:6px">What makes us different</div>
+    <div class="pt-grid">
+      <div class="pt-card"><div class="pt-ic">⚽</div><h3>The match is 100% real</h3><p>Real live football, real data from public feeds like Sofascore. Nothing about the game is invented — only the commentary booth is AI.</p></div>
+      <div class="pt-card"><div class="pt-ic">🎙️</div><h3>AI hosts with opinions</h3><p>LIA calls the action, Victor reads the tactics and the tips, and 48 nations of AI fans react live — voices by ElevenLabs.</p></div>
+      <div class="pt-card"><div class="pt-ic">📺</div><h3>Free, every match</h3><p>All 104 Mundial 2026 matches, 48 nations, June 11–July 19 — live and free on YouTube, plus full replays on demand.</p></div>
+      <div class="pt-card"><div class="pt-ic">🏆</div><h3>Play along, free</h3><p>Call the score in our free Predictor — skill-based, not gambling — and climb the leaderboard for Victor Premium and surprise prizes.</p></div>
+    </div>
+
+    <!-- Who's behind it -->
+    <div class="founding">
+      <div class="founding-tag">👋 Who's behind it</div>
+      <h2 class="founding-h">A small independent team</h2>
+      <p class="founding-p">We're a small independent team of football fans &amp; engineers — not a network, not a rights-holder. We started FootyHub TV because we wanted to watch every World Cup match with a broadcast that actually had character, and we built the AI to make it happen.</p>
+      <ul class="founding-list">
+        <li><b>Founder</b> — [[OWNER: founder name + 1-line bio]]</li>
+        <li><b>The crew</b> — fans &amp; engineers who build the AI, the voices and the broadcast.</li>
+        <li><b>Our promise</b> — the football stays real; we're upfront that the hosts are AI.</li>
+      </ul>
+      <a class="btn" data-action="hosts">Meet the cast &rarr;</a>
+    </div>
+
+    <!-- Legal + disclaimer -->
+    <div class="pt-foot">
+      <h3>The fine print</h3>
+      <p>Operated by [[OWNER: legal entity, country, company no.]]. Voice AI powered by ElevenLabs. Entertainment only · 18+.</p>
+      <div class="about-disclaim">FootyHub TV is an independent fan channel. We are <b>not affiliated with, endorsed by, or connected to FIFA, the FIFA World Cup, any national football association, or any official body</b>. All team names and tournament references are used for descriptive purposes only.</div>
+      <div class="about-tags" style="margin-top:20px"><div class="sect-title" style="text-align:center;margin-bottom:14px">Find us</div><div class="pt-tags" style="justify-content:center"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer">Twitch</a><a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a></div></div>
+    </div>
+  </div>
+</main>
+
 <main id="predict">
   <div class="wrap">
     <a class="watch-back" data-action="home">&larr; Back to home</a>
@@ -1913,7 +2202,7 @@
           <div class="pred-head"><span class="pred-tag">Today's matches</span><h3 class="pred-title">Predict the score</h3></div>
           <div class="pred-daydone" id="predDayDone" hidden></div>
           <div class="dm-row" id="predMatches"></div>
-          <div class="pred-match" id="predMatch">Mexico vs South Africa</div>
+          <div class="pred-match" id="predMatch">Mexico v South Africa</div>
           <div class="pred-body" id="predBody"></div>
           <div class="pred-rules">Right winner <b>1 pt</b> · Exact score <b>3 pts</b></div>
           <div class="pred-terms">One prediction per match · only before kickoff · today's matches only — come back each match day for the new fixtures.</div>
@@ -1932,6 +2221,80 @@
     </div>
   </div>
 </main>
+
+<!-- ════════ FAQ page ════════ -->
+<main id="faqPage">
+  <div class="wrap">
+    <a class="watch-back" data-action="home">&larr; Back to home</a>
+    <div class="hosts-hero">
+      <div class="hp-kicker">Frequently asked</div>
+      <h2 class="hp-title">Everything you want <span class="ai">to know</span></h2>
+      <p class="hp-sub">New here? Here's the honest rundown — what FootyHub TV is, what's real, what's AI, and how to watch. Tap a question to open it.</p>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary class="faq-q">What is FootyHub TV?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">FootyHub TV is an AI-driven live football channel on YouTube. We broadcast every match of World Cup 2026 (the Mundial) — 104 matches, 48 nations, June 11 to July 19 — with our own AI commentary team calling the action live. Free to watch, with a free Predictor game alongside every match.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Is the football real?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">Yes — 100%. The match is real live football with real data from public feeds. We don't simulate, script or alter anything that happens on the pitch. What's AI is the <b>commentary</b>: LIA and Victor call the real game as it unfolds.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Are LIA &amp; Victor real people?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">No. LIA (our host &amp; commentator) and Victor (our analyst &amp; tipster) are original AI characters — not real broadcasters and not based on real people. Their voices are AI, generated with ElevenLabs. Each match also features two AI fans, one for each nation playing, in the stands.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Is it free to watch?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">Yes. Every broadcast is free on our YouTube channel, and the Predictor game is free to play too. Subscribe on YouTube and we'll let you know the moment we go live.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Is this gambling?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">No. FootyHub TV is entertainment, and the Predictor is a free, skill-based game — you predict match scores, no money is staked and nothing is bought. Prizes are Victor Premium and surprise prizes, not cash. It's intended for an 18+ audience.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">How does the AI actually work?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">As the real match plays out, our system reads live data from public feeds and turns it into commentary in real time. LIA narrates the action, Victor adds analysis and tips, and the two AI fans react like supporters in the crowd. The voices you hear are AI-generated with ElevenLabs.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Where do the scores &amp; stats come from?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">Live scores, line-ups and match events come from public live football data feeds (such as Sofascore) and the official group standings. Figures like xG and win probability are illustrative outputs of our own models — they're there to add colour, and are not official statistics.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">How do I watch?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">On our YouTube channel, <a href="https://www.youtube.com/@FootyHub_TV" target="_blank" rel="noopener noreferrer">@FootyHub_TV</a> — also restreamed on <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer">Twitch</a>. The easiest way is to subscribe on YouTube and turn on notifications, so it tells you the second we kick off. You can also check the full <a data-action="schedule">schedule</a> here on the site.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">What's the Predictor &amp; what can I win?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">The Predictor is our free game: call the score of each Mundial match before kickoff to earn points (right winner = 1 pt, exact score = 3 pts) and climb the season leaderboard. The top predictors win <b>Victor Premium</b> plus surprise prizes, and the top three get a live shoutout from LIA &amp; Victor during the Final. <a data-action="predict">Play the Predictor &rarr;</a></div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">What languages is it in?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">English, for now. The entire broadcast — LIA, Victor and the fans — is in English throughout the Mundial. More languages may follow down the line.</div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-q">Who's behind FootyHub TV?<span class="faq-chev">&#9662;</span></summary>
+        <div class="faq-a">A small independent team of football fans and engineers building the channel we always wanted to watch. Got a question, a sponsorship idea or feedback? Reach us at <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a> or via our <a data-action="partners">sponsors page</a>.</div>
+      </details>
+    </div>
+
+    <div class="faq-foot">
+      Still curious? <a href="mailto:contact@footyhub.tv">Email us</a> or <a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w?sub_confirmation=1" target="_blank" rel="noopener noreferrer">subscribe on YouTube</a> so you never miss a kickoff.
+    </div>
+  </div>
+</main>
+
 
 <!-- MUNDIAL HUB overlay -->
 <div class="mhub" id="mhub" hidden role="dialog" aria-modal="true" aria-label="Mundial 2026 hub">
@@ -1998,6 +2361,8 @@
     </div>
     <div class="menu-col">
       <h5>More</h5>
+      <a data-action="about">About</a>
+      <a data-action="faq">FAQ</a>
       <a data-vprem>🏆 Victor Premium</a>
       <a data-action="mundial">Mundial 2026</a>
       <a data-action="partners">Sponsors</a>
@@ -2141,11 +2506,11 @@
     <button class="lbm-x" id="iosClose">&#10005;</button>
     <div class="ios-ic">📲</div>
     <h3>Get alerts on iPhone</h3>
-    <p id="iosIntro">iPhone needs one quick step first — add FootyHub to your Home Screen (Apple requires this in every browser):</p>
+    <p id="iosIntro">iPhone needs one quick step first — add FootyHub TV to your Home Screen (Apple requires this in every browser):</p>
     <ol class="ios-steps" id="iosSteps">
       <li>In <b>Safari</b>, tap <b>Share</b> <span class="ios-shr">&#x2191;</span> (bottom of the screen)</li>
       <li>Scroll down → tap <b>Add to Home Screen</b></li>
-      <li>Open <b>FootyHub</b> from your Home Screen</li>
+      <li>Open <b>FootyHub TV</b> from your Home Screen</li>
       <li>Tap <b>🔔 Get match alerts</b> again</li>
     </ol>
     <p class="ios-note">Then we'll buzz your phone the moment we go live ⚽</p>
@@ -2174,16 +2539,31 @@
   </div>
 </div>
 
+<!-- NOTIFY MODAL (styled email capture — replaces prompt) -->
+<div class="cmodal" id="notifyModal" hidden role="dialog" aria-modal="true" aria-label="Get match alerts">
+  <div class="cm-panel" data-lenis-prevent>
+    <button class="lbm-x" id="nmX">&#10005;</button>
+    <div class="cm-ic">🔔</div>
+    <h3>Get match alerts</h3>
+    <p id="nmSub">Drop your email and we'll remind you before kickoff.</p>
+    <form id="notifyForm" class="notify" style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <input type="email" id="nmEmail" placeholder="your@email.com" aria-label="Your email" required style="flex:1 1 180px;min-width:0">
+      <button class="btn" type="submit">Notify me &rarr;</button>
+    </form>
+    <p class="cm-note" style="margin-top:14px">Free · one email before kickoff · unsubscribe anytime.</p>
+  </div>
+</div>
+
 <footer class="f">
   <div class="f-grid">
     <div class="f-col">
       <div class="f-brand">FootyHub TV</div>
       <p class="f-tag">The AI football channel with actual opinions.</p>
-      <div class="f-social"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer">Twitch</a><a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="#">TikTok</a></div>
+      <div class="f-social"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer">Twitch</a><a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer">Instagram</a><a title="TikTok — coming soon">TikTok</a></div>
     </div>
     <div class="f-col"><h5>Watch</h5><a data-action="live">Live</a><a data-action="schedule">Schedule</a><a data-action="predict">Predictor</a><a data-action="clips">Clips</a><a data-action="watch">Replays</a></div>
     <div class="f-col"><h5>The Cast</h5><a data-action="hosts">LIA</a><a data-action="hosts">Victor</a><a data-action="fans">The 48 fans</a></div>
-    <div class="f-col"><h5>More</h5><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-privacy>Privacy</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a data-contact>Contact</a></div>
+    <div class="f-col"><h5>More</h5><a data-action="about">About</a><a data-action="faq">FAQ</a><a data-action="predict">Predictor</a><a data-tc>Contest Terms</a><a data-privacy>Privacy</a><a data-action="mundial">Mundial 2026</a><a data-action="partners">Sponsors</a><a data-contact>Contact</a></div>
   </div>
   <div class="f-bottom">© 2026 FootyHub TV. All rights reserved. · Voice AI powered by ElevenLabs · Entertainment only · 18+</div>
 </footer>
@@ -2347,12 +2727,12 @@
   // ── Persona profiles (LIA/Victor rich · fans lighter) ──
   const HOSTBIO={
     lia:{name:'LIA',role:'Lead Commentator · Permanent',quote:'Oh, that is SENSATIONAL!',traits:['Passionate','Witty','Reads your chat','Always on'],paras:[
-      "Meet <b>LIA</b> — the voice of FootyHub TV and the world's first AI football commentator built with a <b>real personality</b>. She doesn't read stats off a screen; she <i>feels</i> the game.",
+      "Meet <b>LIA</b> — the voice of FootyHub TV and a new kind of AI football commentator built with a <b>real personality</b>. She doesn't read stats off a screen; she <i>feels</i> the game.",
       "Fast, fearless and a little cheeky, LIA calls every kick with genuine emotion — she celebrates, she despairs, she gasps at a near-miss and roasts a lazy back-pass. She reads the room, answers the live chat by name, and <b>never, ever plays it neutral</b>.",
       "She works every match of the tournament, reads the live chat and answers viewers by name, and she's only getting started. Love her or argue with her — you won't be able to ignore her."]},
     victor:{name:'Victor',role:'Analyst & Tipster · Permanent',quote:"The numbers don't lie.",traits:['Tactical','Data-driven','Community tipster'],paras:[
       "<b>Victor</b> is the cool head beside LIA's fire — FootyHub TV's analyst and tipster. He reads the <b>xG</b>, breaks down the tactics, and tells you <i>why</i> a game is turning before it turns.",
-      "Every call he makes is built by a real statistical model — live odds, team form, expected goals. He works out the edge… then picks a side anyway, live on air, with his <b>Triple Bet</b>. Medium &amp; Max drop in the pre-game, so you've time to play along.",
+      "Every call he makes is built by a real statistical model — live odds, team form, expected goals. He works out the edge… then picks a side anyway, live on air, with his <b>Triple Bet</b>. Medium &amp; Max drop in the pre-game, so you've got time to play along.",
       "He shows his reasoning every single time — no hunches, no hindsight. Entertainment only, 18+, never financial advice — but always worth hearing out."]},
   };
   const FANBIO={
@@ -2529,18 +2909,18 @@
   // the watch page (player + chat + score + bet) — opened by "Watch now" / "Watch Live"
   function showPage(pid){const o=document.getElementById('offair'),i=document.getElementById('intro');
     if(o)o.classList.remove('on');if(i)i.style.display='none';
-    ['live','hosts','schedule','watch','partnersPage','predict','clipsPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
+    ['live','hosts','schedule','watch','partnersPage','predict','clipsPage','aboutPage','faqPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
     document.body.classList.add('scrolled');document.body.classList.add('subpage');window.scrollTo({top:0});fhPush();}
   function showWatch(){showPage('live');}
   function showHosts(){showPage('hosts');}
   function backHome(){const o=document.getElementById('offair'),i=document.getElementById('intro');
-    ['live','hosts','schedule','watch','partnersPage','predict','clipsPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('on');});
+    ['live','hosts','schedule','watch','partnersPage','predict','clipsPage','aboutPage','faqPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('on');});
     if(o)o.classList.add('on');if(i)i.style.display='';document.body.classList.remove('subpage');navReveal();}
   // ── SPA browser-back: keep users inside the site (back → close overlay / home, not Google) ──
   function _atHome(){return !(history.state&&history.state.fhNav);}
   function fhPush(){try{if(_atHome())history.pushState({fhNav:1},'');}catch(e){}}
   function fhCloseOverlays(){
-    const ids=['personaModal','menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal','privacyModal','clipLb'];
+    const ids=['personaModal','menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal','privacyModal','clipLb','notifyModal'];
     let closed=false;ids.forEach(id=>{const el=document.getElementById(id);if(el&&!el.hidden){el.hidden=true;closed=true;}});
     if(closed){_unlockScroll();if(lenis)lenis.start();}
     return closed;
@@ -2609,7 +2989,7 @@
       if(day!==curDay){curDay=day;h+='<div class="sched-day">'+day+'</div>';}
       const live=now>=ms&&now<ms+MATCH_MS, past=now>=ms+MATCH_MS;
       const t=live?'<span style="color:var(--live)">● LIVE</span>':(past?'FT':fmtTime(ms));
-      const cta=live?'<a class="si-cta" data-action="live">Watch &#9656;</a>':(past?'<a class="si-cta ghost" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Replay ↗</a>':'<a class="si-cta ghost">🔔 Notify</a>');
+      const cta=live?'<a class="si-cta" data-action="live">Watch &rarr;</a>':(past?'<a class="si-cta ghost" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Replay ↗</a>':'<a class="si-cta ghost">🔔 Notify</a>');
       const ko=!f.home_code;
       const hh=ko?f.home:'<img class="tkflag" src="flags/'+f.home_code+'.svg" alt=""> '+f.home;
       const aa=ko?f.away:f.away+' <img class="tkflag" src="flags/'+f.away_code+'.svg" alt="">';
@@ -2801,7 +3181,7 @@
     try{const r=await fetch(LIVE_ENDPOINT+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({matchId:predId,ph,pa,session:fhSession()})});
       if(r.status===401){pendingPred={ph,pa};clearSession();openJoinModal();return;}
       if(r.status===409)toast('⏱️ Predictions are closed for this match');
-      else if(r.ok)toast('🏆 Prediction locked in — good luck!');
+      else if(r.ok){_lastPick={h:predHome,a:predAway,ph,pa};toast('🏆 Locked in! Tap 📤 Invite friends to challenge them with your pick');}
       loadPredictor();
     }catch(e){}
   }
@@ -2962,16 +3342,24 @@
         : 'In <b>'+br+'</b>, tap <b>Share</b> <span class="ios-shr">&#x2191;</span> (top of the screen'+(br==='Chrome'?', next to the address bar':'')+')';
       ol.innerHTML='<li>'+share+'</li>'
         +'<li>Scroll down → tap <b>Add to Home Screen</b></li>'
-        +'<li>Open <b>FootyHub</b> from your Home Screen</li>'
+        +'<li>Open <b>FootyHub TV</b> from your Home Screen</li>'
         +'<li>Tap <b>🔔 Get match alerts</b> again</li>';
     }
     m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
   function closeIos(){const m=document.getElementById('iosModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
   function openContact(){const mn=document.getElementById('menu');if(mn)mn.hidden=true;const m=document.getElementById('contactModal');if(!m)return;m.hidden=false;_lockScroll();if(lenis)lenis.stop();}
   function closeContact(){const m=document.getElementById('contactModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
-  function fhShare(){
-    const url='https://footyhub.tv';
-    const text='⚽ FootyHub TV — AI commentators call every Mundial 2026 match LIVE & free on YouTube. Predict scores & win prizes 🏆';
+  let _notifyMatch='';
+  function openNotify(match){_notifyMatch=match||'';const m=document.getElementById('notifyModal');if(!m)return;const sub=document.getElementById('nmSub');if(sub)sub.textContent=match?("We'll email you before "+match+"."):"We'll email you before kickoff.";m.hidden=false;_lockScroll();if(lenis)lenis.stop();const i=document.getElementById('nmEmail');if(i)setTimeout(()=>{try{i.focus();}catch(_e){}},60);}
+  function closeNotify(){const m=document.getElementById('notifyModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
+  (function(){const f=document.getElementById('notifyForm');if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();const i=document.getElementById('nmEmail');const email=(i?i.value:'').trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast('Please enter a valid email');return;}if(LIVE_ENDPOINT)fetch(LIVE_ENDPOINT+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,match:_notifyMatch})}).catch(()=>{});closeNotify();toast("🔔 You're on the list! We'll email you before kickoff.");});})();
+  let _lastPick=null;
+  function fhShare(customText){
+    let url='https://footyhub.tv';
+    try{const u=((typeof fhUname!=='undefined'&&fhUname)||(fhUser&&fhUser.name)||'').trim(); if(u)url+='/?ref='+encodeURIComponent(u);}catch(_e){}
+    let text=customText;
+    if(!text&&_lastPick){text='⚽ I called '+_lastPick.h+' '+_lastPick.ph+'–'+_lastPick.pa+' '+_lastPick.a+' on FootyHub TV 🏆 Think you can beat me? Predict & win, free.';}
+    if(!text){text='⚽ FootyHub TV — AI commentators call every Mundial 2026 match LIVE & free on YouTube. Predict scores & win prizes 🏆';}
     if(navigator.share){navigator.share({title:'FootyHub TV',text,url}).catch(()=>{});return;}
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text+' '+url).then(()=>toast('🔗 Link copied — paste it anywhere to share!')).catch(()=>window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank'));return;}
     window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank');
@@ -3019,6 +3407,7 @@
     if(e.target.closest('#cinBar'))return openYtChat();
     if(e.target.closest('[data-contact]')){e.preventDefault();return openContact();}
     if(e.target.closest('#cmClose')||e.target===document.getElementById('contactModal'))return closeContact();
+    if(e.target.closest('#nmX')||e.target===document.getElementById('notifyModal'))return closeNotify();
     if(e.target.closest('#contactModal .cm-row[data-action]'))closeContact();
     if(e.target.closest('#rkEdit'))return openJoinModal();
     if(e.target.closest('#predict .lb-card'))return openLbModal();
@@ -3213,10 +3602,7 @@
     const match=nf?(nf.home+' v '+nf.away):'';
     const send=(email)=>{ if(LIVE_ENDPOINT)fetch(LIVE_ENDPOINT+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,match})}).catch(()=>{}); };
     if(fhUser&&fhUser.email){ send(fhUser.email); toast("🔔 Done — we'll email you before "+(match||'kickoff')+"!"); return; }
-    const email=(prompt("Enter your email — we'll remind you before kickoff:")||'').trim();
-    if(!email)return;
-    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast('Please enter a valid email');return;}
-    send(email); toast("🔔 You're on the list! We'll email you before kickoff.");
+    openNotify(match);
   }
   // sponsor inquiry form → POST /sponsor (stores + emails us the lead)
   (function(){const f=document.getElementById('sponsorForm');if(!f)return;
@@ -3265,6 +3651,8 @@
       else if(act==='partners'){showPage('partnersPage');}
       else if(act==='predict'){showPage('predict');if(typeof renderDayMatches==='function')renderDayMatches();}
       else if(act==='notifynext'){notifyNext();}
+      else if(act==='about'){showPage('aboutPage');}
+      else if(act==='faq'){showPage('faqPage');}
       else if(act==='menu'){openMenu();}
       return;}
     const href=el.getAttribute('href');
@@ -3299,7 +3687,7 @@
 
   // ── CLIPS: single source of truth. Add one entry here → it appears in both the homepage strip AND the Clips page. ──
   const CLIPS=[
-    {f:'clips/big-one.mp4',   p:'clips/big-one-poster.jpg',   tag:'The Trailer',      dur:'0:48', cap:'Meet FootyHub TV — the world&rsquo;s first AI football channel', portrait:true},
+    {f:'clips/big-one.mp4',   p:'clips/big-one-poster.jpg',   tag:'The Trailer',      dur:'0:48', cap:'Meet FootyHub TV — a new kind of AI football channel', portrait:true},
     {f:'clips/the-cast.mp4',  p:'clips/the-cast-poster.jpg',  tag:'The Cast',         dur:'0:14', cap:'Meet LIA &amp; Victor — your AI broadcast team'},
     {f:'clips/winner.mp4',    p:'clips/winner-poster.jpg',    tag:'Predict &amp; Win',dur:'0:40', cap:'Top the leaderboard, win Victor Premium'},
     {f:'clips/48-fans.mp4',   p:'clips/48-fans-poster.jpg',   tag:'48 Nations',       dur:'0:13', cap:'48 AI fans, 48 voices — every match'},
