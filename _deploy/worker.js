@@ -284,6 +284,55 @@ var worker_default = {
       const res = await stub.fetch(new Request("https://do/", { method: "GET" }));
       return new Response(await res.text(), { status: res.status, headers: { ...CORS, "Content-Type": "application/json", "Cache-Control": "no-store" } });
     }
+    if (path === "/predict/recap") {
+      if (request.method !== "POST") return reply("Method not allowed", 405);
+      const auth = request.headers.get("Authorization") || "";
+      if (!env.WRITE_SECRET || auth !== `Bearer ${env.WRITE_SECRET}`) return reply("Unauthorized", 401);
+      let rbody;
+      try {
+        rbody = await request.json();
+      } catch (e) {
+        return reply("Bad JSON", 400);
+      }
+      const rstub = env.PREDICTOR.get(env.PREDICTOR.idFromName("season1"));
+      const rRes = await rstub.fetch(new Request("https://do/", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ op: "recap", matchId: String(rbody.matchId || "") })
+      }));
+      const rdata = await rRes.json().catch(() => ({}));
+      const recaps = rdata && rdata.recaps || [];
+      if (!recaps.length) {
+        return new Response(JSON.stringify({ ok: true, already: !!(rdata && rdata.already), sent: 0 }),
+          { headers: { ...CORS, "Content-Type": "application/json" } });
+      }
+      const home = String(rbody.home || "").slice(0, 40) || "Home";
+      const away = String(rbody.away || "").slice(0, 40) || "Away";
+      ctx.waitUntil((async () => {
+        for (const rc of recaps) {
+          try {
+            const pid = await env.LIVE.get("psub:" + rc.user);
+            if (!pid) continue;
+            const raw = await env.LIVE.get("push:" + pid);
+            if (!raw) continue;
+            const verb = rc.pts === 3 ? "\u{1F3AF} Spot on!" : rc.pts === 1 ? "✅ Right result" : "\u{1F622} Not this time";
+            const rank = rc.rank ? `You're #${rc.rank} of ${rdata.players}.` : "";
+            const payload = JSON.stringify({
+              title: `⚽ ${home} ${rdata.ah}-${rdata.aa} ${away} — FT`,
+              body: `${verb} Your call ${rc.ph}-${rc.pa} = +${rc.pts} pts. ${rank} Predict today's →`,
+              url: "https://footyhub.tv"
+            });
+            const st = await _sendPush(JSON.parse(raw), payload, env);
+            if (st === 404 || st === 410) {
+              await env.LIVE.delete("push:" + pid);
+              await env.LIVE.delete("psub:" + rc.user);
+            }
+          } catch (e) {
+          }
+        }
+      })());
+      return new Response(JSON.stringify({ ok: true, sent: recaps.length }),
+        { headers: { ...CORS, "Content-Type": "application/json" } });
+    }
     if (path === "/predict" || path === "/predict/leaderboard" || path === "/predict/consensus") {
       const stub = env.PREDICTOR.get(env.PREDICTOR.idFromName("season1"));
       const corsJson = /* @__PURE__ */ __name(async (res) => new Response(await res.text(), {
@@ -297,7 +346,7 @@ var worker_default = {
         } catch (e) {
           return reply("Bad JSON", 400);
         }
-        if (["settle", "lock", "reset", "seed", "schedule", "resettle"].includes(payload.op)) {
+        if (["settle", "lock", "reset", "seed", "schedule", "resettle", "recap"].includes(payload.op)) {
           const auth = request.headers.get("Authorization") || "";
           if (!env.WRITE_SECRET || auth !== `Bearer ${env.WRITE_SECRET}`) return reply("Unauthorized", 401);
         } else {
@@ -373,6 +422,11 @@ var worker_default = {
       if (!sub || !sub.endpoint || !sub.keys || !sub.keys.p256dh || !sub.keys.auth) return reply("Bad subscription", 400);
       const id = String(sub.endpoint).slice(-100).replace(/[^a-zA-Z0-9_-]/g, "");
       await env.LIVE.put("push:" + id, JSON.stringify(sub), { expirationTtl: 60 * 60 * 24 * 120 });
+      // link this device to the signed-in player so settled-match recaps can reach them
+      if (sub.session) {
+        const pemail = await env.LIVE.get("sess:" + String(sub.session));
+        if (pemail) await env.LIVE.put("psub:" + pemail, id, { expirationTtl: 60 * 60 * 24 * 120 });
+      }
       return reply("OK", 200);
     }
     if (path === "/push/send") {
@@ -694,6 +748,25 @@ var Predictor = class {
       }
       await this.storage.put(`result:${matchId2}`, { ah, aa, settled: true });
       return this._json({ ok: true, resettled: n });
+    }
+    if (op === "recap") {
+      const matchId2 = String(body.matchId || "");
+      const result = await this.storage.get(`result:${matchId2}`);
+      if (!result || !result.settled) return this._json({ ok: true, skip: true });
+      if (await this.storage.get(`recapped:${matchId2}`)) return this._json({ ok: true, already: true });
+      await this.storage.put(`recapped:${matchId2}`, true);
+      const board = await this._board();
+      const rankOf = {};
+      board.forEach((r, i) => {
+        rankOf[r.user] = i + 1;
+      });
+      const preds = await this.storage.list({ prefix: `pred:${matchId2}:` });
+      const recaps = [];
+      for (const [k, p] of preds) {
+        const u = k.slice(`pred:${matchId2}:`.length);
+        recaps.push({ user: u, ph: p.ph, pa: p.pa, pts: this._score(p.ph, p.pa, result.ah, result.aa), rank: rankOf[u] || null });
+      }
+      return this._json({ ok: true, ah: result.ah, aa: result.aa, players: board.length, recaps });
     }
     if (op === "settle") {
       const matchId2 = String(body.matchId || "");

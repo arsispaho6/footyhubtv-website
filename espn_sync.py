@@ -30,7 +30,7 @@ import urllib.request
 _HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, _HERE)
 
-from fh_standings import code_for, rows_to_standings   # noqa: E402
+from fh_standings import code_for, rows_to_standings, _DISPLAY   # noqa: E402
 
 # ── config: env (GitHub) first, then config_local.py (local testing) ──────────
 _c = None
@@ -245,6 +245,14 @@ def settle(finished: list) -> None:
             n += 1
         except Exception as e:
             print(f"  settle {mid} failed: {e}")
+        # recap: push each predictor their result + rank (worker fires ONCE per match, dedups re-runs)
+        try:
+            rc, _ = _post(ENDPOINT + "/predict/recap",
+                          json.dumps({"matchId": mid, "home": _DISPLAY.get(fh, fh), "away": _DISPLAY.get(fa, fa)}))
+            if rc and rc != 200:
+                print(f"  recap {mid} -> {rc}")
+        except Exception:
+            pass
     print(f"  settle pass complete ({n} finished matches).")
 
 

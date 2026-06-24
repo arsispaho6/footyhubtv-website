@@ -3245,7 +3245,7 @@
   }
   async function loadPredictor(){
     if(!predId||!LIVE_ENDPOINT)return;
-    try{const r=await fetch(LIVE_ENDPOINT+'/predict?matchId='+encodeURIComponent(predId)+'&session='+encodeURIComponent(fhSession()),{cache:'no-store'});const d=r.ok?await r.json():null;fhUname=(d&&d.me&&d.me.name&&d.me.name!=='Player')?d.me.name:'';renderPredBody(d);renderRank(d);loadConsensus(d);}catch(e){renderPredBody(null);renderRank(null);}
+    try{const r=await fetch(LIVE_ENDPOINT+'/predict?matchId='+encodeURIComponent(predId)+'&session='+encodeURIComponent(fhSession()),{cache:'no-store'});const d=r.ok?await r.json():null;fhUname=(d&&d.me&&d.me.name&&d.me.name!=='Player')?d.me.name:'';renderPredBody(d);renderRank(d);loadConsensus(d);_linkPush();}catch(e){renderPredBody(null);renderRank(null);}
     try{const lr=await fetch(LIVE_ENDPOINT+'/predict/leaderboard',{cache:'no-store'});if(lr.ok)renderLeaderboard(await lr.json());}catch(e){}
   }
   function midOf(f){return ((f.home_code||f.home||'')+'-'+(f.away_code||f.away||'')).toLowerCase().replace(/[^a-z0-9-]/g,'');}
@@ -3389,6 +3389,17 @@
   // ── Web push: enable phone alerts (kickoff) ──
   const VAPID_PUBLIC='BEO4YIBoH1jbbzJZ7NsLyVOJY0u9-D_FO4JE0en7n3Q2HUUk4y7iRPf03GgoFhqg--uG7sizIbC03eRSvOPeqH4';
   function _vapidU8(s){s=s.replace(/-/g,'+').replace(/_/g,'/');s+='='.repeat((4-s.length%4)%4);const b=atob(s);const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+  let _pushLinked=false;
+  async function _linkPush(){
+    try{
+      if(_pushLinked||!fhSession()||!('serviceWorker' in navigator)||!('PushManager' in window))return;
+      if(!(typeof Notification!=='undefined'&&Notification.permission==='granted'))return;
+      const reg=await navigator.serviceWorker.ready;const sub=await reg.pushManager.getSubscription();if(!sub)return;
+      const sj=sub.toJSON?sub.toJSON():JSON.parse(JSON.stringify(sub));sj.session=fhSession();
+      await fetch((LIVE_ENDPOINT||'')+'/push/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sj)});
+      _pushLinked=true;
+    }catch(_e){}
+  }
   async function enableAlerts(){
     const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
     const standalone=window.navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
@@ -3400,7 +3411,7 @@
       const reg=await navigator.serviceWorker.ready;
       let sub=await reg.pushManager.getSubscription();
       if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:_vapidU8(VAPID_PUBLIC)});
-      const r=await fetch((LIVE_ENDPOINT||'')+'/push/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sub)});
+      const _sj=sub.toJSON?sub.toJSON():JSON.parse(JSON.stringify(sub));_sj.session=fhSession();const r=await fetch((LIVE_ENDPOINT||'')+'/push/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(_sj)});
       if(r.ok){toast('🔔 Match alerts ON — we will buzz your phone at kickoff!');document.querySelectorAll('[data-alerts]').forEach(b=>{b.innerHTML='🔔 Alerts on ✓';});}
       else toast('Could not enable alerts — try again');
     }catch(e){toast('Could not enable alerts — try again');}
@@ -3769,6 +3780,7 @@
   const G_CLIENT_ID='446543234483-j6alr9ncke5kfrh50q96hqs6o5fg8jak.apps.googleusercontent.com';
   function applyUser(u){
     fhUser=u||null;
+    _pushLinked=false;   // re-link push on EVERY auth change so psub points at the CURRENT account (shared-device safety)
     const gb=document.getElementById('gSignin'),chip=document.getElementById('userChip');
     if(u){
       if(gb)gb.hidden=true;
