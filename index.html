@@ -3322,7 +3322,7 @@
     if(name.length<3){if(er)er.textContent=_UERR.short;return;}
     if(!/^[A-Za-z0-9_-]+$/.test(name)){if(er)er.textContent=_UERR.invalid;return;}
     const ck=document.getElementById('jm18');if(ck&&!ck.checked){if(er)er.textContent='Please confirm you are 18 or over to play.';return;}
-    try{const r=await fetch(LIVE_ENDPOINT+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'setname',session:fhSession(),name})});
+    try{const r=await fetch(LIVE_ENDPOINT+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'setname',session:fhSession(),name,over18:true})});
       if(r.status===401){clearSession();openJoinModal();return;}
       const d=await r.json();
       if(d&&d.ok){fhUname=d.name;closeJoin();toast('✓ Username set: '+d.name);loadPredictor();

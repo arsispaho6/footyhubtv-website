@@ -223,7 +223,7 @@ var worker_default = {
       }
       if (info.aud !== env.GOOGLE_CLIENT_ID) return reply("Wrong audience", 401);
       if (info.email_verified !== "true" && info.email_verified !== true) return reply("Email not verified", 401);
-      const user = { email: String(info.email).toLowerCase(), name: info.name || "", picture: info.picture || "", ts: Date.now() };
+      const user = { email: String(info.email).toLowerCase(), name: info.name || "", picture: info.picture || "", ts: Date.now(), country: request.cf && request.cf.country || "" };
       await env.LIVE.put("user:" + user.email, JSON.stringify(user));
       const session = crypto.randomUUID();
       await env.LIVE.put("sess:" + session, user.email, { expirationTtl: 60 * 60 * 24 * 30 });
@@ -646,6 +646,10 @@ var Predictor = class {
       const st2 = await this.storage.get("stats:" + user2) || { points: 0, exacts: 0, played: 0, joined: Date.now(), name: name2 };
       if (st2.name && st2.name.toLowerCase() !== lower) await this.storage.delete("uname:" + st2.name.toLowerCase());
       st2.name = name2;
+      if (body.over18) {
+        st2.over18 = true;
+        if (!st2.eligTs) st2.eligTs = Date.now();
+      }
       await this.storage.put("stats:" + user2, st2);
       await this.storage.put("uname:" + lower, user2);
       return this._json({ ok: true, name: name2 });
