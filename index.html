@@ -1672,7 +1672,7 @@
       <a class="pred-teaser" data-action="predict">
         <div class="ptz-trophy">🏆</div>
         <div class="ptz-l">
-          <span class="pred-tag gold">FootyHub Predictor · Free to play</span>
+          <span class="pred-tag gold">FootyHub Predictor · Free to play<span id="teaserPlayers"></span></span>
           <h3>Predict the score &amp; win prizes</h3>
           <p>Call every Mundial 2026 match · climb the leaderboard · win <b>Victor Premium + surprise prizes</b> 🎁</p>
         </div>
@@ -2037,6 +2037,7 @@
       <div class="sn-item"><b>48</b><span>nations</span></div>
       <div class="sn-item"><b>Jun 11 – Jul 19</b><span>2026</span></div>
       <div class="sn-item"><b>One window</b><span>continuous broadcast</span></div>
+      <div class="sn-item" id="snPlayers" hidden><b>0</b><span>predictor players</span></div>
       <!-- [[OWNER: subscribers]] — uncomment when a real figure is set:
       <div class="sn-item"><b>[[OWNER: subscribers]]</b><span>subscribers</span></div> -->
       <!-- [[OWNER: avg concurrent viewers]] — uncomment when a real figure is set:
@@ -2044,11 +2045,11 @@
     </div>
 
     <div class="sect-title" style="text-align:left;margin:34px 0 4px">Sponsorship tiers</div>
-    <p class="spon-lead">Three ways to put your brand on the world's first AI football channel. Every tier is built around real on-air placement — not banner impressions.</p>
+    <p class="spon-lead">Three ways to put your brand on a new kind of AI football channel. Every tier is built around real on-air placement — not banner impressions.</p>
     <div class="spon-tiers">
       <div class="spon-tier">
         <div class="st-name">Match Sponsor</div>
-        <div class="st-price">On request<!-- OWNER TODO: set e.g. "from €X" --></div>
+        <div class="st-price">Founding rate<!-- OWNER TODO: set e.g. "from €X" --></div>
         <ul class="st-list">
           <li>Logo on the broadcast overlay for one match</li>
           <li><b>2</b> verbal mentions from LIA or Victor on air</li>
@@ -2059,7 +2060,7 @@
       <div class="spon-tier feat">
         <div class="st-flag">Most popular</div>
         <div class="st-name">Group-Stage Partner</div>
-        <div class="st-price">On request<!-- OWNER TODO: set e.g. "from €X" --></div>
+        <div class="st-price">Founding rate<!-- OWNER TODO: set e.g. "from €X" --></div>
         <ul class="st-list">
           <li>Logo on the broadcast overlay across a full group stage</li>
           <li><b>6</b> verbal LIA/Victor mentions per match week</li>
@@ -2071,7 +2072,7 @@
       <div class="spon-tier">
         <div class="st-flag gold">Headline</div>
         <div class="st-name">Title Sponsor</div>
-        <div class="st-price">On request</div>
+        <div class="st-price">By application</div>
         <ul class="st-list">
           <li>Top billing on the broadcast overlay, every match</li>
           <li>Unlimited verbal LIA/Victor mentions, tournament-wide</li>
@@ -2162,7 +2163,8 @@
       <h2 class="founding-h">A small independent team</h2>
       <p class="founding-p">We're a small independent team of football fans &amp; engineers — not a network, not a rights-holder. We started FootyHub TV because we wanted to watch every World Cup match with a broadcast that actually had character, and we built the AI to make it happen.</p>
       <ul class="founding-list">
-        <li><b>The team</b> — a small independent team of football fans &amp; engineers who set out to build the football channel we'd want to watch.<!-- OWNER TODO: add named founder + 1-line bio --></li>
+        <li><b>The team</b> — a small independent team of football fans &amp; engineers. We're not a betting company and not a rights-holder — we're builders who wanted a smarter, funnier way to watch football.<!-- OWNER TODO: add named founder + 1-line bio --></li>
+        <li><b>Why we built it</b> — we think AI can make <i>every</i> match — not just the big ones — feel like a proper broadcast, with a voice for every nation. So we made it, and we put it out free.</li>
         <li><b>The crew</b> — fans &amp; engineers who build the AI, the voices and the broadcast.</li>
         <li><b>Our promise</b> — the football stays real; we're upfront that the hosts are AI.</li>
       </ul>
@@ -3595,6 +3597,8 @@
   }
   if(DEMO){showWatch();}
   syncLive();setInterval(syncLive,10000);
+  // real social proof: live predictor player count (honest, auto-updating — never faked)
+  (function(){if(!LIVE_ENDPOINT)return;fetch(LIVE_ENDPOINT+'/predict/leaderboard',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{const n=(d&&d.players)||0;if(n<=0)return;const t=document.getElementById('snPlayers');if(t){const bb=t.querySelector('b');if(bb)bb.textContent=n.toLocaleString();t.hidden=false;}const tp=document.getElementById('teaserPlayers');if(tp)tp.textContent=' · '+n.toLocaleString()+' playing';}).catch(()=>{});})();
 
   // ── site-wide link wiring: every link goes somewhere / opens something ──
   // one-click notify for the NEXT match (the countdown match) — no navigation to the schedule
