@@ -1744,13 +1744,13 @@
         <div class="pt-card"><div class="pt-ic">🎙️</div><h3>LIA &amp; Victor are AI</h3><p>Every line of commentary and analysis is AI-generated live, on the fly — never scripted, never pre-recorded. The voices are synthesised by ElevenLabs.</p></div>
         <div class="pt-card"><div class="pt-ic">🌍</div><h3>48 fans, all AI</h3><p>Each nation gets its own AI supporter in the stands, reacting in real time. They're characters, not real people — and we say so, out loud.</p></div>
         <div class="pt-card"><div class="pt-ic">⚽</div><h3>The match is 100% real</h3><p>Real live football. Real scoreline. Real stats. We never invent a result — the AI commentates on the genuine game as it happens.</p></div>
-        <div class="pt-card"><div class="pt-ic">📊</div><h3>Real data, live</h3><p>Scores, line-ups and match stats are pulled from public football data feeds, including Sofascore, and updated throughout every match.</p></div>
+        <div class="pt-card"><div class="pt-ic">📊</div><h3>Real data, live</h3><p>Scores, line-ups and match stats are pulled from public football data feeds, updated throughout every match.</p></div>
       </div>
 
       <div class="founding at-note">
         <div class="founding-tag">📐 On the numbers</div>
         <p class="founding-p">Expected goals (xG), win-probability and Victor's model outputs are <b>illustrative analysis, not official figures</b> — built from public data to add context and colour, and they can differ from any official source. Live scores and final results always follow the real match.</p>
-        <p class="at-fineprint">Football data via public feeds incl. Sofascore · AI voices by ElevenLabs · Predictor is skill-based, free, 18+ — not gambling.</p>
+        <p class="at-fineprint">Football data via public feeds · AI voices by ElevenLabs · Predictor is skill-based, free, 18+ — not gambling.</p>
       </div>
     </section>
 
@@ -2151,7 +2151,7 @@
 
     <div class="sect-title" style="margin-top:6px">What makes us different</div>
     <div class="pt-grid">
-      <div class="pt-card"><div class="pt-ic">⚽</div><h3>The match is 100% real</h3><p>Real live football, real data from public feeds like Sofascore. Nothing about the game is invented — only the commentary booth is AI.</p></div>
+      <div class="pt-card"><div class="pt-ic">⚽</div><h3>The match is 100% real</h3><p>Real live football, real data from public feeds. Nothing about the game is invented — only the commentary booth is AI.</p></div>
       <div class="pt-card"><div class="pt-ic">🎙️</div><h3>AI hosts with opinions</h3><p>LIA calls the action, Victor reads the tactics and the tips, and 48 nations of AI fans react live — voices by ElevenLabs.</p></div>
       <div class="pt-card"><div class="pt-ic">📺</div><h3>Free, every match</h3><p>All 104 Mundial 2026 matches, 48 nations, June 11–July 19 — live and free on YouTube, plus full replays on demand.</p></div>
       <div class="pt-card"><div class="pt-ic">🏆</div><h3>Play along, free</h3><p>Call the score in our free Predictor — skill-based, not gambling — and climb the leaderboard for Victor Premium and surprise prizes.</p></div>
@@ -2268,7 +2268,7 @@
 
       <details class="faq-item">
         <summary class="faq-q">Where do the scores &amp; stats come from?<span class="faq-chev">&#9662;</span></summary>
-        <div class="faq-a">Live scores, line-ups and match events come from public live football data feeds (such as Sofascore) and the official group standings. Figures like xG and win probability are illustrative outputs of our own models — they're there to add colour, and are not official statistics.</div>
+        <div class="faq-a">Live scores, line-ups and match events come from public live football data feeds and the official group standings. Figures like xG and win probability are illustrative outputs of our own models — they're there to add colour, and are not official statistics.</div>
       </details>
 
       <details class="faq-item">
@@ -3464,7 +3464,7 @@
     if(lf){try{maybeLiveFallback();}catch(_e){}}                  // a match is live → flip the watch surfaces to live
   }
   updateCountdown();setInterval(updateCountdown,1000);
-  // ── DATA-DRIVEN: poll live.json (the engine writes it from Sofascore). Falls back to the inline real data when unavailable, e.g. opened via file:// ──
+  // ── DATA-DRIVEN: poll live.json (the engine writes it from the live data feed). Falls back to the inline real data when unavailable, e.g. opened via file:// ──
   // embed the real YouTube live stream when the engine reports a video id
   let _ytVid='',_ytPlaying=false;
   const YT_CHANNEL_ID='UCNODmrFpJQZvyc0K_A2xk7w';
