@@ -106,6 +106,7 @@ def rows_to_standings(rows: list) -> dict:
 
 # ── Cloudflare R2 (the site reads live.json from cdn.footyhub.tv = R2, NOT the Worker) ──
 _R2_READ = "https://cdn.footyhub.tv/live.json"
+_settled = set()   # matchIds already settled this run (dedup across --watch)
 _r2_client = None
 
 
@@ -260,8 +261,11 @@ async def settle_finished(client, tid: int, sid: int):
                 continue
             fh, fa = fx                                   # fixture orientation
             ah, aa = (hs, as_) if fh == hc else (as_, hs)  # map to fixture home/away
-            settle_match(fh + "-" + fa, ah, aa)
-            seen += 1
+            mid = fh + "-" + fa
+            if mid in _settled:
+                continue
+            settle_match(mid, ah, aa)
+            _settled.add(mid); seen += 1
     print(f"  settle pass complete ({seen} finished matches).")
 
 
