@@ -38,6 +38,10 @@ from build_fixtures import TEAM as TEAMS      # name -> (flag_code, display_name
 ENDPOINT = (getattr(c, "FOOTYHUB_LIVE_ENDPOINT", "") or "").rstrip("/")
 SECRET = getattr(c, "FOOTYHUB_LIVE_SECRET", "") or ""
 SOFA_URL = getattr(c, "SOFASCORE_URL", "") or ""
+# World Cup 2026 on Sofascore — fixed, so a per-match SOFASCORE_URL (even a friendly) never breaks standings
+WC_TID = int(getattr(c, "WC_TOURNAMENT_ID", 0) or 16)
+WC_SID = int(getattr(c, "WC_SEASON_ID", 0) or 58210)
+WC_NAV = "https://www.sofascore.com/tournament/football/world/world-cup/16"
 _HDRS = {
     "Authorization": f"Bearer {SECRET}",
     "Content-Type": "application/json",
@@ -217,17 +221,9 @@ def _event_id(url: str) -> int:
 
 
 async def run_once(client, do_settle: bool):
-    ev = _event_id(SOFA_URL)
-    if not ev:
-        print("No Sofascore event id in SOFASCORE_URL — cannot resolve the tournament.")
-        return
-    md = await client.fetch_match(ev)
-    tid, sid = md.get("tournament_id", 0), md.get("season_id", 0)
-    if not tid or not sid:
-        print(f"Could not resolve tournament/season from event {ev}.")
-        return
+    tid, sid = WC_TID, WC_SID                       # fixed WC tournament/season (never depends on SOFASCORE_URL)
     print(f"World Cup tournament={tid} season={sid}")
-    rows = await client.fetch_standings(ev, tid, sid)
+    rows = await client.fetch_standings(0, tid, sid)
     standings = rows_to_standings(rows)
     if standings:
         push_results(standings)
@@ -282,7 +278,7 @@ async def amain(args):
             locale="en-US",
         )
         page = await ctx.new_page()
-        await page.goto(SOFA_URL or "https://www.sofascore.com/", wait_until="domcontentloaded", timeout=90000)
+        await page.goto(WC_NAV, wait_until="domcontentloaded", timeout=90000)
         await page.wait_for_timeout(4000)
         from sofascore_data import SofascoreClient
         client = SofascoreClient(page)
