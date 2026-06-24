@@ -167,6 +167,20 @@ def _fixture_index() -> dict:
     return idx
 
 
+def _scores_map(finished: list) -> dict:
+    """ESPN finished list -> {matchId (home_code-away_code): {h, a}} in fixture orientation."""
+    idx = _fixture_index()
+    out = {}
+    for hc, hs, ac, as_ in finished:
+        fx = idx.get(frozenset((hc, ac)))
+        if not fx:
+            continue
+        fh, fa = fx
+        ah, aa = (hs, as_) if fh == hc else (as_, hs)
+        out[fh + "-" + fa] = {"h": ah, "a": aa}
+    return out
+
+
 # ── R2 (the cdn the public site actually reads) ───────────────────────────────
 def _upload_r2(body: str) -> bool:
     if not (R2_ENDPOINT and R2_KEY and R2_SECRET and R2_BUCKET):
@@ -200,7 +214,7 @@ def _read_live() -> dict:
     return {}
 
 
-def push_results(standings: dict) -> bool:
+def push_results(standings: dict, scores: dict | None = None) -> bool:
     if not SECRET:
         print("FOOTYHUB_LIVE_SECRET not set — cannot write (read-only run).")
         return False
@@ -208,6 +222,8 @@ def push_results(standings: dict) -> bool:
     res = data.get("results") or {}
     if standings:
         res["standings"] = standings
+    if scores:
+        res.setdefault("scores", {}).update(scores)   # accumulate per-match finals (matchId -> {h,a})
     res["updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     res["source"] = "espn"
     data["results"] = res
@@ -292,15 +308,16 @@ def schedule_kickoffs() -> None:
 def run_once(do_settle: bool = True):
     print(f"ESPN sync @ {time.strftime('%Y-%m-%d %H:%M:%SZ', time.gmtime())}")
     standings = espn_standings()
-    if standings:
+    fin = espn_finished()
+    scores = _scores_map(fin)
+    if standings or scores:
         teams = sum(len(v) for v in standings.values())
-        print(f"  ESPN standings: {len(standings)} groups, {teams} teams")
-        push_results(standings)
+        print(f"  ESPN standings: {len(standings)} groups, {teams} teams | scores: {len(scores)} finished")
+        push_results(standings, scores)
     else:
         print("  no standings from ESPN yet.")
     schedule_kickoffs()        # arm the predictor kickoff-lock (cloud-side, PC-independent)
     if do_settle:
-        fin = espn_finished()
         print(f"  ESPN finished matches found: {len(fin)}")
         settle(fin)
 

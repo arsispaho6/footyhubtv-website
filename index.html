@@ -988,6 +988,7 @@
   @media(max-width:560px){.sched-item{flex-wrap:wrap}.si-match{flex-basis:100%;order:-1}}
   .sched-row{margin-bottom:10px}
   .sched-row .sched-item{margin-bottom:0}
+  .si-sc{color:#fff;font-weight:800;font-size:1.02rem;letter-spacing:.01em}
   .sched-item.clickable{cursor:pointer;transition:border-color .2s}
   .sched-item.clickable:hover{border-color:rgba(150,70,255,.35)}
   .si-chev{margin-left:6px;color:var(--txt-3);font-size:.8rem;transition:transform .25s,color .2s}
@@ -2858,7 +2859,7 @@
   if(mClose)mClose.addEventListener('click',closeHub);
   if(mhub)mhub.addEventListener('click',e=>{if(e.target===mhub)closeHub();});
   addEventListener('keydown',e=>{if(e.key==='Escape'){closeHub();closeMenu();}});
-  document.querySelectorAll('.mhub-tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.mhub-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const tab=t.dataset.tab;document.querySelectorAll('.mhub-pane').forEach(p=>{p.hidden=p.dataset.pane!==tab;});if(tab==='groups')backToGrid();});});
+  document.querySelectorAll('.mhub-tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.mhub-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const tab=t.dataset.tab;document.querySelectorAll('.mhub-pane').forEach(p=>{p.hidden=p.dataset.pane!==tab;});if(tab==='groups')backToGrid();if(tab==='fixtures')jumpToNow('mhFixList',1);});});
 
   // ── headline smooth reveal on scroll ──
   function revealHeadline(el){if(RM)return;const nodes=Array.from(el.childNodes);el.innerHTML='';let idx=0;const spans=[];
@@ -2977,7 +2978,7 @@
   const DEMO=/[?&]demo=live/i.test(location.search); // ad/demo mode: render the site as if a match is LIVE now
   // referral: stash an inviter's ?ref so it's credited on this player's first prediction
   try{var _rf=new URLSearchParams(location.search).get('ref');if(_rf){_rf=_rf.replace(/[^A-Za-z0-9_\- ]/g,'').trim().slice(0,20);if(_rf)localStorage.setItem('fh_ref',_rf);}}catch(_e){}
-  const RES=window.RESULTS||{standings:{},ko:{}};
+  const RES=window.RESULTS||{standings:{},ko:{}};RES.scores=RES.scores||{};
   let fhUser=null; // signed-in Google user (or null)
   const TZ=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
   const fmtTime=ms=>new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
@@ -2992,12 +2993,13 @@
   }
   function renderFixtures(el){
     if(!el||!FIX.length)return;
-    const now=Date.now();let h='',curDay='';const anchorThis=el.id==='schedList';let anchored=false;
+    const now=Date.now();let h='',curDay='';const anchorThis=(el.id==='schedList'||el.id==='mhFixList');let anchored=false;
     FIX.filter(f=>f.stage!=='ko').forEach(f=>{const ms=Date.parse(f.utc),day=fmtDay(ms);
       if(day!==curDay){curDay=day;h+='<div class="sched-day">'+day+'</div>';}
       const live=now>=ms&&now<ms+MATCH_MS, past=now>=ms+MATCH_MS;
       const isNow=anchorThis&&!anchored&&!past; if(isNow)anchored=true;
-      const t=live?'<span style="color:var(--live)">● LIVE</span>':(past?'FT':fmtTime(ms));
+      const _ko=!f.home_code,_sc=(!_ko&&RES.scores)?RES.scores[f.home_code+'-'+f.away_code]:null;
+      const t=live?'<span style="color:var(--live)">● LIVE</span>':(past?(_sc?'<b class="si-sc">'+_sc.h+'–'+_sc.a+'</b>':'FT'):fmtTime(ms));
       const cta=live?'<a class="si-cta" data-action="live">Watch &rarr;</a>':(past?'<a class="si-cta ghost" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Replay ↗</a>':'<a class="si-cta ghost">🔔 Notify</a>');
       const ko=!f.home_code;
       const hh=ko?f.home:'<img class="tkflag" src="flags/'+f.home_code+'.svg" alt=""> '+f.home;
@@ -3017,14 +3019,14 @@
           +castMember('avatars/'+f.away_code+'.png',af[0],'Away fan','flags/'+f.away_code+'.svg')+'</div>';
         exp='<div class="sched-exp" hidden>'+inner+'</div>';
       }
-      h+='<div class="sched-row"'+(isNow?' id="schNow"':'')+'><div class="sched-item'+(live?' live':'')+(ko?'':' clickable')+'"'+(ko?'':' data-exp')+'><span class="si-time">'+t+'</span>'
+      h+='<div class="sched-row"'+(isNow?' id="'+el.id+'_now"':'')+'><div class="sched-item'+(live?' live':'')+(ko?'':' clickable')+'"'+(ko?'':' data-exp')+'><span class="si-time">'+t+'</span>'
         +'<div class="si-match"><b>'+hh+' v '+aa+'</b><span class="si-comp">'+comp+'</span></div>'+cta
         +(ko?'':'<span class="si-chev">▾</span>')+'</div>'+exp+'</div>';});
     el.innerHTML=h;
   }
   renderFixtures(document.getElementById('schedList'));
   renderFixtures(document.getElementById('mhFixList'));
-  function jumpSchedule(){try{renderFixtures(document.getElementById('schedList'));}catch(_e){}setTimeout(function(){const t=document.getElementById('schNow');if(!t)return;if(typeof lenis!=='undefined'&&lenis&&lenis.scrollTo)lenis.scrollTo(t,{offset:-110});else t.scrollIntoView({behavior:'smooth',block:'start'});},130);}
+  function jumpToNow(elId,inModal){const el=document.getElementById(elId);if(!el)return;try{renderFixtures(el);}catch(_e){}setTimeout(function(){const t=document.getElementById(elId+'_now');if(!t)return;if(!inModal&&typeof lenis!=='undefined'&&lenis&&lenis.scrollTo)lenis.scrollTo(t,{offset:-110});else t.scrollIntoView({behavior:'smooth',block:'start'});},140);}
   // schedule: click a match → expand countdown + match cast (accordion)
   function schedCdTick(){
     document.querySelectorAll('.sched-exp:not([hidden]) .se-cd').forEach(cd=>{
@@ -3616,7 +3618,7 @@
        else maybeLiveFallback();   // engine has no live signal — if a match window is open, fail open to the channel live
       }
       if(data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
-      if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;
+      if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;
         renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
     }catch(e){try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
   }
@@ -3684,7 +3686,7 @@
       else if(act==='fans'){showHosts();setTimeout(function(){const el=document.querySelector('.hosts-fans-soon');if(el){if(lenis&&lenis.scrollTo)lenis.scrollTo(el,{offset:-90});else el.scrollIntoView({behavior:'smooth',block:'start'});}},90);}
       else if(act==='home'){goHome();}
       else if(act==='mundial'){openHub();}
-      else if(act==='schedule'){showPage('schedule');jumpSchedule();}
+      else if(act==='schedule'){showPage('schedule');jumpToNow('schedList');}
       else if(act==='watch'){showPage('watch');}
       else if(act==='clips'){showPage('clipsPage');renderClips();}
       else if(act==='partners'){showPage('partnersPage');}
