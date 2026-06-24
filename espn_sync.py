@@ -248,6 +248,39 @@ def settle(finished: list) -> None:
     print(f"  settle pass complete ({n} finished matches).")
 
 
+def schedule_kickoffs() -> None:
+    """Arm the worker's server-side kickoff lock by populating kick: from fixtures.json.
+
+    The worker already has the guard `if (kick && Date.now() >= kick) return 409` in the
+    predict path, but it stays dormant until kick: is set. Populating it from the cloud each
+    run makes the lock authoritative and independent of the broadcast PC/script being alive.
+    """
+    if not SECRET:
+        return
+    try:
+        fx = json.load(open(os.path.join(_HERE, "fixtures.json"), encoding="utf-8"))
+    except Exception as e:
+        print(f"  schedule: fixtures.json unreadable: {e}")
+        return
+    kmap = {}
+    for m in fx.get("matches", []) or []:
+        hc, ac, utc = m.get("home_code"), m.get("away_code"), m.get("utc")
+        if not (hc and ac and utc):
+            continue
+        try:
+            ts = _dt.datetime.fromisoformat(str(utc).replace("Z", "+00:00"))
+            kmap[f"{hc}-{ac}"] = int(ts.timestamp() * 1000)
+        except Exception:
+            continue
+    if not kmap:
+        return
+    try:
+        code, txt = _post(ENDPOINT + "/predict", json.dumps({"op": "schedule", "map": kmap}))
+        print(f"  schedule kickoffs -> {code} ({len(kmap)} matches armed)")
+    except Exception as e:
+        print(f"  schedule failed: {e}")
+
+
 def run_once(do_settle: bool = True):
     print(f"ESPN sync @ {time.strftime('%Y-%m-%d %H:%M:%SZ', time.gmtime())}")
     standings = espn_standings()
@@ -257,6 +290,7 @@ def run_once(do_settle: bool = True):
         push_results(standings)
     else:
         print("  no standings from ESPN yet.")
+    schedule_kickoffs()        # arm the predictor kickoff-lock (cloud-side, PC-independent)
     if do_settle:
         fin = espn_finished()
         print(f"  ESPN finished matches found: {len(fin)}")
