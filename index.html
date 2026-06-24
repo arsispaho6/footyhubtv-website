@@ -2207,12 +2207,14 @@
           <div class="dm-row" id="predMatches"></div>
           <div class="pred-match" id="predMatch">Mexico v South Africa</div>
           <div class="pred-body" id="predBody"></div>
+          <div class="pred-cons" id="predConsensus" style="display:none;margin-top:8px;font-size:.8rem;color:var(--txt-2);line-height:1.5"></div>
           <div class="pred-rules">Right winner <b>1 pt</b> · Exact score <b>3 pts</b></div>
           <div class="pred-terms">One prediction per match · only before kickoff · today's matches only — come back each match day for the new fixtures.</div>
         </div>
         <div class="rank-card" id="rankCard" hidden>
           <div class="rk-pos"><span class="rk-hash">#</span><span id="rkPos">—</span></div>
           <div class="rk-meta">of <b id="rkOf">—</b> players · <b id="rkPts">0</b> pts · <b id="rkEx">0</b> exact <a class="rk-edit" id="rkEdit">✎ name</a></div>
+          <div class="rk-meta" id="rkExtra" style="margin-top:3px;display:none"></div>
         </div>
       </div>
       <div class="lb-card">
@@ -2973,6 +2975,8 @@
   // ── Mundial fixtures (window.FIXTURES from fixtures.js) — every time rendered in the VISITOR'S local timezone ──
   const FIX=Array.isArray(window.FIXTURES)?window.FIXTURES:[];
   const DEMO=/[?&]demo=live/i.test(location.search); // ad/demo mode: render the site as if a match is LIVE now
+  // referral: stash an inviter's ?ref so it's credited on this player's first prediction
+  try{var _rf=new URLSearchParams(location.search).get('ref');if(_rf){_rf=_rf.replace(/[^A-Za-z0-9_\- ]/g,'').trim().slice(0,20);if(_rf)localStorage.setItem('fh_ref',_rf);}}catch(_e){}
   const RES=window.RESULTS||{standings:{},ko:{}};
   let fhUser=null; // signed-in Google user (or null)
   const TZ=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
@@ -3182,7 +3186,7 @@
   async function submitPrediction(ph,pa){
     if(!predId||!LIVE_ENDPOINT)return;
     if(needsJoin()){pendingPred={ph,pa};openJoinModal();return;}
-    try{const r=await fetch(LIVE_ENDPOINT+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({matchId:predId,ph,pa,session:fhSession()})});
+    try{const r=await fetch(LIVE_ENDPOINT+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({matchId:predId,ph,pa,session:fhSession(),ref:(localStorage.getItem('fh_ref')||'')})});
       if(r.status===401){pendingPred={ph,pa};clearSession();openJoinModal();return;}
       if(r.status===409)toast('⏱️ Predictions are closed for this match');
       else if(r.ok){_lastPick={h:predHome,a:predAway,ph,pa};toast('🏆 Locked in! Watch LIA & Victor call it live, and invite friends 📤');}
@@ -3226,10 +3230,22 @@
     const of=document.getElementById('rkOf');if(of)of.textContent=(d.players||0).toLocaleString();
     const pts=document.getElementById('rkPts');if(pts)pts.textContent=(d.me.points||0);
     const ex=document.getElementById('rkEx');if(ex)ex.textContent=(d.me.exacts||0);
+    const xt=document.getElementById('rkExtra');if(xt){const s=d.me.streak||0,rf=d.me.refs||0;const b=[];if(s>=2)b.push('🔥 <b>'+s+'</b>-day streak');if(rf>0)b.push('<b>'+rf+'</b> friend'+(rf===1?'':'s')+' joined via you');xt.innerHTML=b.join(' · ');xt.style.display=b.length?'':'none';}
+  }
+  async function loadConsensus(d){
+    const el=document.getElementById('predConsensus');if(!el||!predId||!LIVE_ENDPOINT)return;
+    const hasPick=d&&(d.prediction||(d.result&&d.result.settled));
+    if(!hasPick){el.style.display='none';return;}
+    try{el.style.display='none';const r=await fetch(LIVE_ENDPOINT+'/predict/consensus?matchId='+encodeURIComponent(predId),{cache:'no-store'});if(!r.ok)return;const c=await r.json();if(!c||!c.total){el.style.display='none';return;}
+      const lead=(c.pctHome>=c.pctDraw&&c.pctHome>=c.pctAway)?(predHome+' win '+c.pctHome+'%'):((c.pctAway>=c.pctDraw)?(predAway+' win '+c.pctAway+'%'):('draw '+c.pctDraw+'%'));
+      let s='👥 <b>'+c.total+'</b> '+(c.total===1?'prediction':'predictions')+' so far · most back <b>'+mcEsc(lead)+'</b>';
+      if(c.topScore)s+=' · popular score <b>'+mcEsc(String(c.topScore).replace('-','–'))+'</b>';
+      el.innerHTML=s;el.style.display='';
+    }catch(_e){}
   }
   async function loadPredictor(){
     if(!predId||!LIVE_ENDPOINT)return;
-    try{const r=await fetch(LIVE_ENDPOINT+'/predict?matchId='+encodeURIComponent(predId)+'&user='+encodeURIComponent(predUser()),{cache:'no-store'});const d=r.ok?await r.json():null;fhUname=(d&&d.me&&d.me.name&&d.me.name!=='Player')?d.me.name:'';renderPredBody(d);renderRank(d);}catch(e){renderPredBody(null);renderRank(null);}
+    try{const r=await fetch(LIVE_ENDPOINT+'/predict?matchId='+encodeURIComponent(predId)+'&session='+encodeURIComponent(fhSession()),{cache:'no-store'});const d=r.ok?await r.json():null;fhUname=(d&&d.me&&d.me.name&&d.me.name!=='Player')?d.me.name:'';renderPredBody(d);renderRank(d);loadConsensus(d);}catch(e){renderPredBody(null);renderRank(null);}
     try{const lr=await fetch(LIVE_ENDPOINT+'/predict/leaderboard',{cache:'no-store'});if(lr.ok)renderLeaderboard(await lr.json());}catch(e){}
   }
   function midOf(f){return ((f.home_code||f.home||'')+'-'+(f.away_code||f.away||'')).toLowerCase().replace(/[^a-z0-9-]/g,'');}
@@ -3259,8 +3275,8 @@
       return;
     }
     let predicted={};
-    if(predUser()&&LIVE_ENDPOINT){
-      await Promise.all(dayFix.map(f=>{const id=midOf(f);return fetch(LIVE_ENDPOINT+'/predict?matchId='+encodeURIComponent(id)+'&user='+encodeURIComponent(predUser()),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(d&&d.prediction)predicted[id]=true;}).catch(()=>{});}));
+    if(fhSession()&&LIVE_ENDPOINT){
+      await Promise.all(dayFix.map(f=>{const id=midOf(f);return fetch(LIVE_ENDPOINT+'/predict?matchId='+encodeURIComponent(id)+'&session='+encodeURIComponent(fhSession()),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{if(d&&d.prediction)predicted[id]=true;}).catch(()=>{});}));
     }
     let idx=dayFix.findIndex(f=>!predicted[midOf(f)]);if(idx<0)idx=0;
     if(sel)sel.innerHTML=dayFix.length>1?dayFix.map((f,i)=>'<button class="dm-chip'+(i===idx?' on':'')+'" data-i="'+i+'">'+(predicted[midOf(f)]?'✓ ':'')+'<b>'+mcEsc(f.home)+'</b> v <b>'+mcEsc(f.away)+'</b></button>').join(''):'';
@@ -3362,7 +3378,7 @@
   let _lastPick=null;
   function fhShare(customText){
     let url='https://footyhub.tv';
-    // (referral attribution isn't wired server-side yet — don't ship a ?ref param that nothing reads)
+    try{const u=((typeof fhUname!=='undefined'&&fhUname)||(fhUser&&fhUser.name)||'').trim(); if(u)url+='/?ref='+encodeURIComponent(u);}catch(_e){}
     let text=customText;
     if(!text&&_lastPick){text='⚽ I called '+_lastPick.h+' '+_lastPick.ph+'–'+_lastPick.pa+' '+_lastPick.a+' on the FootyHub TV Predictor 🏆 Free to play — predict scores & climb the leaderboard. Beat my call 👉';}
     if(!text){text='⚽ FootyHub TV — AI commentators call every Mundial 2026 match LIVE & free on YouTube. Predict scores & win prizes 🏆';}
