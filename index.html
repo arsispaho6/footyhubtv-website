@@ -900,7 +900,7 @@
   .reveal:focus-within{opacity:1;transform:none}
   /* desktop reduced-motion: also calm the always-on ambient layers (mobile already freezes them) */
   @media(prefers-reduced-motion:reduce){
-    body::before,.bg-aurora span,.particle,.nav::after,.eq i,.pc-eq i,.mhpulse{animation:none!important}
+    body::before,.bg-aurora span,.particle,.nav::after,.eq i,.pc-eq i,.mhpulse,main.on,.live-viewers i,.intro-logo{animation:none!important}
     .particles{display:none}
   }
   .toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);z-index:300;background:rgba(20,10,38,.96);border:1px solid rgba(150,70,255,.4);color:#fff;padding:13px 22px;border-radius:50px;font-size:.85rem;box-shadow:0 10px 40px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;max-width:90vw;text-align:center}
@@ -1557,7 +1557,7 @@
   <span class="tk"><span class="lbl">Premiere</span> <b>Mexico v South Africa</b> &middot; Mundial 2026 opener &middot; <b>11 Jun</b></span>
   <span class="tk"><span class="lbl">Next on FootyHub TV</span> <b>Mexico</b> v <b>South Africa</b> &middot; Estadio Azteca</span>
   <span class="tk"><span class="lbl">Victor's Triple Bet</span> &#9656; <b>dropping in the pre-game</b></span>
-  <span class="tk"><span class="lbl">Tonight's fans</span> Diego <img class="tkflag" src="flags/mx.svg"> &middot; Sipho <img class="tkflag" src="flags/za.svg"></span>
+  <span class="tk"><span class="lbl">Tonight's fans</span> Diego <img class="tkflag" src="flags/mx.svg" alt=""> &middot; Sipho <img class="tkflag" src="flags/za.svg" alt=""></span>
   <span class="tk"><span class="lbl">Mundial 2026</span> kicks off <b>11 Jun</b> &middot; 48 nations &middot; 104 matches</span>
   <span class="tk"><span class="lbl">Predict &amp; win</span> &#9656; <b>free contest</b> &middot; top 3 win prizes</span>
   <span class="tk"><span class="lbl">Live AI commentary</span> LIA &amp; Victor on every kick</span>
@@ -1644,8 +1644,8 @@
               <div class="poster-cast">
                 <div class="pc"><div class="pc-av"><img src="avatars/lia.png" alt="LIA"></div><div class="pc-n">LIA</div><div class="pc-r">Commentator</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
                 <div class="pc"><div class="pc-av"><img src="avatars/victor.png" alt="Victor"></div><div class="pc-n">Victor</div><div class="pc-r">Analyst</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av"><img src="avatars/mx.png" alt="Diego"></div><div class="pc-n">Diego <img class="tkflag" src="flags/mx.svg"></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av"><img src="avatars/za.png" alt="Sipho"></div><div class="pc-n">Sipho <img class="tkflag" src="flags/za.svg"></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/mx.png" alt="Diego"></div><div class="pc-n">Diego <img class="tkflag" src="flags/mx.svg" alt=""></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/za.png" alt="Sipho"></div><div class="pc-n">Sipho <img class="tkflag" src="flags/za.svg" alt=""></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
               </div>
             </div>
             <!-- LIVE: live match -->
@@ -1658,8 +1658,8 @@
               <div class="poster-cast">
                 <div class="pc"><div class="pc-av"><img src="avatars/lia.png" alt="LIA"></div><div class="pc-n">LIA</div><div class="pc-r">Commentator</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
                 <div class="pc"><div class="pc-av"><img src="avatars/victor.png" alt="Victor"></div><div class="pc-n">Victor</div><div class="pc-r">Analyst</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av"><img src="avatars/mx.png" alt="Diego"></div><div class="pc-n">Diego <img class="tkflag" src="flags/mx.svg"></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
-                <div class="pc"><div class="pc-av"><img src="avatars/za.png" alt="Sipho"></div><div class="pc-n">Sipho <img class="tkflag" src="flags/za.svg"></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/mx.png" alt="Diego"></div><div class="pc-n">Diego <img class="tkflag" src="flags/mx.svg" alt=""></div><div class="pc-r">Home fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
+                <div class="pc"><div class="pc-av"><img src="avatars/za.png" alt="Sipho"></div><div class="pc-n">Sipho <img class="tkflag" src="flags/za.svg" alt=""></div><div class="pc-r">Away fan</div><span class="pc-eq"><i></i><i></i><i></i></span></div>
               </div>
               <div class="poster-upnext">Up next · <b>More Mundial 2026 matches</b> <a class="upnext-bell" data-action="schedule">🔔 Notify</a></div>
             </div>
@@ -1720,7 +1720,7 @@
     </section>
 
     <section class="sect mundial" id="mundial">
-      <div class="m-banner mundial-open" id="mundialOpen" role="button" tabindex="0">
+      <div class="m-banner mundial-open" id="mundialOpen" role="button" tabindex="0" data-action="mundial">
         <div class="m-star" id="mStar">★ The main event</div>
         <h2 class="m-title">MUNDIAL 2026</h2>
         <div class="m-count" id="mCount">
@@ -1787,7 +1787,7 @@
           </ul>
         </div>
       </div>
-      <!-- OWNER TODO: set href to your Discord/community URL when live (interim: Instagram) -->
+      
       <a class="community" href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer">
         <div class="cm-ic">⚽</div>
         <div class="cm-l">
@@ -2039,10 +2039,8 @@
       <div class="sn-item"><b>Jun 11 – Jul 19</b><span>2026</span></div>
       <div class="sn-item"><b>One window</b><span>continuous broadcast</span></div>
       <div class="sn-item" id="snPlayers" hidden><b>0</b><span>predictor players</span></div>
-      <!-- [[OWNER: subscribers]] — uncomment when a real figure is set:
-      <div class="sn-item"><b>[[OWNER: subscribers]]</b><span>subscribers</span></div> -->
-      <!-- [[OWNER: avg concurrent viewers]] — uncomment when a real figure is set:
-      <div class="sn-item"><b>[[OWNER: avg concurrent viewers]]</b><span>avg concurrent viewers</span></div> -->
+      
+      
     </div>
 
     <div class="sect-title" style="text-align:left;margin:34px 0 4px">Sponsorship tiers</div>
@@ -2050,7 +2048,7 @@
     <div class="spon-tiers">
       <div class="spon-tier">
         <div class="st-name">Match Sponsor</div>
-        <div class="st-price">Founding rate<!-- OWNER TODO: set e.g. "from €X" --></div>
+        <div class="st-price">By application</div>
         <ul class="st-list">
           <li>Logo on the broadcast overlay for one match</li>
           <li><b>2</b> verbal mentions from LIA or Victor on air</li>
@@ -2061,7 +2059,7 @@
       <div class="spon-tier feat">
         <div class="st-flag">Most popular</div>
         <div class="st-name">Group-Stage Partner</div>
-        <div class="st-price">Founding rate<!-- OWNER TODO: set e.g. "from €X" --></div>
+        <div class="st-price">By application</div>
         <ul class="st-list">
           <li>Logo on the broadcast overlay across a full group stage</li>
           <li><b>6</b> verbal LIA/Victor mentions per match week</li>
@@ -2099,7 +2097,7 @@
 
     <div class="spon-contact">
       <a class="btn" href="media-kit.pdf" target="_blank" rel="noopener noreferrer">Download media kit (PDF) &#9656;</a>
-      <div class="spon-cline">Partnerships<!-- OWNER TODO: add a named contact e.g. "— Alex, Partnerships" --> · <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a></div>
+      <div class="spon-cline">Partnerships · <a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a></div>
     </div>
 
     <div class="pt-who">
@@ -2164,7 +2162,7 @@
       <h2 class="founding-h">A small independent team</h2>
       <p class="founding-p">We're a small independent team of football fans &amp; engineers — not a network, not a rights-holder. We started FootyHub TV because we wanted to watch every World Cup match with a broadcast that actually had character, and we built the AI to make it happen.</p>
       <ul class="founding-list">
-        <li><b>The team</b> — a small independent team of football fans &amp; engineers. We're not a betting company and not a rights-holder — we're builders who wanted a smarter, funnier way to watch football.<!-- OWNER TODO: add named founder + 1-line bio --></li>
+        <li><b>The team</b> — a small independent team of football fans &amp; engineers. We're not a betting company and not a rights-holder — we're builders who wanted a smarter, funnier way to watch football.</li>
         <li><b>Why we built it</b> — we think AI can make <i>every</i> match — not just the big ones — feel like a proper broadcast, with a voice for every nation. So we made it, and we put it out free.</li>
         <li><b>The crew</b> — fans &amp; engineers who build the AI, the voices and the broadcast.</li>
         <li><b>Our promise</b> — the football stays real; we're upfront that the hosts are AI.</li>
@@ -2175,7 +2173,7 @@
     <!-- Legal + disclaimer -->
     <div class="pt-foot">
       <h3>The fine print</h3>
-      <p>FootyHub TV is an independent channel. Business &amp; legal enquiries: <a href="mailto:contact@footyhub.tv" style="color:#caa9ff">contact@footyhub.tv</a>.<!-- OWNER TODO: replace with registered legal entity, country, company no. --> Voice AI powered by ElevenLabs. Entertainment only · 18+.</p>
+      <p>FootyHub TV is an independent channel. Business &amp; legal enquiries: <a href="mailto:contact@footyhub.tv" style="color:#caa9ff">contact@footyhub.tv</a>. Voice AI powered by ElevenLabs. Entertainment only · 18+.</p>
       <div class="about-disclaim">FootyHub TV is an independent fan channel. We are <b>not affiliated with, endorsed by, or connected to FIFA, the FIFA World Cup, any national football association, or any official body</b>. All team names and tournament references are used for descriptive purposes only.</div>
       <div class="about-tags" style="margin-top:20px"><div class="sect-title" style="text-align:center;margin-bottom:14px">Find us</div><div class="pt-tags" style="justify-content:center"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer">Twitch</a><a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:contact@footyhub.tv">contact@footyhub.tv</a></div></div>
     </div>
@@ -2344,7 +2342,7 @@
 
 <!-- FULL-SCREEN MENU -->
 <div class="menu" id="menu" hidden role="dialog" aria-modal="true" aria-label="Menu">
-  <button class="menu-close" id="menuClose">&#10005;</button>
+  <button class="menu-close" id="menuClose" aria-label="Close">&#10005;</button>
   <div class="menu-inner">
     <div class="menu-auth" id="menuAuth"></div>
     <a class="menu-cta" data-action="predict">
@@ -2380,7 +2378,7 @@
 <!-- FULL LEADERBOARD MODAL -->
 <div class="lbmodal" id="lbModal" hidden role="dialog" aria-modal="true" aria-label="Leaderboard">
   <div class="lbm-panel" data-lenis-prevent>
-    <button class="lbm-x" id="lbmClose">&#10005;</button>
+    <button class="lbm-x" id="lbmClose" aria-label="Close">&#10005;</button>
     <div class="lbm-head"><span class="lb-title">🏅 Full Leaderboard</span><span class="lb-sub" id="lbmSub"></span></div>
     <div class="lbm-list" id="lbmList"></div>
     <button class="btn lbm-jump" id="lbmJump" hidden>Jump to my position ↓</button>
@@ -2415,7 +2413,7 @@
 <!-- CONTEST TERMS MODAL -->
 <div class="termsmodal" id="termsModal" hidden role="dialog" aria-modal="true" aria-label="Predictor rules and terms">
   <div class="tm-panel" data-lenis-prevent>
-    <button class="lbm-x" id="tmClose">&#10005;</button>
+    <button class="lbm-x" id="tmClose" aria-label="Close">&#10005;</button>
     <h2 class="tm-title">FootyHub Predictor — Rules &amp; Terms</h2>
     <div class="tm-body" data-lenis-prevent>
       <h4>1. The contest</h4>
@@ -2453,7 +2451,7 @@
 <!-- PRIVACY POLICY MODAL -->
 <div class="termsmodal" id="privacyModal" hidden role="dialog" aria-modal="true" aria-label="Privacy policy">
   <div class="tm-panel" data-lenis-prevent>
-    <button class="lbm-x" id="pvClose">&#10005;</button>
+    <button class="lbm-x" id="pvClose" aria-label="Close">&#10005;</button>
     <h2 class="tm-title">FootyHub TV — Privacy Policy</h2>
     <div class="tm-body" data-lenis-prevent>
       <h4>1. Who we are</h4>
@@ -2485,7 +2483,7 @@
 <!-- VICTOR PREMIUM MODAL -->
 <div class="vpmodal" id="vpremModal" hidden role="dialog" aria-modal="true" aria-label="Victor Premium">
   <div class="vpm-panel" data-lenis-prevent>
-    <button class="lbm-x" id="vpClose">&#10005;</button>
+    <button class="lbm-x" id="vpClose" aria-label="Close">&#10005;</button>
     <div class="vpm-head">
       <span class="vpm-av">V</span>
       <div><span class="vpm-tag">Coming 2026</span><h2 class="vpm-title">Victor Premium</h2></div>
@@ -2510,7 +2508,7 @@
 <!-- iOS "add to home screen for alerts" helper -->
 <div class="iosmodal" id="iosModal" hidden role="dialog" aria-modal="true" aria-label="Get alerts on iPhone">
   <div class="ios-panel" data-lenis-prevent>
-    <button class="lbm-x" id="iosClose">&#10005;</button>
+    <button class="lbm-x" id="iosClose" aria-label="Close">&#10005;</button>
     <div class="ios-ic">📲</div>
     <h3>Get alerts on iPhone</h3>
     <p id="iosIntro">iPhone needs one quick step first — add FootyHub TV to your Home Screen (Apple requires this in every browser):</p>
@@ -2527,7 +2525,7 @@
 <!-- persona profile modal -->
 <div class="pmodal" id="personaModal" hidden role="dialog" aria-modal="true" aria-label="Meet the fan">
   <div class="pm-panel" data-lenis-prevent>
-    <button class="lbm-x" id="pmClose">&#10005;</button>
+    <button class="lbm-x" id="pmClose" aria-label="Close">&#10005;</button>
     <div id="pmBody"></div>
   </div>
 </div>
@@ -2535,7 +2533,7 @@
 <!-- contact modal -->
 <div class="cmodal" id="contactModal" hidden role="dialog" aria-modal="true" aria-label="Get in touch">
   <div class="cm-panel" data-lenis-prevent>
-    <button class="lbm-x" id="cmClose">&#10005;</button>
+    <button class="lbm-x" id="cmClose" aria-label="Close">&#10005;</button>
     <div class="cm-ic">✉️</div>
     <h3>Get in touch</h3>
     <p>Questions, press or partnerships — we'd love to hear from you.</p>
@@ -2549,7 +2547,7 @@
 <!-- NOTIFY MODAL (styled email capture — replaces prompt) -->
 <div class="cmodal" id="notifyModal" hidden role="dialog" aria-modal="true" aria-label="Get match alerts">
   <div class="cm-panel" data-lenis-prevent>
-    <button class="lbm-x" id="nmX">&#10005;</button>
+    <button class="lbm-x" id="nmX" aria-label="Close">&#10005;</button>
     <div class="cm-ic">🔔</div>
     <h3>Get match alerts</h3>
     <p id="nmSub">Drop your email and we'll remind you before kickoff.</p>
@@ -2842,8 +2840,9 @@
     const seen={};incoming.forEach(r=>{if(r&&r.code)seen[r.code]=1;});
     const rows=incoming.slice();
     NATIONS.slice(curG*4,curG*4+4).forEach(([c,n])=>{if(!seen[c])rows.push({code:c,name:n,p:0,gd:'0',pts:0});});
+    rows.sort((a,b)=>(b.pts||0)-(a.pts||0)||(parseInt(b.gd)||0)-(parseInt(a.gd)||0)||(b.gf||0)-(a.gf||0));
     let h='<thead><tr><th>#</th><th>Nation</th><th>P</th><th>GD</th><th>Pts</th></tr></thead><tbody>';
-    rows.forEach((r,i)=>{h+='<tr><td>'+(i+1)+'</td><td><img src="flags/'+r.code+'.svg">'+r.name+'</td><td>'+(r.p||0)+'</td><td>'+(r.gd||'0')+'</td><td>'+(r.pts||0)+'</td></tr>';});
+    rows.forEach((r,i)=>{h+='<tr><td>'+(i+1)+'</td><td><img src="flags/'+r.code+'.svg" alt="">'+r.name+'</td><td>'+(r.p||0)+'</td><td>'+(r.gd||'0')+'</td><td>'+(r.pts||0)+'</td></tr>';});
     h+='</tbody>';mhStand.innerHTML=h;
     const swap=()=>{mhGroups.hidden=true;mhGDetail.hidden=false;const pn=document.querySelector('.mhub-panel');if(pn)pn.scrollTop=0;};
     if(document.startViewTransition)document.startViewTransition(swap);else swap();}
@@ -2858,7 +2857,7 @@
   if(mOpen)mOpen.addEventListener('click',openHub);
   if(mClose)mClose.addEventListener('click',closeHub);
   if(mhub)mhub.addEventListener('click',e=>{if(e.target===mhub)closeHub();});
-  addEventListener('keydown',e=>{if(e.key==='Escape'){closeHub();closeMenu();}});
+  // ESC handled centrally by fhCloseOverlays (covers hub+menu+all overlays)
   document.querySelectorAll('.mhub-tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.mhub-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const tab=t.dataset.tab;document.querySelectorAll('.mhub-pane').forEach(p=>{p.hidden=p.dataset.pane!==tab;});if(tab==='groups')backToGrid();if(tab==='fixtures')jumpToNow('mhFixList',1);});});
 
   // ── headline smooth reveal on scroll ──
@@ -2890,13 +2889,13 @@
     const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
     let _nf=null;try{_nf=nextFixture();}catch(_e){}   // next not-yet-started match
     let _lf=null;try{_lf=liveFixtureNow();}catch(_e){}   // the match live right now (or null)
-    if(live){onair.classList.add('live');oaL.textContent='On air';oaN.textContent=(_lf&&_lf.home_code)?(_lf.home+' v '+_lf.away):((_nf&&_nf.home_code)?(_nf.home+' v '+_nf.away):'LIVE on FootyHub TV');
+    if(live){if(onair)onair.classList.add('live');if(oaL)oaL.textContent='On air';if(oaN)oaN.textContent=(_lf&&_lf.home_code)?(_lf.home+' v '+_lf.away):((_nf&&_nf.home_code)?(_nf.home+' v '+_nf.away):'LIVE on FootyHub TV');
       if(_lf)document.querySelectorAll('#posterLive .poster-teams').forEach(e=>e.innerHTML=_lf.home+' <b>vs</b> '+_lf.away);
       if(_lf){const _th=document.getElementById('tnH'),_ta=document.getElementById('tnA'),_ch=document.getElementById('crestH'),_ca=document.getElementById('crestA');
         if(_th)_th.textContent=_lf.home; if(_ta)_ta.textContent=_lf.away;
         if(_ch&&_lf.home_code)_ch.innerHTML='<img src="flags/'+_lf.home_code+'.svg" alt="">'; if(_ca&&_lf.away_code)_ca.innerHTML='<img src="flags/'+_lf.away_code+'.svg" alt="">';
         try{_setPosterCast(_lf,['#posterLive']);}catch(_e){}}}   // real score lands via renderLiveMatch
-    else{onair.classList.remove('live');oaL.textContent='Next';oaN.textContent=_nf?(_nf.home+' v '+_nf.away+' · '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'FootyHub TV';}
+    else{if(onair)onair.classList.remove('live');if(oaL)oaL.textContent='Next';if(oaN)oaN.textContent=_nf?(_nf.home+' v '+_nf.away+' · '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'FootyHub TV';}
     // watch page: pre-live (next-match countdown) ↔ live (stream)
     const wP=document.getElementById('watchPlayer'),wN=document.getElementById('watchNext');
     if(wP)wP.hidden=!live; if(wN)wN.hidden=false;   // player only when live; next-match card always (off-air = next, live = up next)
@@ -2914,7 +2913,7 @@
     if(ns)ns.innerHTML=live?'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>On air:</b> LIA &amp; Victor break down the action':'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>Pre-game:</b> Victor reveals Medium &amp; Max when the countdown ends';
   }
   // the watch page (player + chat + score + bet) — opened by "Watch now" / "Watch Live"
-  function showPage(pid){const o=document.getElementById('offair'),i=document.getElementById('intro');
+  function showPage(pid){fhCloseOverlays();const o=document.getElementById('offair'),i=document.getElementById('intro');
     if(o)o.classList.remove('on');if(i)i.style.display='none';
     ['live','hosts','schedule','watch','partnersPage','predict','clipsPage','aboutPage','faqPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
     document.body.classList.add('scrolled');document.body.classList.add('subpage');window.scrollTo({top:0});fhPush();}
@@ -2996,9 +2995,9 @@
     const now=Date.now();let h='',curDay='';const anchorThis=(el.id==='schedList'||el.id==='mhFixList');let anchored=false;
     FIX.filter(f=>f.stage!=='ko').forEach(f=>{const ms=Date.parse(f.utc),day=fmtDay(ms);
       if(day!==curDay){curDay=day;h+='<div class="sched-day">'+day+'</div>';}
-      const live=now>=ms&&now<ms+MATCH_MS, past=now>=ms+MATCH_MS;
-      const isNow=anchorThis&&!anchored&&!past; if(isNow)anchored=true;
       const _ko=!f.home_code,_sc=(!_ko&&RES.scores)?RES.scores[f.home_code+'-'+f.away_code]:null;
+      const live=now>=ms&&now<ms+MATCH_MS&&!_sc, past=!!_sc||now>=ms+MATCH_MS;
+      const isNow=anchorThis&&!anchored&&!past; if(isNow)anchored=true;
       const t=live?'<span style="color:var(--live)">● LIVE</span>':(past?(_sc?'<b class="si-sc">'+_sc.h+'–'+_sc.a+'</b>':'FT'):fmtTime(ms));
       const cta=live?'<a class="si-cta" data-action="live">Watch &rarr;</a>':(past?'<a class="si-cta ghost" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Replay ↗</a>':'<a class="si-cta ghost">🔔 Notify</a>');
       const ko=!f.home_code;
@@ -3241,8 +3240,9 @@
     const hasPick=d&&(d.prediction||(d.result&&d.result.settled));
     if(!hasPick){el.style.display='none';return;}
     try{el.style.display='none';const r=await fetch(LIVE_ENDPOINT+'/predict/consensus?matchId='+encodeURIComponent(predId),{cache:'no-store'});if(!r.ok)return;const c=await r.json();if(!c||!c.total){el.style.display='none';return;}
-      const lead=(c.pctHome>=c.pctDraw&&c.pctHome>=c.pctAway)?(predHome+' win '+c.pctHome+'%'):((c.pctAway>=c.pctDraw)?(predAway+' win '+c.pctAway+'%'):('draw '+c.pctDraw+'%'));
-      let s='👥 <b>'+c.total+'</b> '+(c.total===1?'prediction':'predictions')+' so far · most back <b>'+mcEsc(lead)+'</b>';
+      const tot=c.total||0, pc=Math.max(c.pctHome,c.pctDraw,c.pctAway);
+      const side=(c.pctHome>=c.pctDraw&&c.pctHome>=c.pctAway)?(predHome+' to win'):((c.pctAway>=c.pctDraw)?(predAway+' to win'):'a draw');
+      let s='👥 <b>'+tot+'</b> '+(tot===1?'prediction':'predictions')+' so far · '+(tot<5?('<b>'+Math.round(pc/100*tot)+' of '+tot+'</b> back <b>'+mcEsc(side)+'</b>'):('most back <b>'+mcEsc(side+' ('+pc+'%)')+'</b>'));
       if(c.topScore)s+=' · popular score <b>'+mcEsc(String(c.topScore).replace('-','–'))+'</b>';
       el.innerHTML=s;el.style.display='';
     }catch(_e){}
@@ -3274,7 +3274,8 @@
       if(sel)sel.innerHTML='';
       setupPredictor(null);
       const nf=(typeof nextFixture==='function')?nextFixture():null;
-      const pb=document.getElementById('predBody');if(pb)pb.innerHTML='<div class="pred-note">⚽ No matches today. Predictions open on match days'+(nf?' — next: <b>'+fmtDay(Date.parse(nf.utc))+'</b>':'')+'. Come back then to play!</div>';
+      const _td=new Date().toDateString(),_hadT=FIX.some(f=>f.stage!=='ko'&&new Date(Date.parse(f.utc)).toDateString()===_td);
+      const pb=document.getElementById('predBody');if(pb)pb.innerHTML='<div class="pred-note">'+(_hadT?"⏱️ Today's matches have kicked off — predictions are closed":'⚽ No matches today. Predictions open on match days')+(nf?' — next: <b>'+fmtDay(Date.parse(nf.utc))+'</b>':'')+'. Come back then to play!</div>';
       const pm=document.getElementById('predMatch');if(pm)pm.textContent='';
       return;
     }
@@ -3308,6 +3309,7 @@
     }else{
       if(si)si.hidden=true;if(un)un.hidden=false;
       const inp=document.getElementById('jmInput');if(inp&&!inp.value)inp.value=(fhUname||((fhUser&&fhUser.name)?fhUser.name.split(' ')[0]:'')).replace(/[^A-Za-z0-9_-]/g,'');
+      const _c18=document.getElementById('jm18');if(_c18&&fhUname)_c18.checked=true;
       const er=document.getElementById('jmErr');if(er)er.textContent='';
       if(inp)setTimeout(()=>inp.focus(),60);
     }
@@ -3316,7 +3318,7 @@
   // Predict "Play now" CTAs require sign-in first — tapping the banner opens the sign-in gate (funnels visitors into the Predictor); signed-in users go straight to play.
   document.addEventListener('click',function(e){
     const t=e.target.closest('.pred-teaser,.poster-predict');
-    if(t && !fhSession()){ e.preventDefault(); e.stopPropagation(); openJoinModal(); }
+    if(t && !fhSession()){ e.preventDefault(); e.stopPropagation(); showPage('predict'); if(typeof renderDayMatches==='function')renderDayMatches(); openJoinModal(); }
   },true);
   const _UERR={short:'At least 3 characters.',invalid:'Letters, numbers, _ - only.',blocked:'Please choose a different name.',taken:'That username is taken — try another.'};
   async function saveUsername(){
@@ -3329,8 +3331,8 @@
     try{const r=await fetch(LIVE_ENDPOINT+'/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({op:'setname',session:fhSession(),name,over18:true})});
       if(r.status===401){clearSession();openJoinModal();return;}
       const d=await r.json();
-      if(d&&d.ok){fhUname=d.name;closeJoin();toast('✓ Username set: '+d.name);loadPredictor();
-        if(pendingPred){const p=pendingPred;pendingPred=null;submitPrediction(p.ph,p.pa);}
+      if(d&&d.ok){const _pp=pendingPred;pendingPred=null;fhUname=d.name;closeJoin();toast('✓ Username set: '+d.name);loadPredictor();
+        if(_pp)submitPrediction(_pp.ph,_pp.pa);
       }else{if(er)er.textContent=_UERR[(d&&d.error)]||'Try another name.';}
     }catch(e){if(er)er.textContent='Network error — try again.';}
   }
@@ -3382,7 +3384,7 @@
   let _lastPick=null;
   function fhShare(customText){
     let url='https://footyhub.tv';
-    try{const u=((typeof fhUname!=='undefined'&&fhUname)||(fhUser&&fhUser.name)||'').trim(); if(u)url+='/?ref='+encodeURIComponent(u);}catch(_e){}
+    try{const u=((typeof fhUname!=='undefined'&&fhUname)||'').trim(); if(u)url+='/?ref='+encodeURIComponent(u);}catch(_e){}
     let text=customText;
     if(!text&&_lastPick){text='⚽ I called '+_lastPick.h+' '+_lastPick.ph+'–'+_lastPick.pa+' '+_lastPick.a+' on the FootyHub TV Predictor 🏆 Free to play — predict scores & climb the leaderboard. Beat my call 👉';}
     if(!text){text='⚽ FootyHub TV — AI commentators call every Mundial 2026 match LIVE & free on YouTube. Predict scores & win prizes 🏆';}
@@ -3529,7 +3531,11 @@
     },{once:true});
   }
   // a fixture that should be LIVE right now (kickoff ≤ now < kickoff+2.5h), or null
-  function liveFixtureNow(pc){const now=Date.now();const w=FIX.filter(f=>{const ms=Date.parse(f.utc);return !isNaN(ms)&&now>=ms&&now<ms+MATCH_MS;});if(pc&&pc[0]&&w.length>1){const m=w.find(f=>f.home_code===pc[0]&&f.away_code===pc[1]);if(m)return m;}return w[0]||null;}
+  let _liveMatch=null;   // engine's authoritative live match (live.json.match) — beats clock-window guessing (fixes simultaneous-kickoff split-brain)
+  function liveFixtureNow(pc){
+    if(_liveMatch&&_liveMatch.home_code){const m=_liveMatch;return {home:m.home,away:m.away,home_code:m.home_code,away_code:m.away_code,utc:m.kickoff||''};}
+    const now=Date.now();const w=FIX.filter(f=>{const ms=Date.parse(f.utc);return !isNaN(ms)&&now>=ms&&now<ms+MATCH_MS;});if(pc&&pc[0]&&w.length>1){const m=w.find(f=>f.home_code===pc[0]&&f.away_code===pc[1]);if(m)return m;}return w[0]||null;
+  }
   // engine silent / says off / unreachable while a match window is open → fail open to the channel live
   function maybeLiveFallback(){
     const f=liveFixtureNow(); if(!f)return;
@@ -3597,7 +3603,8 @@
     try{
       let data;
       if(DEMO){data=DEMO_DATA;}
-      else{const r=await fetch(LIVE_READ||LIVE_ENDPOINT||'live.json',{cache:'no-store'}); if(!r.ok){try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();return;} data=await r.json();}
+      else{let r=await fetch(LIVE_READ||'live.json',{cache:'no-store'}).catch(()=>null); if((!r||!r.ok)&&LIVE_ENDPOINT){r=await fetch(LIVE_ENDPOINT+'/live.json',{cache:'no-store'}).catch(()=>null);} if(!r||!r.ok){try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();return;} data=await r.json();}
+      _liveMatch=(data.is_live&&data.match&&data.match.home_code)?data.match:null;
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);
         if(!isNaN(k)&&k>Date.now()){kickoffTs=k;updateCountdown();}}   // only a FUTURE kickoff sets the countdown — a past/live kickoff never freezes it at 00:00
       // live = engine says so OR a fixture is in its window right now (client-side fallback so it flips even when the engine isn't pushing)
@@ -3615,7 +3622,7 @@
       try{ if(_isLiveNow){ let _lp=null; try{_lp=liveFixtureNow();}catch(_e){} if(!_lp&&data.match&&data.match.home){_lp={home:data.match.home,away:data.match.away,home_code:data.match.home_code,away_code:data.match.away_code,utc:(data.match.kickoff||'')};} if(_lp)setupPoll(_lp); } }catch(_e){}
       {const vid=data.youtube_video_id||(data.platforms&&data.platforms.youtube_video_id)||'';
        if(data.is_live&&vid)renderYouTube(vid);
-       else maybeLiveFallback();   // engine has no live signal — if a match window is open, fail open to the channel live
+       else if(data.is_live!==false)maybeLiveFallback();   // fail-open ONLY when not explicitly off-air (no fake '● LIVE')
       }
       if(data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
       if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;
@@ -3736,7 +3743,7 @@
   ];
   function _clipCard(c,i){return '<div class="clip" data-clip="'+i+'">'+
     '<div class="clip-thumb"><img class="poster" src="'+c.p+'" alt="" loading="lazy">'+
-    '<span class="dur">'+c.dur+'</span><span class="play" aria-hidden="true"></span></div>'+
+    (c.tag?'<span class="clip-tag" style="position:absolute;top:8px;left:8px;background:rgba(150,70,255,.9);color:#fff;font-size:.6rem;font-weight:800;padding:3px 9px;border-radius:50px;letter-spacing:.06em;text-transform:uppercase">'+mcEsc(c.tag)+'</span>':'')+'<span class="dur">'+c.dur+'</span><span class="play" aria-hidden="true"></span></div>'+
     '<div class="cap">'+c.cap+'</div></div>';}
   function renderClipStrip(){const el=document.getElementById('clipStrip');if(el)el.innerHTML=CLIPS.map(_clipCard).join('');}
   function renderClips(){const el=document.getElementById('clipGrid');if(el)el.innerHTML=CLIPS.map(_clipCard).join('');}
@@ -3768,7 +3775,7 @@
       return;}
     for(const it of SOON){if(e.target.closest(it[0])){e.preventDefault();toast(it[1]);return;}}
   });
-  document.querySelectorAll('form.notify').forEach(f=>f.addEventListener('submit',async e=>{
+  document.querySelectorAll('form.notify:not(#notifyForm)').forEach(f=>f.addEventListener('submit',async e=>{
     e.preventDefault();
     const input=f.querySelector('input[type=email]');
     const email=input?input.value.trim():'';

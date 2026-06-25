@@ -599,8 +599,9 @@ var Predictor = class {
       refs: v.refs || 0,
       joined: v.joined || 0
     });
-    rows.sort((a, b) => this._cmp(a, b));
-    return rows;
+    const ranked = rows.filter((r) => (r.played || 0) > 0);   // a "player" = someone who has predicted (no sign-in-only 0-pt rows)
+    ranked.sort((a, b) => this._cmp(a, b));
+    return ranked;
   }
   async fetch(request) {
     const url = new URL(request.url);
@@ -638,13 +639,14 @@ var Predictor = class {
           pctHome: n ? Math.round(home * 100 / n) : 0,
           pctDraw: n ? Math.round(draw * 100 / n) : 0,
           pctAway: n ? Math.round(away * 100 / n) : 0,
-          topScore: n >= 3 ? top : null, topScoreCount: n >= 3 ? topc : 0
+          topScore: n >= 3 || topc >= 2 ? top : null, topScoreCount: n >= 3 || topc >= 2 ? topc : 0
         });
       }
       const matchId2 = url.searchParams.get("matchId") || "";
       const user2 = url.searchParams.get("user") || "";
       const prediction = matchId2 && user2 ? await this.storage.get(`pred:${matchId2}:${user2}`) || null : null;
       const result = matchId2 ? await this.storage.get(`result:${matchId2}`) || null : null;
+      const kick = matchId2 ? await this.storage.get("kick:" + matchId2) : null;
       let points = null;
       if (prediction && result && result.settled) points = this._score(prediction.ph, prediction.pa, result.ah, result.aa);
       let rank = null, players = 0, me = null;
@@ -657,7 +659,7 @@ var Predictor = class {
           me = { points: rows[i].points, exacts: rows[i].exacts, played: rows[i].played, name: rows[i].name, streak: rows[i].streak, best: rows[i].best, refs: rows[i].refs };
         }
       }
-      return this._json({ matchId: matchId2, prediction, result, points, locked: !!result, rank, players, me });
+      return this._json({ matchId: matchId2, prediction, result, points, locked: !!result || !!(kick && Date.now() >= kick), kickoff: kick || null, rank, players, me });
     }
     let body;
     try {
