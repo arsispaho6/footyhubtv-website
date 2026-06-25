@@ -2964,7 +2964,7 @@
     if(closed){_unlockScroll();if(lenis)lenis.start();}
     return closed;
   }
-  function goHome(){fhCloseOverlays();backHome();}
+  function goHome(){fhCloseOverlays();if(!_atHome())history.back();else backHome();}
   window.addEventListener('popstate',function(){if(fhCloseOverlays())return;backHome();});
   // Mundial banner phase: pre (countdown) / live (tournament on) / done (champions)
   function setMundialPhase(p){
@@ -3566,7 +3566,7 @@
   // a fixture that should be LIVE right now (kickoff ≤ now < kickoff+2.5h), or null
   let _liveMatch=null;   // engine's authoritative live match (live.json.match) — beats clock-window guessing (fixes simultaneous-kickoff split-brain)
   function liveFixtureNow(pc){
-    if(_liveMatch&&_liveMatch.home_code){const m=_liveMatch;return {home:m.home,away:m.away,home_code:m.home_code,away_code:m.away_code,utc:m.kickoff||''};}
+    if(_liveMatch&&_liveMatch.home_code){const m=_liveMatch,_k=Date.parse(m.kickoff||'');if(isNaN(_k)||Date.now()<_k+MATCH_MS)return {home:m.home,away:m.away,home_code:m.home_code,away_code:m.away_code,utc:m.kickoff||''};}
     const now=Date.now();const w=FIX.filter(f=>{const ms=Date.parse(f.utc);return !isNaN(ms)&&now>=ms&&now<ms+MATCH_MS;});if(pc&&pc[0]&&w.length>1){const m=w.find(f=>f.home_code===pc[0]&&f.away_code===pc[1]);if(m)return m;}return w[0]||null;
   }
   // engine silent / says off / unreachable while a match window is open → fail open to the channel live
@@ -3636,7 +3636,7 @@
     try{
       let data;
       if(DEMO){data=DEMO_DATA;}
-      else{let r=await fetch(LIVE_READ||'live.json',{cache:'no-store'}).catch(()=>null); if((!r||!r.ok)&&LIVE_ENDPOINT){r=await fetch(LIVE_ENDPOINT+'/live.json',{cache:'no-store'}).catch(()=>null);} if(!r||!r.ok){try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();return;} data=await r.json();}
+      else{let r=await fetch(LIVE_READ||'live.json',{cache:'no-store'}).catch(()=>null); if((!r||!r.ok)&&LIVE_ENDPOINT){r=await fetch(LIVE_ENDPOINT+'/live.json',{cache:'no-store'}).catch(()=>null);} if(!r||!r.ok){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();return;} data=await r.json();}
       _liveMatch=(data.is_live&&data.match&&data.match.home_code)?data.match:null;
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);
         if(!isNaN(k)&&k>Date.now()){kickoffTs=k;updateCountdown();}}   // only a FUTURE kickoff sets the countdown — a past/live kickoff never freezes it at 00:00
@@ -3660,7 +3660,7 @@
       if(data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
       if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;
         renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
-    }catch(e){try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
+    }catch(e){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
   }
   // Victor's bets come from the REAL engine (victor_betting_slip.py → live.json.victor_bets.tiers)
   // live page: SAFE slip only (the bet builder + combined); Medium & Max are teased, live on the broadcast
@@ -3770,7 +3770,7 @@
   const CLIPS=[
     {f:'clips/big-one.mp4',   p:'clips/big-one-poster.jpg',   tag:'The Trailer',      dur:'0:48', cap:'Meet FootyHub TV — a new kind of AI football channel', portrait:true},
     {f:'clips/the-cast.mp4',  p:'clips/the-cast-poster.jpg',  tag:'The Cast',         dur:'0:14', cap:'Meet LIA &amp; Victor — your AI broadcast team'},
-    {f:'clips/winner.mp4',    p:'clips/winner-poster.jpg',    tag:'Predict &amp; Win',dur:'0:40', cap:'Top the leaderboard, win Victor Premium'},
+    {f:'clips/winner.mp4',    p:'clips/winner-poster.jpg',    tag:'Predict & Win',dur:'0:40', cap:'Top the leaderboard, win Victor Premium'},
     {f:'clips/48-fans.mp4',   p:'clips/48-fans-poster.jpg',   tag:'48 Nations',       dur:'0:13', cap:'48 AI fans, 48 voices — every match'},
     {f:'clips/notify.mp4',    p:'clips/notify-poster.jpg',    tag:'Never miss a kick',dur:'0:18', cap:'Mundial 2026 — kicks off 11 June'},
   ];
