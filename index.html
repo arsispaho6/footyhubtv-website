@@ -185,6 +185,9 @@
   @media(max-width:768px){
     .nav{gap:10px;padding:0 14px}
     .nav .onair{display:none}
+    .nav .onair.live{display:flex;padding:4px 10px;gap:5px;margin-left:auto}
+    .nav .onair.live .oa-label{display:none}
+    .nav .onair.live .oa-name{min-width:0;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.72rem}
     .nav .social{margin-left:auto;gap:0}
     .nav .social>a:not(.watch-cta){display:none}
     .nav .watch-cta{display:none}
@@ -852,6 +855,12 @@
   .mh-on{margin-left:auto;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(200,170,255,.85);background:rgba(150,70,255,.14);padding:3px 9px;border-radius:50px}
   .mh-table{width:100%;border-collapse:collapse;font-size:.85rem}
   .mh-table th{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt-3);text-align:left;padding:8px 10px;border-bottom:1px solid rgba(150,70,255,.15)}
+  .mh-table tr.q1 td:first-child{box-shadow:inset 3px 0 0 #2ecc71}
+  .mh-table tr.q3 td:first-child{box-shadow:inset 3px 0 0 #f1c40f}
+  .mh-table .mh-legend{font-size:.62rem;color:var(--txt-3);text-align:left;padding:10px;border:0}
+  .mh-table .ql{display:inline-block;width:9px;height:9px;border-radius:2px;vertical-align:middle;margin-right:3px}
+  .mh-table .ql.q1l{background:#2ecc71}.mh-table .ql.q3l{background:#f1c40f}
+  @media(max-width:479px){.mh-table .hide-sm{display:none}}
   .mh-table td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.05)}
   .mh-table td img{width:24px;height:16px;object-fit:cover;border-radius:3px;vertical-align:middle;margin-right:8px}
   .mh-standtitle{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(200,170,255,.6);margin-bottom:12px}
@@ -903,6 +912,8 @@
     body::before,.bg-aurora span,.particle,.nav::after,.eq i,.pc-eq i,.mhpulse,main.on,.live-viewers i,.intro-logo{animation:none!important}
     .particles{display:none}
   }
+  .skip{position:fixed;top:8px;left:8px;z-index:400;background:#9646ff;color:#fff;padding:10px 18px;border-radius:8px;font-weight:700;font-size:.85rem;transform:translateY(-200%);transition:transform .2s;text-decoration:none}
+  .skip:focus{transform:translateY(0)}
   .toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);z-index:300;background:rgba(20,10,38,.96);border:1px solid rgba(150,70,255,.4);color:#fff;padding:13px 22px;border-radius:50px;font-size:.85rem;box-shadow:0 10px 40px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s ease,transform .3s ease;max-width:90vw;text-align:center}
   .toast.show{opacity:1;transform:translate(-50%,0)}
 
@@ -1514,6 +1525,7 @@
 <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
+<a class="skip" href="#offair">Skip to content</a>
 <canvas id="gl"></canvas>
 <div class="bg-vignette"></div>
 <div class="bg-grain"></div>
@@ -2841,9 +2853,9 @@
     const rows=incoming.slice();
     NATIONS.slice(curG*4,curG*4+4).forEach(([c,n])=>{if(!seen[c])rows.push({code:c,name:n,p:0,gd:'0',pts:0});});
     rows.sort((a,b)=>(b.pts||0)-(a.pts||0)||(parseInt(b.gd)||0)-(parseInt(a.gd)||0)||(b.gf||0)-(a.gf||0));
-    let h='<thead><tr><th>#</th><th>Nation</th><th>P</th><th>GD</th><th>Pts</th></tr></thead><tbody>';
-    rows.forEach((r,i)=>{h+='<tr><td>'+(i+1)+'</td><td><img src="flags/'+r.code+'.svg" alt="">'+r.name+'</td><td>'+(r.p||0)+'</td><td>'+(r.gd||'0')+'</td><td>'+(r.pts||0)+'</td></tr>';});
-    h+='</tbody>';mhStand.innerHTML=h;
+    let h='<thead><tr><th>#</th><th>Nation</th><th>P</th><th class="hide-sm">W</th><th class="hide-sm">D</th><th class="hide-sm">L</th><th class="hide-sm">GF</th><th class="hide-sm">GA</th><th>GD</th><th>Pts</th></tr></thead><tbody>';
+    rows.forEach((r,i)=>{const q=i<2?'q1':(i===2?'q3':'');h+='<tr'+(q?' class="'+q+'"':'')+'><td>'+(i+1)+'</td><td><img src="flags/'+r.code+'.svg" alt="">'+r.name+'</td><td>'+(r.p||0)+'</td><td class="hide-sm">'+(r.w||0)+'</td><td class="hide-sm">'+(r.d||0)+'</td><td class="hide-sm">'+(r.l||0)+'</td><td class="hide-sm">'+(r.gf||0)+'</td><td class="hide-sm">'+(r.ga||0)+'</td><td>'+(r.gd||'0')+'</td><td>'+(r.pts||0)+'</td></tr>';});
+    h+='</tbody><tfoot><tr><td colspan="10" class="mh-legend"><span class="ql q1l"></span> Top 2 advance · <span class="ql q3l"></span> best 3rd-placed</td></tr></tfoot>';mhStand.innerHTML=h;
     const swap=()=>{mhGroups.hidden=true;mhGDetail.hidden=false;const pn=document.querySelector('.mhub-panel');if(pn)pn.scrollTop=0;};
     if(document.startViewTransition)document.startViewTransition(swap);else swap();}
   function backToGrid(){const swap=()=>{if(mhGDetail)mhGDetail.hidden=true;if(mhGroups)mhGroups.hidden=false;const pn=document.querySelector('.mhub-panel');if(pn)pn.scrollTop=0;};
@@ -2913,15 +2925,36 @@
     if(ns)ns.innerHTML=live?'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>On air:</b> LIA &amp; Victor break down the action':'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>Pre-game:</b> Victor reveals Medium &amp; Max when the countdown ends';
   }
   // the watch page (player + chat + score + bet) — opened by "Watch now" / "Watch Live"
+  const PAGE_TITLES={live:'Watch Live',hosts:'The Cast',schedule:'Schedule',watch:'Replays',clipsPage:'Clips',partnersPage:'Sponsors',predict:'Predict & Win',aboutPage:'About',faqPage:'FAQ'};
+  const _BASE_TITLE='FootyHub TV — Live AI Football Commentary';
+  // focus-trap: keep keyboard/screen-reader focus inside the open dialog (WCAG 2.4.3)
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Tab')return;
+    const ids=['personaModal','menu','mhub','vpremModal','contactModal','iosModal','joinModal','lbModal','termsModal','privacyModal','clipLb','notifyModal'];
+    let open=null;for(const id of ids){const el=document.getElementById(id);if(el&&!el.hidden){open=el;break;}}
+    if(!open)return;
+    const all=open.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex=\"-1\"])');
+    const list=Array.prototype.filter.call(all,el=>el.offsetParent!==null);
+    if(!list.length)return;
+    const first=list[0],last=list[list.length-1];
+    if(!open.contains(document.activeElement)){e.preventDefault();first.focus();}
+    else if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  });
+  // deep-link: open the page named in the URL hash on load (#predict, #schedule, …)
+  setTimeout(function(){try{var _h=(location.hash||'').replace(/^#/,'');const _al={fixtures:'schedule',cast:'hosts'};if(_al[_h])_h=_al[_h];if(_h&&PAGE_TITLES[_h]){showPage(_h);if(_h==='predict'&&typeof renderDayMatches==='function')renderDayMatches();if(_h==='clipsPage'&&typeof renderClips==='function')renderClips();}}catch(_e){}},0);
   function showPage(pid){fhCloseOverlays();const o=document.getElementById('offair'),i=document.getElementById('intro');
     if(o)o.classList.remove('on');if(i)i.style.display='none';
     ['live','hosts','schedule','watch','partnersPage','predict','clipsPage','aboutPage','faqPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
-    document.body.classList.add('scrolled');document.body.classList.add('subpage');window.scrollTo({top:0});fhPush();}
+    document.body.classList.add('scrolled');document.body.classList.add('subpage');window.scrollTo({top:0});fhPush();
+    try{history.replaceState({fhNav:1,page:pid},'','#'+pid);document.title=(PAGE_TITLES[pid]?PAGE_TITLES[pid]+' · FootyHub TV':_BASE_TITLE);}catch(_e){}
+    const _v=document.getElementById(pid);if(_v){_v.setAttribute('tabindex','-1');try{_v.focus({preventScroll:true});}catch(_e){}}}
   function showWatch(){showPage('live');}
   function showHosts(){showPage('hosts');}
   function backHome(){const o=document.getElementById('offair'),i=document.getElementById('intro');
     ['live','hosts','schedule','watch','partnersPage','predict','clipsPage','aboutPage','faqPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('on');});
-    if(o)o.classList.add('on');if(i)i.style.display='';document.body.classList.remove('subpage');navReveal();}
+    if(o)o.classList.add('on');if(i)i.style.display='';document.body.classList.remove('subpage');navReveal();
+    try{history.replaceState({fhNav:0},'',location.pathname+location.search);document.title=_BASE_TITLE;}catch(_e){}}
   // ── SPA browser-back: keep users inside the site (back → close overlay / home, not Google) ──
   function _atHome(){return !(history.state&&history.state.fhNav);}
   function fhPush(){try{if(_atHome())history.pushState({fhNav:1},'');}catch(e){}}
@@ -2931,7 +2964,7 @@
     if(closed){_unlockScroll();if(lenis)lenis.start();}
     return closed;
   }
-  function goHome(){if(!_atHome()){history.back();}else{fhCloseOverlays();backHome();}}
+  function goHome(){fhCloseOverlays();backHome();}
   window.addEventListener('popstate',function(){if(fhCloseOverlays())return;backHome();});
   // Mundial banner phase: pre (countdown) / live (tournament on) / done (champions)
   function setMundialPhase(p){
