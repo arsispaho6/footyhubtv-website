@@ -64,6 +64,7 @@ _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 _R2_READ = "https://cdn.footyhub.tv/live.json"
 ESPN_STAND = "https://site.api.espn.com/apis/v2/sports/soccer/fifa.world/standings"
 ESPN_BOARD = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
+ESPN_SUMMARY = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary"
 
 
 # ── HTTP helpers (stdlib only) ────────────────────────────────────────────────
@@ -150,7 +151,7 @@ def espn_finished(days_back: int = 16) -> list:
             if key in seen:
                 continue
             seen.add(key)
-            out.append((home[0], home[1], away[0], away[1]))
+            out.append((home[0], home[1], away[0], away[1], ev.get("id")))
     return out
 
 
@@ -172,7 +173,7 @@ def _scores_map(finished: list) -> dict:
     """ESPN finished list -> {matchId (home_code-away_code): {h, a}} in fixture orientation."""
     idx = _fixture_index()
     out = {}
-    for hc, hs, ac, as_ in finished:
+    for hc, hs, ac, as_, *_ in finished:
         fx = idx.get(frozenset((hc, ac)))
         if not fx:
             continue
@@ -180,6 +181,108 @@ def _scores_map(finished: list) -> dict:
         ah, aa = (hs, as_) if fh == hc else (as_, hs)
         out[fh + "-" + fa] = {"h": ah, "a": aa}
     return out
+
+
+# ── ESPN match summary -> REAL final stats + timeline for a FINISHED match ─────
+_MC_STATS = [("possessionPct", "Possession", True), ("totalShots", "Shots", False),
+             ("shotsOnTarget", "On target", False), ("wonCorners", "Corners", False),
+             ("foulsCommitted", "Fouls", False), ("yellowCards", "Yellow cards", False)]
+
+
+def _summary_mc(eid, fh: str, fa: str) -> dict | None:
+    """Fetch one match summary -> {stats, timeline} in FIXTURE orientation (fh=home, fa=away)."""
+    try:
+        s = _get_json(ESPN_SUMMARY + "?event=" + str(eid), timeout=15)
+    except Exception:
+        return None
+    bs = s.get("boxscore") or {}
+    teams = bs.get("teams") or []
+    by_code, tid_code = {}, {}
+    for t in teams:
+        tm = t.get("team") or {}
+        code = code_for(tm.get("displayName") or tm.get("name") or "")
+        if not code:
+            continue
+        by_code[code] = {st.get("name"): st.get("displayValue") for st in (t.get("statistics") or [])}
+        tid = str(tm.get("id") or "")
+        if tid:
+            tid_code[tid] = code
+    if fh not in by_code or fa not in by_code:
+        return None
+
+    def fmt(v, pct):
+        if v is None:
+            return "0"
+        v = str(v)
+        if pct and "%" not in v:
+            v = v.split(".")[0] + "%"
+        return v
+
+    stats = []
+    for key, label, pct in _MC_STATS:
+        hv, av = by_code[fh].get(key), by_code[fa].get(key)
+        if hv is None and av is None:
+            continue
+        stats.append({"label": label, "home": fmt(hv, pct), "away": fmt(av, pct)})
+
+    tl = []
+    for k in (s.get("keyEvents") or []):
+        typ = ((k.get("type") or {}).get("text") or "")
+        low = typ.lower()
+        if "goal" in low:
+            icon = "⚽"            # soccer ball
+        elif "yellow" in low:
+            icon = "🟨"        # yellow square
+        elif "red" in low:
+            icon = "🟥"        # red square
+        else:
+            continue
+        mn = str((k.get("clock") or {}).get("displayValue") or "").replace("'", "").strip()
+        try:
+            minute = int(mn.split("+")[0])
+        except Exception:
+            minute = 0
+        tcode = tid_code.get(str((k.get("team") or {}).get("id") or ""))
+        side = "home" if tcode == fh else ("away" if tcode == fa else "")
+        who = ""
+        for p in (k.get("participants") or []):
+            who = (p.get("athlete") or {}).get("displayName") or ""
+            if who:
+                break
+        tl.append({"minute": minute, "side": side, "icon": icon,
+                   "text": typ + ((" — " + who) if who else "")})
+    tl.sort(key=lambda e: e["minute"], reverse=True)
+    if not stats and not tl:
+        return None
+    return {"stats": stats, "timeline": tl}
+
+
+def compute_match_centers(finished: list, existing: dict | None, max_new: int = 15) -> dict:
+    """Build/extend the per-match final-stats map. Each match is fetched ONCE then cached
+    (results.mc[matchId]); recent finished matches come first, so the latest one is filled fast."""
+    idx = _fixture_index()
+    mc = dict(existing or {})
+    added = 0
+    for tup in finished:
+        if added >= max_new:
+            break
+        hc, hs, ac, as_, eid = (list(tup) + [None] * 5)[:5]
+        if not eid:
+            continue
+        fx = idx.get(frozenset((hc, ac)))
+        if not fx:
+            continue
+        fh, fa = fx
+        mid = fh + "-" + fa
+        if mid in mc:                      # already cached — never re-fetch a finished match
+            continue
+        data = _summary_mc(eid, fh, fa)
+        if data:
+            mc[mid] = data
+            added += 1
+            print(f"  match-center {mid}: {len(data['stats'])} stats, {len(data['timeline'])} events")
+    return mc
+
 
 
 # ── R2 (the cdn the public site actually reads) ───────────────────────────────
@@ -215,7 +318,7 @@ def _read_live() -> dict:
     return {}
 
 
-def push_results(standings: dict, scores: dict | None = None, ko: dict | None = None) -> bool:
+def push_results(standings: dict, scores: dict | None = None, ko: dict | None = None, mc: dict | None = None) -> bool:
     if not SECRET:
         print("FOOTYHUB_LIVE_SECRET not set — cannot write (read-only run).")
         return False
@@ -241,6 +344,8 @@ def push_results(standings: dict, scores: dict | None = None, ko: dict | None = 
         res.setdefault("scores", {}).update(scores)   # accumulate per-match finals (matchId -> {h,a})
     if ko:
         res["ko"] = ko   # resolved knockout bracket
+    if mc:
+        res["mc"] = mc   # per-match REAL final stats + timeline (ESPN summary)
     res["updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     res["source"] = "espn"
     data["results"] = res
@@ -264,7 +369,7 @@ def settle(finished: list) -> None:
         return
     idx = _fixture_index()
     n = 0
-    for hc, hs, ac, as_ in finished:
+    for hc, hs, ac, as_, *_ in finished:
         fx = idx.get(frozenset((hc, ac)))
         if not fx:
             continue
@@ -390,7 +495,7 @@ def compute_ko(standings: dict, finished: list) -> dict:
         return False
     _bt(0)
     fin = {}
-    for hc, hs, ac, as_ in finished:
+    for hc, hs, ac, as_, *_ in finished:
         fin[(hc, ac)] = (hs, as_)
 
     def score_for(hc, ac):
@@ -452,13 +557,20 @@ def run_once(do_settle: bool = True):
     standings = espn_standings()
     fin = espn_finished()
     scores = _scores_map(fin)
+    mc = None
+    if fin:
+        try:
+            existing_mc = (_read_live().get("results") or {}).get("mc") or {}
+            mc = compute_match_centers(fin, existing_mc)
+        except Exception as e:
+            print(f"  match-center fetch skipped: {e}")
     if standings or scores:
         teams = sum(len(v) for v in standings.values())
         print(f"  ESPN standings: {len(standings)} groups, {teams} teams | scores: {len(scores)} finished")
         ko = compute_ko(standings, fin)
         if ko:
             print(f"  knockout bracket resolved: {len(ko)} matches")
-        push_results(standings, scores, ko or None)
+        push_results(standings, scores, ko or None, mc)
     else:
         print("  no standings from ESPN yet.")
     schedule_kickoffs()        # arm the predictor kickoff-lock (cloud-side, PC-independent)

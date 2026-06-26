@@ -3053,7 +3053,7 @@
   const DEMO=/[?&]demo=live/i.test(location.search); // ad/demo mode: render the site as if a match is LIVE now
   // referral: stash an inviter's ?ref so it's credited on this player's first prediction
   try{var _rf=new URLSearchParams(location.search).get('ref');if(_rf){_rf=_rf.replace(/[^A-Za-z0-9_\- ]/g,'').trim().slice(0,20);if(_rf)localStorage.setItem('fh_ref',_rf);}}catch(_e){}
-  const RES=window.RESULTS||{standings:{},ko:{}};RES.scores=RES.scores||{};
+  const RES=window.RESULTS||{standings:{},ko:{}};RES.scores=RES.scores||{};RES.mc=RES.mc||{};
   let fhUser=null; // signed-in Google user (or null)
   const TZ=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
   const fmtTime=ms=>new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
@@ -3666,6 +3666,7 @@
     const has=mc&&(mc.win_prob||(mc.stats&&mc.stats.length)||(mc.timeline&&mc.timeline.length));
     if(!has){el.hidden=true;return;}
     el.hidden=false;
+    const _wpEl=el.querySelector('.mc-wp');if(_wpEl)_wpEl.style.display=mc.win_prob?'':'none';   // a finished match has no live win-prob — show only the final stats + timeline
     const wp=mc.win_prob||{home:0,draw:0,away:0};
     const setW=(id,v)=>{const e=document.getElementById(id);if(e)e.style.width=(v||0)+'%';};
     const setT=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
@@ -3716,14 +3717,14 @@
         const _key=_ph+'|'+(_lk?(_lk.home_code+'-'+_lk.away_code):'');
         if(_key!==_mPhaseKey){_mPhaseKey=_key;try{setMundialPhase(_ph);}catch(_e){}}}catch(_e){}
       renderChat(data.youtube_video_id||'');
-      if(_lr){renderMatchCenter(data.match_center,(data.match||{}).home,(data.match||{}).away);}else{const _mc=document.getElementById('matchCenter');if(_mc)_mc.hidden=true;}   // win-prob/timeline/stats ONLY for the real live match
+      if(_lr){renderMatchCenter(data.match_center,(data.match||{}).home,(data.match||{}).away);}else{let _shown=false;try{const _lf=lastFinishedFixture();if(_lf){const _mid=_lf.home_code+'-'+_lf.away_code;const _src=(data.results&&data.results.mc)||RES.mc||{};const _fmc=_src[_mid];if(_fmc&&((_fmc.stats&&_fmc.stats.length)||(_fmc.timeline&&_fmc.timeline.length))){renderMatchCenter({stats:_fmc.stats,timeline:_fmc.timeline},_lf.home,_lf.away);_shown=true;}}}catch(_e){}if(!_shown){const _mc=document.getElementById('matchCenter');if(_mc)_mc.hidden=true;}}   // live = the live match-center · off-air = the finished match's REAL final stats (ESPN), else hidden
       try{ if(_isLiveNow){ let _lp=null; try{_lp=liveFixtureNow();}catch(_e){} if(!_lp&&data.match&&data.match.home){_lp={home:data.match.home,away:data.match.away,home_code:data.match.home_code,away_code:data.match.away_code,utc:(data.match.kickoff||'')};} if(_lp)setupPoll(_lp); } }catch(_e){}
       {const vid=data.youtube_video_id||(data.platforms&&data.platforms.youtube_video_id)||'';
        if(_lr&&vid)renderYouTube(vid);
        else if(data.is_live!==false)maybeLiveFallback();   // fail-open ONLY when not explicitly off-air (no fake '● LIVE')
       }
       if(_lr&&data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
-      if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;
+      if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;if(data.results.mc)RES.mc=data.results.mc;
         renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
     }catch(e){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
   }
