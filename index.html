@@ -160,12 +160,13 @@
   .nav .social a:hover{color:#fff}
   .nav .social svg{width:20px;height:20px;fill:currentColor}
   /* On-Air rotating lineup chip */
-  .nav .onair{display:flex;align-items:center;gap:8px;min-width:0;padding:5px 13px;border-radius:50px;margin-left:6px;cursor:pointer;transition:border-color .2s,background .2s;
+  .nav .onair{display:flex;align-items:center;gap:8px;min-width:0;padding:5px 13px 5px 10px;border-radius:50px;margin-left:6px;cursor:pointer;transition:border-color .2s,background .2s;
     background:rgba(150,70,255,.10);border:1px solid rgba(150,70,255,.30)}
   .nav .onair:hover{background:rgba(150,70,255,.2);border-color:var(--violet)}
   .nav .onair .oa-label{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(200,170,255,.7)}
   .nav .onair .oa-name{font-size:.8rem;font-weight:700;color:#fff;min-width:84px;transition:opacity .35s,transform .35s}
   .eq{display:inline-flex;align-items:flex-end;gap:2px;height:14px}
+  .nav .onair .eq{align-items:center;height:13px}
   .eq i{width:3px;height:5px;background:linear-gradient(180deg,#c9a8ff,#9646ff);border-radius:2px;animation:eq 1s ease-in-out infinite}
   .eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}.eq i:nth-child(4){animation-delay:.15s}
   @keyframes eq{0%,100%{height:4px}50%{height:14px}}
@@ -185,7 +186,7 @@
   @media(max-width:768px){
     .nav{gap:10px;padding:0 14px}
     .nav .onair{display:none}
-    .nav .onair.live{display:flex;padding:4px 10px;gap:5px;margin-left:auto}
+    .nav .onair.live{display:flex;padding:4px 10px 4px 8px;gap:5px;margin-left:auto}
     .nav .onair.live .oa-label{display:none}
     .nav .onair.live .oa-name{min-width:0;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.72rem}
     .nav .social{margin-left:auto;gap:0}
@@ -200,7 +201,7 @@
   @media(max-width:900px){
     .nav{gap:10px;padding:0 14px}
     .nav .onair{display:none}
-    .nav .onair.live{display:flex;min-width:0;flex:0 1 auto;margin-left:auto;padding:4px 10px;gap:5px}
+    .nav .onair.live{display:flex;min-width:0;flex:0 1 auto;margin-left:auto;padding:4px 10px 4px 8px;gap:5px}
     .nav .onair.live .oa-label{display:none}
     .nav .onair.live .oa-name{min-width:0;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.72rem}
     .nav .lang,.nav .social>a:not(.watch-cta){display:none}
@@ -3945,7 +3946,7 @@
   const CHATPOOL=[['viewer','joao_10','GOOOOL?? wait no 😅'],['lia','LIA','That run was pure instinct!'],['viewer','amara','first time here, this is wild'],['fan','Mateo','this atmosphere is unreal 🔥'],['vic','Victor','xG says the next goal is coming.'],['viewer','kenji','what a save 🧤'],['fan','Noor','we are NOT sitting down tonight!'],['viewer','sam','the AI just clapped back lmao'],['lia','LIA','sam — I heard that!'],['viewer','lucia_07','this chat is chaos 😂']];
   if(liveStream){for(let _k=0;_k<6;_k++){const _m=CHATPOOL[_k%CHATPOOL.length];const _d=document.createElement('div');_d.className='msg';_d.innerHTML='<span class="u '+_m[0]+'">'+_m[1]+'</span>'+_m[2];liveStream.appendChild(_d);}}
   let ci=6;
-  if(liveStream){setInterval(()=>{if(!document.getElementById('live').classList.contains('on'))return;if(!_isLiveNow)return;const m=CHATPOOL[ci%CHATPOOL.length];ci++;const d=document.createElement('div');d.className='msg';d.innerHTML='<span class="u '+m[0]+'">'+m[1]+'</span>'+m[2];liveStream.appendChild(d);while(liveStream.children.length>9)liveStream.removeChild(liveStream.firstChild);liveStream.scrollTop=liveStream.scrollHeight;},2800);}
+  if(liveStream){setInterval(()=>{if(!document.getElementById('live').classList.contains('on'))return;if(!_isLiveNow)return;const m=CHATPOOL[ci%CHATPOOL.length];ci++;const d=document.createElement('div');d.className='msg';d.innerHTML='<span class="u '+m[0]+'">'+m[1]+'</span>'+m[2];liveStream.appendChild(d);while(liveStream.children.length>9)liveStream.removeChild(liveStream.firstChild);},2800);}
   // (removed fabricated viewer-count ticker — #vCount is now driven ONLY by renderViewers() from live.json, real numbers, never faked)
 
   // ── full-screen menu ──
