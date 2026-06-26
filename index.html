@@ -3231,7 +3231,7 @@
   setInterval(loadPoll,25000);
 
   // ── Predictor + season leaderboard ──
-  let predId='',predKickoff=0,predHome='Home',predAway='Away';
+  let predId='',predKickoff=0,predHome='Home',predAway='Away',_lastBodyMatch='';
   function predUser(){return (fhUser&&fhUser.email)?fhUser.email:'';}
   async function submitPrediction(ph,pa){
     if(!predId||!LIVE_ENDPOINT)return;
@@ -3245,13 +3245,14 @@
   }
   function renderPredBody(data){
     const el=document.getElementById('predBody');if(!el||!predId)return;
+    const _switched=(predId!==_lastBodyMatch);_lastBodyMatch=predId;
     const pred=data&&data.prediction, settled=data&&data.result&&data.result.settled;
     if(pred&&predHome&&predAway)_lastPick={h:predHome,a:predAway,ph:pred.ph,pa:pred.pa};
     const locked=(data&&data.locked)||(predKickoff&&Date.now()>=predKickoff);
     if(settled){el.innerHTML='<div class="pred-note">'+(pred?('Your call: <b>'+pred.ph+'–'+pred.pa+'</b> · '):'')+'Final <b>'+data.result.ah+'–'+data.result.aa+'</b>'+(pred?' · <span class="pred-pts">+'+(data.points||0)+' pts</span>':'')+'</div>';return;}
     if(locked){var _w=' · <a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w/live" target="_blank" rel="noopener noreferrer" style="color:#caa9ff;text-decoration:underline">📺 Watch live</a>';el.innerHTML=pred?('<div class="pred-note">Your call: <b>'+pred.ph+'–'+pred.pa+'</b> · 🔒 locked — awaiting result'+_w+'</div>'):'<div class="pred-note">⏱️ Predictions closed for this match.'+_w+'</div>';return;}
     {const _fa=document.activeElement,_cH=document.getElementById('pH'),_cA=document.getElementById('pA');
-     if(_cH&&_cA&&(_fa===_cH||_fa===_cA||_cH.value!==(pred?String(pred.ph):'')||_cA.value!==(pred?String(pred.pa):'')))return;}
+     if(!_switched&&_cH&&_cA&&(_fa===_cH||_fa===_cA||_cH.value!==(pred?String(pred.ph):'')||_cA.value!==(pred?String(pred.pa):'')))return;}
     el.innerHTML='<div class="pred-input"><span class="pt" id="pHN">Home</span>'
       +'<input type="number" min="0" max="20" id="pH" aria-label="Home team goals" inputmode="numeric" value="'+(pred?pred.ph:'')+'">'
       +'<span class="dash">–</span>'
