@@ -220,6 +220,20 @@ def push_results(standings: dict, scores: dict | None = None, ko: dict | None = 
         print("FOOTYHUB_LIVE_SECRET not set — cannot write (read-only run).")
         return False
     data = _read_live()
+    # The engine owns the live broadcast state (writes top-level is_live/match/updated every ~10s).
+    # If that "updated" stamp goes stale, the broadcast ended — flip the site off-air so a finished
+    # match never lingers as "● LIVE" on the hub (PC can be off; this cron is the safety net).
+    try:
+        _top = data.get("updated") or ""
+        _fresh = False
+        if _top:
+            _ts = _dt.datetime.strptime(_top, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=_dt.timezone.utc).timestamp()
+            _fresh = (time.time() - _ts) < 420   # engine pushes ~10s; >7min silent = ended
+        if data.get("is_live") and not _fresh:
+            data["is_live"] = False
+            data["phase"] = "off"
+    except Exception:
+        pass
     res = data.get("results") or {}
     if standings:
         res["standings"] = standings

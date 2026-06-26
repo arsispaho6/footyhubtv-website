@@ -2915,6 +2915,7 @@
     const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
     let _nf=null;try{_nf=nextFixture();}catch(_e){}   // next not-yet-started match
     let _lf=null;try{_lf=liveFixtureNow();}catch(_e){}   // the match live right now (or null)
+    let _lastF=null;if(!live){try{_lastF=lastFinishedFixture();}catch(_e){}}   // off-air: the most recent finished match
     if(live){if(onair)onair.classList.add('live');if(oaL)oaL.textContent='On air';if(oaN)oaN.textContent=(_lf&&_lf.home_code)?(_lf.home+' v '+_lf.away):((_nf&&_nf.home_code)?(_nf.home+' v '+_nf.away):'LIVE on FootyHub TV');
       if(_lf)document.querySelectorAll('#posterLive .poster-teams').forEach(e=>e.innerHTML=_lf.home+' <b>vs</b> '+_lf.away);
       if(_lf){const _th=document.getElementById('tnH'),_ta=document.getElementById('tnA'),_ch=document.getElementById('crestH'),_ca=document.getElementById('crestA');
@@ -2937,6 +2938,17 @@
     const vtt=document.querySelector('#victorLive .vt-to');if(vtt)vtt.textContent='—';
     if(lm)lm.textContent=live?'● LIVE':(_nf?'Kicks off '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'Kicks off soon');
     if(ns)ns.innerHTML=live?'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>On air:</b> LIA &amp; Victor break down the action':'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>Pre-game:</b> Victor reveals Medium &amp; Max when the countdown ends';
+    if(!live&&_lastF){const _sc=_lastF.sc;
+      if(ls)ls.innerHTML=_sc?(_sc.h+'&nbsp;&ndash;&nbsp;'+_sc.a):'&ndash;&nbsp;&nbsp;&ndash;';
+      const _th2=document.getElementById('tnH'),_ta2=document.getElementById('tnA'),_ch2=document.getElementById('crestH'),_ca2=document.getElementById('crestA');
+      if(_th2)_th2.textContent=_lastF.home; if(_ta2)_ta2.textContent=_lastF.away;
+      if(_ch2&&_lastF.home_code)_ch2.innerHTML='<img src="flags/'+_lastF.home_code+'.svg" alt="">'; if(_ca2&&_lastF.away_code)_ca2.innerHTML='<img src="flags/'+_lastF.away_code+'.svg" alt="">';
+      if(lb)lb.textContent='Full time';
+      if(lm)lm.textContent='Full time';
+      if(ltm)ltm.innerHTML=_lastF.home+(_sc?' <b>'+_sc.h+'&ndash;'+_sc.a+'</b> ':' v ')+_lastF.away+' <span class="live-min">FT</span>';
+      if(oaL)oaL.textContent='Latest';
+      if(oaN)oaN.innerHTML=_lastF.home+(_sc?' <b>'+_sc.h+'&ndash;'+_sc.a+'</b> ':' v ')+_lastF.away+' &middot; Full time';
+    }
   }
   // the watch page (player + chat + score + bet) — opened by "Watch now" / "Watch Live"
   const PAGE_TITLES={live:'Watch Live',hosts:'The Cast',schedule:'Schedule',watch:'Replays',clipsPage:'Clips',partnersPage:'Sponsors',predict:'Predict & Win',aboutPage:'About',faqPage:'FAQ'};
@@ -3034,6 +3046,10 @@
   const MATCH_MS=3.2*3600*1000; // a match window ≈ 3.2h (covers ET + penalties + stoppage)
   // the NEXT match that hasn't kicked off yet (a live/finished match is never shown as "next")
   function nextFixture(){const now=Date.now();if(DEMO){const g=FIX.filter(f=>f.stage!=='ko');return g[1]||g[0]||null;}return FIX.find(f=>Date.parse(f.utc)>now)||FIX[FIX.length-1]||null;}
+  // the most recent finished match (has a final score, or its window has elapsed) — shown on the hub when off-air
+  function lastFinishedFixture(){const now=Date.now();let best=null,bestMs=-1;for(const f of FIX){if(!f||!f.home_code)continue;const ms=Date.parse(f.utc);if(isNaN(ms))continue;const sc=RES.scores&&RES.scores[f.home_code+'-'+f.away_code];if((sc||now>=ms+MATCH_MS)&&ms>bestMs){bestMs=ms;best={home:f.home,away:f.away,home_code:f.home_code,away_code:f.away_code,utc:f.utc,sc:sc||null};}}return best;}
+  // true-live ONLY when the engine says live AND the match is inside its window AND the engine is still pushing (kills stale 'live' left over from a finished broadcast)
+  function _liveReal(data){if(!data||data.is_live!==true||!data.match)return false;const k=Date.parse(data.match.kickoff||'');if(!isNaN(k)&&Date.now()>=k+MATCH_MS)return false;const up=Date.parse(data.updated||'');if(!isNaN(up)&&Date.now()-up>15*60000)return false;return true;}
   function castMember(src,name,role,flag){
     return '<div class="mcast"><div class="mcast-av"><img loading="lazy" src="'+src+'" alt="'+name+'"></div><div class="mcast-n">'+name+(flag?' <img class="tkflag" src="'+flag+'">':'')+'</div><div class="mcast-r">'+role+'</div></div>';
   }
@@ -3665,11 +3681,12 @@
       let data;
       if(DEMO){data=DEMO_DATA;}
       else{let r=await fetch(LIVE_READ||'live.json',{cache:'no-store'}).catch(()=>null); if((!r||!r.ok)&&LIVE_ENDPOINT){r=await fetch(LIVE_ENDPOINT+'/live.json',{cache:'no-store'}).catch(()=>null);} if(!r||!r.ok){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();return;} data=await r.json();}
-      _liveMatch=(data.is_live&&data.match&&data.match.home_code)?data.match:null;
+      let _lr;if(DEMO){_lr=true;}else if(data.is_live===true){_lr=_liveReal(data);}else if(data.is_live===false){_lr=false;}else{try{_lr=!!liveFixtureNow();}catch(_e){_lr=false;}}
+      _liveMatch=(_lr&&data.match&&data.match.home_code)?data.match:null;
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);
         if(!isNaN(k)&&k>Date.now()){kickoffTs=k;updateCountdown();}}   // only a FUTURE kickoff sets the countdown — a past/live kickoff never freezes it at 00:00
       // live = engine says so OR a fixture is in its window right now (client-side fallback so it flips even when the engine isn't pushing)
-      {let _el;if(typeof data.is_live==='boolean'){_el=data.is_live;}else{try{_el=!!liveFixtureNow();}catch(_e){_el=false;}}setMatchLive(_el);}
+      setMatchLive(_lr);
       renderLiveMatch(data.match);
       renderViewers(data.viewers);
       refreshSchedule(document.getElementById('schedList'));
@@ -3682,7 +3699,7 @@
       renderMatchCenter(data.match_center,(data.match||{}).home,(data.match||{}).away);
       try{ if(_isLiveNow){ let _lp=null; try{_lp=liveFixtureNow();}catch(_e){} if(!_lp&&data.match&&data.match.home){_lp={home:data.match.home,away:data.match.away,home_code:data.match.home_code,away_code:data.match.away_code,utc:(data.match.kickoff||'')};} if(_lp)setupPoll(_lp); } }catch(_e){}
       {const vid=data.youtube_video_id||(data.platforms&&data.platforms.youtube_video_id)||'';
-       if(data.is_live&&vid)renderYouTube(vid);
+       if(_lr&&vid)renderYouTube(vid);
        else if(data.is_live!==false)maybeLiveFallback();   // fail-open ONLY when not explicitly off-air (no fake '● LIVE')
       }
       if(data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
