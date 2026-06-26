@@ -3268,7 +3268,10 @@
     if(settled){el.innerHTML='<div class="pred-note">'+(pred?('Your call: <b>'+pred.ph+'–'+pred.pa+'</b> · '):'')+'Final <b>'+data.result.ah+'–'+data.result.aa+'</b>'+(pred?' · <span class="pred-pts">+'+(data.points||0)+' pts</span>':'')+'</div>';return;}
     if(locked){var _w=' · <a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w/live" target="_blank" rel="noopener noreferrer" style="color:#caa9ff;text-decoration:underline">📺 Watch live</a>';el.innerHTML=pred?('<div class="pred-note">Your call: <b>'+pred.ph+'–'+pred.pa+'</b> · 🔒 locked — awaiting result'+_w+'</div>'):'<div class="pred-note">⏱️ Predictions closed for this match.'+_w+'</div>';return;}
     {const _fa=document.activeElement,_cH=document.getElementById('pH'),_cA=document.getElementById('pA');
-     if(!_switched&&_cH&&_cA&&(_fa===_cH||_fa===_cA||_cH.value!==(pred?String(pred.ph):'')||_cA.value!==(pred?String(pred.pa):'')))return;}
+     // protect ONLY an actively-edited field: focused, or a NON-empty value the user typed that isn't the saved pred.
+     // an EMPTY input must never block real data arriving — fixes: your existing prediction stayed hidden ("Join & lock in") until a chip was tapped.
+     const _dirty=_cH&&_cA&&((_cH.value!==''&&_cH.value!==(pred?String(pred.ph):''))||(_cA.value!==''&&_cA.value!==(pred?String(pred.pa):'')));
+     if(!_switched&&_cH&&_cA&&(_fa===_cH||_fa===_cA||_dirty))return;}
     el.innerHTML='<div class="pred-input"><span class="pt" id="pHN">Home</span>'
       +'<input type="number" min="0" max="20" id="pH" aria-label="Home team goals" inputmode="numeric" value="'+(pred?pred.ph:'')+'">'
       +'<span class="dash">–</span>'
