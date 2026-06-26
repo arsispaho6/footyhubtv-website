@@ -338,6 +338,16 @@
   .lb-list{overscroll-behavior:contain}
   .mc-tl{overscroll-behavior:contain}
   .rank-card{margin-top:14px;display:flex;align-items:center;gap:14px;background:var(--violet-dim);border:1px solid var(--violet-soft);border-radius:16px;padding:16px 18px}
+  .myres-card{margin-top:14px;background:rgba(255,255,255,.02);border:1px solid rgba(150,70,255,.18);border-radius:16px;padding:14px 16px}
+  .myres-head{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(200,170,255,.7);margin-bottom:10px}
+  .myres-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+  .myr-row{display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--txt-2);padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+  .myr-row .tkflag{width:18px;height:12px;border-radius:2px;object-fit:cover;flex:0 0 auto}
+  .myr-tm{flex:1;min-width:0;color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .myr-call{color:var(--txt-3);white-space:nowrap}
+  .myr-fin{color:#fff;font-weight:700;white-space:nowrap}
+  .myr-pts{margin-left:5px;font-weight:800;color:var(--txt-3)}.myr-pts.pos{color:#2ecc71}
+  .myr-pend{color:var(--txt-3);font-style:italic}
   .rk-pos{font-size:2rem;font-weight:900;color:#fff;line-height:1;display:flex;align-items:baseline}
   .rk-hash{font-size:1.1rem;color:#caa9ff;margin-right:1px}
   .rk-meta{font-size:.82rem;color:var(--txt-2);line-height:1.5}
@@ -2227,6 +2237,10 @@
           <div class="rk-meta">of <b id="rkOf">—</b> players · <b id="rkPts">0</b> pts · <b id="rkEx">0</b> exact <a class="rk-edit" id="rkEdit">✎ name</a></div>
           <div class="rk-meta" id="rkExtra" style="margin-top:3px;display:none"></div>
         </div>
+        <div class="myres-card" id="myResults" hidden>
+          <div class="myres-head">📋 My predictions</div>
+          <div class="myres-list" id="myResList"></div>
+        </div>
       </div>
       <div class="lb-card">
         <div class="lb-head"><span class="lb-title">🏅 Leaderboard</span><span class="lb-sub" id="lbSub">this season</span></div>
@@ -3268,6 +3282,19 @@
     const ex=document.getElementById('rkEx');if(ex)ex.textContent=(d.me.exacts||0);
     const xt=document.getElementById('rkExtra');if(xt){const s=d.me.streak||0,rf=d.me.refs||0;const b=[];if(s>=2)b.push('🔥 <b>'+s+'</b>-day streak');if(rf>0)b.push('<b>'+rf+'</b> friend'+(rf===1?'':'s')+' joined via you');xt.innerHTML=b.join(' · ');xt.style.display=b.length?'':'none';}
   }
+  async function loadMyResults(){
+    const card=document.getElementById('myResults'),list=document.getElementById('myResList');
+    if(!card||!list||!LIVE_ENDPOINT||!fhSession()){if(card)card.hidden=true;return;}
+    try{const r=await fetch(LIVE_ENDPOINT+'/predict/mine?session='+encodeURIComponent(fhSession()),{cache:'no-store'});if(!r.ok){card.hidden=true;return;}
+      const d=await r.json();const mine=(d&&d.mine)||[];
+      if(!mine.length){card.hidden=true;return;}
+      card.hidden=false;
+      list.innerHTML=mine.map(m=>{const f=FIX.find(x=>midOf(x)===m.matchId);const hn=f?f.home:m.matchId,an=f?(' v '+f.away):'';
+        const fh=f&&f.home_code?'<img class="tkflag" src="flags/'+f.home_code+'.svg" alt="">':'';const fa=f&&f.away_code?'<img class="tkflag" src="flags/'+f.away_code+'.svg" alt="">':'';
+        const res=m.settled?('<span class="myr-fin">'+m.ah+'–'+m.aa+'</span><span class="myr-pts'+(m.pts>0?' pos':'')+'">+'+m.pts+'</span>'):'<span class="myr-pend">pending</span>';
+        return '<div class="myr-row">'+fh+'<span class="myr-tm">'+mcEsc(hn)+mcEsc(an)+'</span>'+fa+'<span class="myr-call">you: <b>'+m.ph+'–'+m.pa+'</b></span>'+res+'</div>';}).join('');
+    }catch(_e){if(card)card.hidden=true;}
+  }
   async function loadConsensus(d){
     const el=document.getElementById('predConsensus');if(!el||!predId||!LIVE_ENDPOINT)return;
     const hasPick=d&&(d.prediction||(d.result&&d.result.settled));
@@ -3282,7 +3309,7 @@
   }
   async function loadPredictor(){
     if(!predId||!LIVE_ENDPOINT)return;
-    try{const r=await fetch(LIVE_ENDPOINT+'/predict?matchId='+encodeURIComponent(predId)+'&session='+encodeURIComponent(fhSession()),{cache:'no-store'});const d=r.ok?await r.json():null;fhUname=(d&&d.me&&d.me.name&&d.me.name!=='Player')?d.me.name:'';renderPredBody(d);renderRank(d);loadConsensus(d);_linkPush();}catch(e){renderPredBody(null);renderRank(null);}
+    try{const r=await fetch(LIVE_ENDPOINT+'/predict?matchId='+encodeURIComponent(predId)+'&session='+encodeURIComponent(fhSession()),{cache:'no-store'});const d=r.ok?await r.json():null;fhUname=(d&&d.me&&d.me.name&&d.me.name!=='Player')?d.me.name:'';renderPredBody(d);renderRank(d);loadConsensus(d);loadMyResults();_linkPush();}catch(e){renderPredBody(null);renderRank(null);}
     try{const lr=await fetch(LIVE_ENDPOINT+'/predict/leaderboard',{cache:'no-store'});if(lr.ok)renderLeaderboard(await lr.json());}catch(e){}
   }
   function midOf(f){return ((f.home_code||f.home||'')+'-'+(f.away_code||f.away||'')).toLowerCase().replace(/[^a-z0-9-]/g,'');}

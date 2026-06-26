@@ -333,7 +333,7 @@ var worker_default = {
       return new Response(JSON.stringify({ ok: true, sent: recaps.length }),
         { headers: { ...CORS, "Content-Type": "application/json" } });
     }
-    if (path === "/predict" || path === "/predict/leaderboard" || path === "/predict/consensus") {
+    if (path === "/predict" || path === "/predict/leaderboard" || path === "/predict/consensus" || path === "/predict/mine") {
       const stub = env.PREDICTOR.get(env.PREDICTOR.idFromName("season1"));
       const corsJson = /* @__PURE__ */ __name(async (res) => new Response(await res.text(), {
         status: res.status,
@@ -363,7 +363,7 @@ var worker_default = {
       }
       if (request.method === "GET") {
         const u = new URL(request.url);
-        const op = path === "/predict/leaderboard" ? "leaderboard" : path === "/predict/consensus" ? "consensus" : "";
+        const op = path === "/predict/leaderboard" ? "leaderboard" : path === "/predict/consensus" ? "consensus" : path === "/predict/mine" ? "mine" : "";
         // SECURITY: derive the player from their SESSION server-side — never trust a ?user=
         // param, so nobody can read another player's prediction by guessing their email.
         let _u = "";
@@ -642,6 +642,20 @@ var Predictor = class {
           topScore: n >= 3 || topc >= 2 ? top : null, topScoreCount: n >= 3 || topc >= 2 ? topc : 0
         });
       }
+      if (op2 === "mine") {
+        const u = url.searchParams.get("user") || "";
+        const st = u ? await this.storage.get("stats:" + u) || {} : {};
+        const ids = Array.isArray(st.matches) ? st.matches.slice(-40).reverse() : [];
+        const mine = [];
+        for (const mid of ids) {
+          const p = await this.storage.get(`pred:${mid}:${u}`);
+          if (!p) continue;
+          const res = await this.storage.get(`result:${mid}`);
+          const settled = !!(res && res.settled);
+          mine.push({ matchId: mid, ph: p.ph, pa: p.pa, ah: settled ? res.ah : null, aa: settled ? res.aa : null, pts: settled ? this._score(p.ph, p.pa, res.ah, res.aa) : null, settled });
+        }
+        return this._json({ mine });
+      }
       const matchId2 = url.searchParams.get("matchId") || "";
       const user2 = url.searchParams.get("user") || "";
       const prediction = matchId2 && user2 ? await this.storage.get(`pred:${matchId2}:${user2}`) || null : null;
@@ -801,7 +815,12 @@ var Predictor = class {
     const existed = await this.storage.get(`pred:${matchId}:${user}`);
     await this.storage.put(`pred:${matchId}:${user}`, { ph, pa });
     const st = await this.storage.get("stats:" + user) || { points: 0, exacts: 0, played: 0, joined: Date.now(), name: name || "Player" };
-    if (!existed) st.played = (st.played || 0) + 1;
+    if (!existed) {
+      st.played = (st.played || 0) + 1;
+      if (!Array.isArray(st.matches)) st.matches = [];
+      st.matches.push(matchId);
+      if (st.matches.length > 80) st.matches = st.matches.slice(-80);
+    }
     if (!st.joined) st.joined = Date.now();
     const _day = Math.floor(Date.now() / 864e5);
     if (st.lastDay === void 0) st.streak = 1;

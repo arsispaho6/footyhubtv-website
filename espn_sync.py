@@ -23,6 +23,7 @@ import argparse
 import datetime as _dt
 import json
 import os
+import re
 import sys
 import time
 import urllib.request
@@ -214,7 +215,7 @@ def _read_live() -> dict:
     return {}
 
 
-def push_results(standings: dict, scores: dict | None = None) -> bool:
+def push_results(standings: dict, scores: dict | None = None, ko: dict | None = None) -> bool:
     if not SECRET:
         print("FOOTYHUB_LIVE_SECRET not set — cannot write (read-only run).")
         return False
@@ -224,6 +225,8 @@ def push_results(standings: dict, scores: dict | None = None) -> bool:
         res["standings"] = standings
     if scores:
         res.setdefault("scores", {}).update(scores)   # accumulate per-match finals (matchId -> {h,a})
+    if ko:
+        res["ko"] = ko   # resolved knockout bracket
     res["updated"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     res["source"] = "espn"
     data["results"] = res
@@ -305,6 +308,131 @@ def schedule_kickoffs() -> None:
         print(f"  schedule failed: {e}")
 
 
+_KO_FIX = None
+_GL = "ABCDEFGHIJKL"
+
+
+def _ko_fixtures() -> list:
+    global _KO_FIX
+    if _KO_FIX is None:
+        try:
+            fx = json.load(open(os.path.join(_HERE, "fixtures.json"), encoding="utf-8"))
+            _KO_FIX = sorted([m for m in fx.get("matches", []) if m.get("stage") == "ko"],
+                             key=lambda m: m.get("match_no", 0))
+        except Exception:
+            _KO_FIX = []
+    return _KO_FIX
+
+
+def _gd_int(r) -> int:
+    try:
+        return int(str(r.get("gd", "0")).replace("+", ""))
+    except Exception:
+        return 0
+
+
+def compute_ko(standings: dict, finished: list) -> dict:
+    """Resolve the knockout bracket from FINAL group standings + finished-match scores.
+
+    Returns results.ko = { "<match_no>": {home:{code,name,score?}, away:{...}, winner?} }.
+    Empty {} until the group stage is complete (all 12 groups, all teams played 3) — the
+    front-end keeps showing placeholder slots until then. Winner/Runner-up + advancement +
+    scores are exact; the 8 best-3rd slots use a valid constrained assignment (FIFA's exact
+    table may differ, but each team lands in a slot its group is eligible for).
+    """
+    ko_fix = _ko_fixtures()
+    if not ko_fix:
+        return {}
+    grp = {}
+    for L in _GL:
+        rows = standings.get(L) or []
+        if len(rows) >= 4 and all((r.get("p", 0) or 0) >= 3 for r in rows[:4]):
+            grp[L] = rows
+    if len(grp) < 12:
+        return {}
+    thirds = sorted(((L, grp[L][2]) for L in _GL),
+                    key=lambda x: (-(x[1].get("pts", 0) or 0), -_gd_int(x[1]), -(x[1].get("gf", 0) or 0)))
+    best8 = set(L for L, _ in thirds[:8])
+    # constrained bijection: each "3rd X/Y/.." slot -> one qualified third whose group is allowed
+    slots = []
+    for f in ko_fix:
+        for side in ("home", "away"):
+            m = re.match(r"3rd\s+([A-L/]+)", str(f.get(side) or ""))
+            if m:
+                allowed = set(g for g in m.group(1).split("/") if g in _GL) & best8
+                slots.append((f.get("match_no"), side, allowed))
+    assign, used = {}, set()
+
+    def _bt(i):
+        if i >= len(slots):
+            return len(used) == len(best8)
+        mn, side, allowed = slots[i]
+        for g in sorted(allowed):
+            if g not in used:
+                used.add(g); assign[(mn, side)] = g
+                if _bt(i + 1):
+                    return True
+                used.discard(g); assign.pop((mn, side), None)
+        return False
+    _bt(0)
+    fin = {}
+    for hc, hs, ac, as_ in finished:
+        fin[(hc, ac)] = (hs, as_)
+
+    def score_for(hc, ac):
+        if (hc, ac) in fin:
+            return fin[(hc, ac)]
+        if (ac, hc) in fin:
+            r = fin[(ac, hc)]
+            return (r[1], r[0])
+        return None
+
+    def team(code):
+        return {"code": code, "name": _DISPLAY.get(code, str(code or "").upper())}
+
+    out = {}
+
+    def resolve(label, mn, side):
+        lab = str(label or "")
+        m = re.match(r"Winner ([A-L])$", lab)
+        if m:
+            return grp[m.group(1)][0]["code"]
+        m = re.match(r"Runner-up ([A-L])$", lab)
+        if m:
+            return grp[m.group(1)][1]["code"]
+        if lab.startswith("3rd"):
+            g = assign.get((mn, side))
+            return grp[g][2]["code"] if g else None
+        m = re.match(r"Winner (\d+)$", lab)
+        if m:
+            return (out.get(m.group(1)) or {}).get("winner")
+        m = re.match(r"Loser (\d+)$", lab)
+        if m:
+            e = out.get(m.group(1)) or {}
+            if e.get("winner") and e.get("home") and e.get("away"):
+                return e["away"]["code"] if e["winner"] == e["home"]["code"] else e["home"]["code"]
+            return None
+        return None
+
+    for f in ko_fix:                                    # sorted by match_no -> Winner-N resolves after N
+        mn = str(f.get("match_no"))
+        hc = resolve(f.get("home"), f.get("match_no"), "home")
+        ac = resolve(f.get("away"), f.get("match_no"), "away")
+        e = {}
+        if hc:
+            e["home"] = team(hc)
+        if ac:
+            e["away"] = team(ac)
+        if hc and ac:
+            sc = score_for(hc, ac)
+            if sc:
+                e["home"]["score"], e["away"]["score"] = sc[0], sc[1]
+                if sc[0] != sc[1]:
+                    e["winner"] = hc if sc[0] > sc[1] else ac
+        out[mn] = e
+    return out
+
+
 def run_once(do_settle: bool = True):
     print(f"ESPN sync @ {time.strftime('%Y-%m-%d %H:%M:%SZ', time.gmtime())}")
     standings = espn_standings()
@@ -313,7 +441,10 @@ def run_once(do_settle: bool = True):
     if standings or scores:
         teams = sum(len(v) for v in standings.values())
         print(f"  ESPN standings: {len(standings)} groups, {teams} teams | scores: {len(scores)} finished")
-        push_results(standings, scores)
+        ko = compute_ko(standings, fin)
+        if ko:
+            print(f"  knockout bracket resolved: {len(ko)} matches")
+        push_results(standings, scores, ko or None)
     else:
         print("  no standings from ESPN yet.")
     schedule_kickoffs()        # arm the predictor kickoff-lock (cloud-side, PC-independent)
