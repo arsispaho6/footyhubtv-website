@@ -145,7 +145,7 @@
     border-bottom:1px solid rgba(150,70,255,.14)}
   .nav .brand{font-weight:700;letter-spacing:.04em;font-size:1.05rem;
     background:linear-gradient(90deg,#fff,#c9a8ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-  .nav .brand{cursor:pointer}
+  .nav .brand{cursor:pointer;flex-shrink:0}
   .nav .brand img{height:34px;width:auto;display:block}
   .nav-back{display:none;align-items:center;font-size:.78rem;font-weight:600;color:var(--txt-2);text-decoration:none;border:1px solid rgba(150,70,255,.4);background:rgba(150,70,255,.08);padding:7px 15px;border-radius:50px;cursor:pointer;margin-left:10px;transition:.2s;white-space:nowrap}
   .nav-back:hover{border-color:var(--violet);color:#fff;background:rgba(150,70,255,.18)}
@@ -160,7 +160,7 @@
   .nav .social a:hover{color:#fff}
   .nav .social svg{width:20px;height:20px;fill:currentColor}
   /* On-Air rotating lineup chip */
-  .nav .onair{display:flex;align-items:center;gap:8px;padding:5px 13px;border-radius:50px;margin-left:6px;cursor:pointer;transition:border-color .2s,background .2s;
+  .nav .onair{display:flex;align-items:center;gap:8px;min-width:0;padding:5px 13px;border-radius:50px;margin-left:6px;cursor:pointer;transition:border-color .2s,background .2s;
     background:rgba(150,70,255,.10);border:1px solid rgba(150,70,255,.30)}
   .nav .onair:hover{background:rgba(150,70,255,.2);border-color:var(--violet)}
   .nav .onair .oa-label{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(200,170,255,.7)}
@@ -195,13 +195,28 @@
     .nm-label{display:none}
     .nav-menu{padding:9px 12px}
   }
+  /* handheld nav: phones/foldables can report a CSS viewport >768px (esp. Android) and overflow the
+     desktop bar, clipping the menu button off the right edge. At <=900px use the clean hamburger nav. */
+  @media(max-width:900px){
+    .nav{gap:10px;padding:0 14px}
+    .nav .onair{display:none}
+    .nav .onair.live{display:flex;min-width:0;flex:0 1 auto;margin-left:auto;padding:4px 10px;gap:5px}
+    .nav .onair.live .oa-label{display:none}
+    .nav .onair.live .oa-name{min-width:0;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.72rem}
+    .nav .lang,.nav .social>a:not(.watch-cta){display:none}
+    .nav .watch-cta{display:none}
+    .nav .authbox{display:none}
+    .nm-label{display:none}
+    .nav .social{margin-left:auto;gap:0;flex-shrink:0}
+    .nav-menu{padding:9px 12px;flex-shrink:0}
+  }
   .menu-auth{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:6px;padding-bottom:22px;border-bottom:1px solid rgba(150,70,255,.18)}
   .menu-auth .ma-prompt{font-size:.9rem;color:var(--txt-2);text-align:center;line-height:1.5}
   .menu-auth .ma-user{display:flex;align-items:center;gap:10px;font-size:1rem;color:#fff}
   .menu-auth .ma-user img{width:34px;height:34px;border-radius:50%;object-fit:cover}
   .menu-auth .ma-user b{font-weight:700}
   .menu-auth .ma-out{background:rgba(255,255,255,.06);border:1px solid rgba(150,70,255,.35);color:#fff;font:inherit;font-size:.82rem;font-weight:600;padding:9px 22px;border-radius:50px;cursor:pointer}
-  @media(min-width:769px){.menu-auth{display:none}}
+  @media(min-width:901px){.menu-auth{display:none}}
   /* ── Fan poll (1X2) ── */
   .pollwrap{padding:6px 24px 4px;display:flex;justify-content:center}
   .poll{width:100%;max-width:680px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:18px 20px}
@@ -1065,7 +1080,7 @@
   .pt-foot p{font-size:.92rem;color:var(--txt-2);max-width:480px;margin:0 auto 18px;line-height:1.6}
 
   /* ── full-screen MENU ── */
-  .nav-menu{display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border-radius:50px;border:1px solid rgba(150,70,255,.35);background:rgba(150,70,255,.08);color:#fff;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.2s;margin-left:4px}
+  .nav-menu{display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border-radius:50px;border:1px solid rgba(150,70,255,.35);background:rgba(150,70,255,.08);color:#fff;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:.2s;margin-left:4px;flex-shrink:0}
   .nav-menu:hover{background:rgba(150,70,255,.2)}
   .nm-bars{display:inline-flex;flex-direction:column;gap:3px;width:16px}
   .nm-bars i{height:2px;background:#fff;border-radius:2px}
