@@ -3723,6 +3723,7 @@
       else{let r=await fetch(LIVE_READ||'live.json',{cache:'no-store'}).catch(()=>null); if((!r||!r.ok)&&LIVE_ENDPOINT){r=await fetch(LIVE_ENDPOINT+'/live.json',{cache:'no-store'}).catch(()=>null);} if(!r||!r.ok){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();return;} data=await r.json();}
       let _lr;if(DEMO){_lr=true;}else if(data.is_live===true){_lr=_liveReal(data);}else if(data.is_live===false){_lr=false;}else{try{_lr=!!liveFixtureNow();}catch(_e){_lr=false;}}
       _liveMatch=(_lr&&data.match&&data.match.home_code)?data.match:null;
+      if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;if(data.results.mc)RES.mc=data.results.mc;}   // populate RES BEFORE setMatchLive so the off-air score + finished stats render on the FIRST tick (no ~10s blank)
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);
         if(!isNaN(k)&&k>Date.now()){kickoffTs=k;updateCountdown();}}   // only a FUTURE kickoff sets the countdown — a past/live kickoff never freezes it at 00:00
       // live = engine says so OR a fixture is in its window right now (client-side fallback so it flips even when the engine isn't pushing)
@@ -3743,8 +3744,7 @@
        else if(data.is_live!==false)maybeLiveFallback();   // fail-open ONLY when not explicitly off-air (no fake '● LIVE')
       }
       if(_lr&&data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
-      if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;if(data.results.mc)RES.mc=data.results.mc;
-        renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
+      if(data.results){renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
     }catch(e){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
   }
   // Victor's bets come from the REAL engine (victor_betting_slip.py → live.json.victor_bets.tiers)
