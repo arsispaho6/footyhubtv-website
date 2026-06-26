@@ -253,6 +253,12 @@
   @media(max-width:560px){.mc-grid{grid-template-columns:1fr}}
   .mc-box h5{margin:0 0 9px;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--txt-3)}
   .mc-tl{display:flex;flex-direction:column;gap:7px;max-height:210px;overflow:auto}
+  /* themed scrollbar — a slim violet bar that matches the site, instead of the native one */
+  .mc-tl,.chat .stream,.lb-list,.myres-list{scrollbar-width:thin;scrollbar-color:#7a32d2 rgba(150,70,255,.10)}
+  .mc-tl::-webkit-scrollbar,.chat .stream::-webkit-scrollbar,.lb-list::-webkit-scrollbar,.myres-list::-webkit-scrollbar{width:6px;height:6px}
+  .mc-tl::-webkit-scrollbar-track,.chat .stream::-webkit-scrollbar-track,.lb-list::-webkit-scrollbar-track,.myres-list::-webkit-scrollbar-track{background:rgba(150,70,255,.06);border-radius:10px}
+  .mc-tl::-webkit-scrollbar-thumb,.chat .stream::-webkit-scrollbar-thumb,.lb-list::-webkit-scrollbar-thumb,.myres-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#b388ff,#7a32d2);border-radius:10px;border:1px solid rgba(255,255,255,.05)}
+  .mc-tl::-webkit-scrollbar-thumb:hover,.chat .stream::-webkit-scrollbar-thumb:hover,.lb-list::-webkit-scrollbar-thumb:hover{background:#a86bff}
   .mc-tl .ev{display:flex;align-items:center;gap:8px;font-size:.8rem}
   .mc-tl .ev .mn{font-variant-numeric:tabular-nums;color:var(--txt-3);min-width:28px;font-weight:700}
   .mc-tl .ev .tx{color:#fff}
@@ -1256,6 +1262,19 @@
 
   .live-grid{display:grid;grid-template-columns:260px 1fr 280px;gap:16px;align-items:start}
   @media(max-width:900px){.live-grid{grid-template-columns:1fr}}
+  @media(max-width:900px){
+    /* mobile watch order: MATCH -> stats -> Victor -> chat -> next match -> pre-game -> socials */
+    #live .live-grid>div:not(.chat){display:contents}
+    #live .live-grid>div:not(.chat)>*{min-width:0}
+    #watchPlayer{order:0}
+    #liveMatchPanel{order:1;margin-bottom:0}
+    #matchCenter{order:2}
+    #victorLive{order:3}
+    #live .live-grid .chat{order:4}
+    #watchNext{order:5}
+    #nowStrip{order:6}
+    #live .also{order:7}
+  }
   .panel{border-radius:16px;background:rgba(150,70,255,.05);border:1px solid rgba(150,70,255,.16);padding:16px}
   .panel h4{font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:rgba(200,170,255,.6);margin-bottom:14px}
 
@@ -1858,7 +1877,7 @@
 
       <!-- LEFT: score + victor -->
       <div>
-        <div class="panel" style="margin-bottom:16px">
+        <div class="panel" id="liveMatchPanel" style="margin-bottom:16px">
           <h4>Match</h4>
           <div class="score">
             <div class="team"><div class="crest" id="crestH"><img src="flags/mx.svg" alt=""></div><div class="tn" id="tnH">Mexico</div></div>
