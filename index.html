@@ -3889,7 +3889,7 @@
       localStorage.setItem('fh_user',JSON.stringify(u)); applyUser(u);
       if(pendingPred&&!needsJoin()){const _p=pendingPred;pendingPred=null;submitPrediction(_p.ph,_p.pa);}
       const jm=document.getElementById('joinModal');if(jm&&!jm.hidden)openJoinModal();
-      toast('Signed in — '+(u.name||u.email)+' 🟣');
+      if((resp.select_by||'').indexOf('auto')!==0)toast('Signed in — '+(u.name||u.email)+' 🟣');
     }catch(e){toast('Sign-in failed — try again');}
   }
   function signOut(){
@@ -3901,9 +3901,10 @@
   (function initGoogle(){
     if(!window.google||!google.accounts||!google.accounts.id){return void setTimeout(initGoogle,300);}
     try{
-      google.accounts.id.initialize({client_id:G_CLIENT_ID,callback:onCredential,auto_select:false});
+      google.accounts.id.initialize({client_id:G_CLIENT_ID,callback:onCredential,auto_select:true,itp_support:true});
       const gb=document.getElementById('gSignin');
       if(gb&&!fhUser)google.accounts.id.renderButton(gb,{theme:'filled_black',size:'medium',type:'standard',text:'signin',shape:'pill'});
+      if(!fhUser){try{google.accounts.id.prompt();}catch(e){}}   // One-Tap: auto-recognise a returning Google user (cross-device 'remember me')
     }catch(e){}
   })();
 
