@@ -266,6 +266,7 @@
   .mc-st .row .cmp .ca{background:#3a9bff;margin-left:auto}
   /* fan poll (1·X·2) integrated under the win probability */
   .mc-poll{margin-top:14px;border-top:1px solid rgba(255,255,255,.07);padding-top:12px}
+  .wn-poll{margin-top:16px;margin-bottom:4px;text-align:left}
   .mcp-head{display:flex;align-items:center;gap:8px;margin-bottom:9px}
   .mcp-head .poll-tag{font-size:.6rem;padding:2px 8px}
   .mcp-head .poll-total{margin-left:auto;font-size:.66rem;color:var(--txt-3);font-weight:700;font-variant-numeric:tabular-nums}
@@ -1893,16 +1894,6 @@
             <div class="mc-wp-bar"><i class="wpH" id="wpH" style="width:50%"></i><i class="wpD" id="wpD" style="width:0%"></i><i class="wpA" id="wpA" style="width:50%"></i></div>
             <div class="mc-wp-legend"><span><b id="wpHL">50%</b> <em id="wpHN">Home</em></span><span><em>Draw</em> <b id="wpDL">0%</b></span><span><em id="wpAN">Away</em> <b id="wpAL">50%</b></span></div>
           </div>
-          <!-- Fan poll (1·X·2) — integrated right under the win probability -->
-          <div class="mc-poll" id="poll1x2" data-pollid="">
-            <div class="mcp-head"><span class="poll-tag">🗳️ Fan poll · Who wins?</span><span class="poll-total" id="pollTotal"></span></div>
-            <div class="mcp-opts">
-              <button class="poll-opt" data-opt="home"><span class="po-fill"></span><span class="po-k">1</span><span class="po-name" id="poHome">Mexico</span><span class="po-pct"></span></button>
-              <button class="poll-opt" data-opt="draw"><span class="po-fill"></span><span class="po-k">X</span><span class="po-name">Draw</span><span class="po-pct"></span></button>
-              <button class="poll-opt" data-opt="away"><span class="po-fill"></span><span class="po-k">2</span><span class="po-name" id="poAway">South Africa</span><span class="po-pct"></span></button>
-            </div>
-            <div class="poll-foot" id="pollFoot">Tap to vote</div>
-          </div>
           <div class="mc-grid">
             <div class="mc-box"><h5>Timeline</h5><div class="mc-tl" id="mcTimeline" data-lenis-prevent></div></div>
             <div class="mc-box"><h5>Match stats</h5><div class="mc-st" id="mcStats"></div></div>
@@ -1919,6 +1910,16 @@
             <div class="cd-box"><div class="cd-num cd-s">39</div><div class="cd-unit">sec</div></div>
           </div>
           <div class="wn-note">When the clock hits zero, the <b>live pre-game</b> begins — Victor's <b>Medium &amp; Max</b> drop then, before kickoff, so you've got time to play them.</div>
+          <!-- Fan poll (1·X·2) for the UPCOMING match — pre-game engagement, lives in the next-match card -->
+          <div class="mc-poll wn-poll" id="poll1x2" data-pollid="">
+            <div class="mcp-head"><span class="poll-tag">🗳️ Fan poll · Who wins?</span><span class="poll-total" id="pollTotal"></span></div>
+            <div class="mcp-opts">
+              <button class="poll-opt" data-opt="home"><span class="po-fill"></span><span class="po-k">1</span><span class="po-name" id="poHome">Mexico</span><span class="po-pct"></span></button>
+              <button class="poll-opt" data-opt="draw"><span class="po-fill"></span><span class="po-k">X</span><span class="po-name">Draw</span><span class="po-pct"></span></button>
+              <button class="poll-opt" data-opt="away"><span class="po-fill"></span><span class="po-k">2</span><span class="po-name" id="poAway">South Africa</span><span class="po-pct"></span></button>
+            </div>
+            <div class="poll-foot" id="pollFoot">Tap to vote</div>
+          </div>
           <div class="wn-actions">
             <a class="btn wn-notify" data-action="notifynext">🔔 Notify me</a>
             <a class="poster-predict" data-action="predict">🏆 Predict &amp; win</a>
@@ -3715,13 +3716,13 @@
         const _key=_ph+'|'+(_lk?(_lk.home_code+'-'+_lk.away_code):'');
         if(_key!==_mPhaseKey){_mPhaseKey=_key;try{setMundialPhase(_ph);}catch(_e){}}}catch(_e){}
       renderChat(data.youtube_video_id||'');
-      renderMatchCenter(data.match_center,(data.match||{}).home,(data.match||{}).away);
+      if(_lr){renderMatchCenter(data.match_center,(data.match||{}).home,(data.match||{}).away);}else{const _mc=document.getElementById('matchCenter');if(_mc)_mc.hidden=true;}   // win-prob/timeline/stats ONLY for the real live match
       try{ if(_isLiveNow){ let _lp=null; try{_lp=liveFixtureNow();}catch(_e){} if(!_lp&&data.match&&data.match.home){_lp={home:data.match.home,away:data.match.away,home_code:data.match.home_code,away_code:data.match.away_code,utc:(data.match.kickoff||'')};} if(_lp)setupPoll(_lp); } }catch(_e){}
       {const vid=data.youtube_video_id||(data.platforms&&data.platforms.youtube_video_id)||'';
        if(_lr&&vid)renderYouTube(vid);
        else if(data.is_live!==false)maybeLiveFallback();   // fail-open ONLY when not explicitly off-air (no fake '● LIVE')
       }
-      if(data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
+      if(_lr&&data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
       if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;
         renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
     }catch(e){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
