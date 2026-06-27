@@ -46,13 +46,13 @@ def _post(path, payload):
 def send(kind, home, away):
     """kind: 'reminder' | 'live' | 'test'."""
     if kind == "live":
-        title = f"\U0001F534 LIVE now — {home} v {away}"
-        body = "LIA & Victor are calling it live. Tap to watch on YouTube."
+        title = f"LIVE now: {home} v {away}"
+        body = "LIA and Victor are calling it live. Tap to watch on YouTube."
     elif kind == "reminder":
-        title = f"⏰ Kicks off in ~15 min — {home} v {away}"
-        body = "FootyHub TV goes live shortly. LIA & Victor on the call."
+        title = f"Kicks off in 15 minutes: {home} v {away}"
+        body = "FootyHub TV goes live shortly. LIA and Victor on the call."
     else:
-        title = "\U0001F7E3 FootyHub TV — notifications are live"
+        title = "FootyHub TV - notifications are live"
         body = "This is a test. You'll get a ping like this before every kickoff."
     url = "https://footyhub.tv/"
     # NOTE: contract inferred from the Worker's other secret-gated endpoints
@@ -79,10 +79,10 @@ def save_state(sent):
 
 def main():
     if not SECRET:
-        print("No secret — nothing to do.")
+        print("No secret - nothing to do.")
         return
     if TEST:
-        print("TEST mode: sending one test notification…")
+        print("TEST mode: sending one test notification...")
         send("test", "FootyHub", "Test")
         return
 

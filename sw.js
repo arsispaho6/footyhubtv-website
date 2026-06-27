@@ -1,4 +1,4 @@
-// FootyHub TV service worker — installability, offline app-shell + push alerts.
+// FootyHub TV service worker - installability, offline app-shell + push alerts.
 // Network-first for freshness (the site updates often + needs live data), but every
 // successful same-origin GET is cached so the site still opens offline.
 const CACHE = 'footyhub-v3';
@@ -36,7 +36,7 @@ self.addEventListener('fetch', (e) => {
 
 // Push: show a notification when the channel sends one (kick-off alerts, etc.)
 self.addEventListener('push', (e) => {
-  let d = { title: 'FootyHub TV', body: "We're live now! 🔴", url: '/' };
+  let d = { title: 'FootyHub TV', body: "We're live now!", url: '/' };
   try { if (e.data) d = Object.assign(d, e.data.json()); } catch (_) {}
   e.waitUntil(self.registration.showNotification(d.title, {
     body: d.body, icon: '/icon-192.png', badge: '/icon-192.png', data: d.url || '/',

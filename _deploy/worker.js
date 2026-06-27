@@ -90,10 +90,10 @@ function confirmHtml(match) {
   const line = match ? `We'll email you before kickoff of <b>${match}</b>.` : `We'll email you before kickoff.`;
   return `<div style="font-family:system-ui,Arial,sans-serif;background:#000;color:#fff;padding:36px 28px;border-radius:16px;max-width:520px;margin:0 auto;text-align:center">
     <img src="https://footyhub-live.footyhubtv.workers.dev/logo.png" alt="FootyHub TV" width="200" style="display:block;margin:0 auto 22px;max-width:200px;height:auto">
-    <h1 style="font-size:21px;margin:0 0 10px;color:#fff">You're on the list \u{1F7E3}</h1>
+    <h1 style="font-size:21px;margin:0 0 10px;color:#fff">You're on the list</h1>
     <p style="color:#cbb9ff;line-height:1.6;margin:0 0 14px;font-size:15px">${line}</p>
-    <p style="color:#9d8bbf;font-size:13px;line-height:1.6;margin:0">Live AI football \u2014 LIA on the call, Victor on the analysis, a fan for every nation.<br>See you at the Mundial 2026 opener.</p>
-    <p style="color:#5e5278;font-size:11px;margin-top:24px">You signed up at footyhub.tv \xB7 Entertainment only \xB7 18+</p>
+    <p style="color:#9d8bbf;font-size:13px;line-height:1.6;margin:0">Live AI football - LIA on the call, Victor on the analysis, a fan for every nation.<br>See you at the Mundial 2026 opener.</p>
+    <p style="color:#5e5278;font-size:11px;margin-top:24px">You signed up at footyhub.tv | Entertainment only | 18+</p>
   </div>`;
 }
 __name(confirmHtml, "confirmHtml");
@@ -102,7 +102,7 @@ function blastHtml(body, url) {
     <img src="https://footyhub-live.footyhubtv.workers.dev/logo.png" alt="FootyHub TV" width="200" style="display:block;margin:0 auto 22px;max-width:200px;height:auto">
     <p style="color:#cbb9ff;line-height:1.6;margin:0 0 22px;font-size:16px">${body}</p>
     <a href="${url || "https://footyhub.tv"}" style="display:inline-block;background:#9646ff;color:#fff;text-decoration:none;font-weight:700;padding:13px 28px;border-radius:50px;font-size:15px">Watch on FootyHub TV &#9656;</a>
-    <p style="color:#5e5278;font-size:11px;margin-top:24px">FootyHub TV \xB7 Live AI football \xB7 Entertainment only \xB7 18+</p>
+    <p style="color:#5e5278;font-size:11px;margin-top:24px">FootyHub TV | Live AI football | Entertainment only | 18+</p>
   </div>`;
 }
 __name(blastHtml, "blastHtml");
@@ -116,7 +116,7 @@ async function sendConfirmation(env, email, match) {
         from: env.NOTIFY_FROM || "FootyHub TV <onboarding@resend.dev>",
         to: [email],
         reply_to: env.NOTIFY_REPLY_TO || "contact@footyhub.tv",
-        subject: "You're on the list \u2014 FootyHub TV \u{1F7E3}",
+        subject: "You're on the list - FootyHub TV",
         html: confirmHtml(match)
       })
     });
@@ -124,7 +124,7 @@ async function sendConfirmation(env, email, match) {
   }
 }
 __name(sendConfirmation, "sendConfirmation");
-// ── match-alert blasts (push + email) reused by the scheduled cron ─────────────
+//  match-alert blasts (push + email) reused by the scheduled cron 
 async function _pushBlast(env, title, body, url) {
   const payload = JSON.stringify({ title, body, url: url || "https://footyhub.tv" });
   const list = await env.LIVE.list({ prefix: "push:" });
@@ -186,13 +186,13 @@ async function _notifyTick(env) {
     const teams = (m.home || "Home") + " v " + (m.away || "Away");
     if (dt > 0) {
       if (await _once(env, "nsoon:" + mid + ":" + ko)) {
-        await _pushBlast(env, "⚽ Kicks off in 10 min", teams + " — live on FootyHub TV. Pre-game starting now.", "https://footyhub.tv/#live");
-        await _emailBlast(env, "⏱️ " + teams + " kicks off in 10 minutes — FootyHub TV", "<b>" + teams + "</b> kicks off in ~10 minutes. Victor reveals his Medium &amp; Max picks in the live pre-game right now.", "https://footyhub.tv/#live");
+        await _pushBlast(env, "Kicks off in 10 minutes", teams + " is live on FootyHub TV. Pre-game starts now.", "https://footyhub.tv/#live");
+        await _emailBlast(env, teams + " kicks off in 10 minutes - FootyHub TV", "<b>" + teams + "</b> kicks off in about 10 minutes. Victor reveals his Medium and Max picks in the live pre-game right now.", "https://footyhub.tv/#live");
       }
     } else {
       if (await _once(env, "nlive:" + mid + ":" + ko)) {
-        await _pushBlast(env, "🔴 We're LIVE now", teams + " has kicked off — watch on FootyHub TV.", "https://footyhub.tv/#live");
-        await _emailBlast(env, "🔴 LIVE now: " + teams + " — FootyHub TV", "<b>" + teams + "</b> has kicked off — LIA &amp; Victor are on the call. Tap in:", "https://footyhub.tv/#live");
+        await _pushBlast(env, "We are LIVE now", teams + " has kicked off. Watch now on FootyHub TV.", "https://footyhub.tv/#live");
+        await _emailBlast(env, "LIVE now: " + teams + " - FootyHub TV", "<b>" + teams + "</b> has kicked off. LIA and Victor are on the call. Tap in:", "https://footyhub.tv/#live");
       }
     }
   }
@@ -388,11 +388,11 @@ var worker_default = {
             if (!pid) continue;
             const raw = await env.LIVE.get("push:" + pid);
             if (!raw) continue;
-            const verb = rc.pts === 3 ? "\u{1F3AF} Spot on!" : rc.pts === 1 ? "✅ Right result" : "\u{1F622} Not this time";
+            const verb = rc.pts === 3 ? "Spot on!" : rc.pts === 1 ? "Right result." : "Not this time.";
             const rank = rc.rank ? `You're #${rc.rank} of ${rdata.players}.` : "";
             const payload = JSON.stringify({
-              title: `⚽ ${home} ${rdata.ah}-${rdata.aa} ${away} — FT`,
-              body: `${verb} Your call ${rc.ph}-${rc.pa} = +${rc.pts} pts. ${rank} Predict today's →`,
+              title: `${home} ${rdata.ah}-${rdata.aa} ${away} - Full time`,
+              body: `${verb} Your prediction ${rc.ph}-${rc.pa} scored +${rc.pts} points. ${rank} Predict today's matches now.`,
               url: "https://footyhub.tv"
             });
             const st = await _sendPush(JSON.parse(raw), payload, env);
@@ -438,7 +438,7 @@ var worker_default = {
       if (request.method === "GET") {
         const u = new URL(request.url);
         const op = path === "/predict/leaderboard" ? "leaderboard" : path === "/predict/consensus" ? "consensus" : path === "/predict/mine" ? "mine" : "";
-        // SECURITY: derive the player from their SESSION server-side — never trust a ?user=
+        // SECURITY: derive the player from their SESSION server-side - never trust a ?user=
         // param, so nobody can read another player's prediction by guessing their email.
         let _u = "";
         const _s = u.searchParams.get("session") || "";
@@ -466,7 +466,7 @@ var worker_default = {
       await env.LIVE.put("sponsor:" + Date.now() + ":" + email, JSON.stringify({ name, company, email, budget, message, ts: Date.now() }), { expirationTtl: 60 * 60 * 24 * 365 });
       if (env.RESEND_API_KEY) {
         const html = `<div style="font-family:system-ui,Arial,sans-serif;padding:20px;max-width:560px">
-          <h2 style="margin:0 0 12px">\u{1F4BC} New sponsor inquiry</h2>
+          <h2 style="margin:0 0 12px">New sponsor inquiry</h2>
           <p style="margin:4px 0"><b>Name:</b> ${esc(name)}</p>
           <p style="margin:4px 0"><b>Company:</b> ${esc(company)}</p>
           <p style="margin:4px 0"><b>Email:</b> ${esc(email)}</p>
@@ -478,7 +478,7 @@ var worker_default = {
           await fetch("https://api.resend.com/emails", {
             method: "POST",
             headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ from: env.NOTIFY_FROM || "FootyHub TV <onboarding@resend.dev>", to: [env.SPONSOR_TO || "contact@footyhub.tv"], reply_to: email, subject: `\u{1F4BC} Sponsor inquiry \u2014 ${company}`, html })
+            body: JSON.stringify({ from: env.NOTIFY_FROM || "FootyHub TV <onboarding@resend.dev>", to: [env.SPONSOR_TO || "contact@footyhub.tv"], reply_to: email, subject: `Sponsor inquiry - ${company}`, html })
           });
         } catch (e) {
         }
@@ -513,7 +513,7 @@ var worker_default = {
       } catch (e) {
         return reply("Bad JSON", 400);
       }
-      const payload = JSON.stringify({ title: body.title || "FootyHub TV", body: body.body || "We're live now! \u{1F534}", url: body.url || "https://footyhub.tv" });
+      const payload = JSON.stringify({ title: body.title || "FootyHub TV", body: body.body || "We are live now!", url: body.url || "https://footyhub.tv" });
       const list = await env.LIVE.list({ prefix: "push:" });
       let sent = 0, gone = 0;
       for (const k of list.keys) {
@@ -537,7 +537,7 @@ var worker_default = {
         return reply("Bad JSON", 400);
       }
       if (!sub || !sub.endpoint || !sub.keys || !sub.keys.p256dh || !sub.keys.auth) return reply("Bad subscription", 400);
-      const payload = JSON.stringify({ title: "\u{1F514} FootyHub TV — test alert", body: "It works! This is how we'll ping you 10 min before kickoff and when we go live. \u{1F7E3}", url: "https://footyhub.tv/#live" });
+      const payload = JSON.stringify({ title: "FootyHub TV - test alert", body: "It works! This is how we will alert you 10 minutes before kickoff and when we go live.", url: "https://footyhub.tv/#live" });
       const st = await _sendPush(sub, payload, env);
       return new Response(JSON.stringify({ ok: st >= 200 && st < 300, status: st }), { headers: { ...CORS, "Content-Type": "application/json", "Cache-Control": "no-store" } });
     }
