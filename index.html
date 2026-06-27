@@ -3541,6 +3541,26 @@
   }
   // best-effort push opt-in from the Notify flow (silent on iOS-not-installed — email still covers them)
   function _tryPush(){try{const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||'');const sa=window.navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);if(('serviceWorker'in navigator)&&('PushManager'in window)&&!(isIOS&&!sa))enableAlerts();}catch(_e){}}
+  // owner test: open footyhub.tv/?testalert=1 to fire a real push to THIS device (verifies the whole pipeline)
+  async function sendTestAlert(){
+    try{
+      if(!('serviceWorker' in navigator)||!('PushManager' in window)){toast('Push not supported on this browser');return;}
+      const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||'');
+      const sa=window.navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);
+      if(isIOS&&!sa){openIos();return;}
+      const perm=await Notification.requestPermission();
+      if(perm!=='granted'){toast('Allow notifications first, then open the test link again');return;}
+      const reg=await navigator.serviceWorker.ready;
+      let sub=await reg.pushManager.getSubscription();
+      if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:_vapidU8(VAPID_PUBLIC)});
+      const sj=sub.toJSON?sub.toJSON():JSON.parse(JSON.stringify(sub));sj.session=fhSession();
+      try{await fetch((LIVE_ENDPOINT||'')+'/push/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sj)});}catch(_e){}
+      const r=await fetch((LIVE_ENDPOINT||'')+'/push/test',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sj)});
+      const d=r.ok?await r.json():null;
+      if(d&&d.ok)toast('✅ Test alert sent — check your notifications now!');
+      else toast('Push server returned '+((d&&d.status)||'error')+' — check VAPID keys / permission');
+    }catch(e){toast('Test failed: '+((e&&e.message)||'error'));}
+  }
   function renderMenuAuth(){
     const el=document.getElementById('menuAuth');if(!el)return;
     if(fhUser){
@@ -3982,6 +4002,7 @@
   const menuCloseB=document.getElementById('menuClose');if(menuCloseB)menuCloseB.addEventListener('click',closeMenu);
   // PWA: install as an app + ready for push alerts
   if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+  try{if(/[?&]testalert/i.test(location.search||'')){window.addEventListener('load',()=>setTimeout(()=>{try{sendTestAlert();}catch(_e){}},1200));}}catch(_e){}
 </script>
 </body>
 </html>

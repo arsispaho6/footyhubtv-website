@@ -528,6 +528,19 @@ var worker_default = {
       }
       return new Response(JSON.stringify({ ok: true, sent, gone, total: list.keys.length }), { headers: { ...CORS, "Content-Type": "application/json", "Cache-Control": "no-store" } });
     }
+    if (path === "/push/test") {
+      if (request.method !== "POST") return reply("Method not allowed", 405);
+      let sub;
+      try {
+        sub = await request.json();
+      } catch (e) {
+        return reply("Bad JSON", 400);
+      }
+      if (!sub || !sub.endpoint || !sub.keys || !sub.keys.p256dh || !sub.keys.auth) return reply("Bad subscription", 400);
+      const payload = JSON.stringify({ title: "\u{1F514} FootyHub TV — test alert", body: "It works! This is how we'll ping you 10 min before kickoff and when we go live. \u{1F7E3}", url: "https://footyhub.tv/#live" });
+      const st = await _sendPush(sub, payload, env);
+      return new Response(JSON.stringify({ ok: st >= 200 && st < 300, status: st }), { headers: { ...CORS, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+    }
     if (request.method === "GET") {
       const data = await env.LIVE.get("live") || EMPTY;
       return new Response(data, {
