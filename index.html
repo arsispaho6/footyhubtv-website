@@ -3673,7 +3673,7 @@
   let _liveMatch=null;   // engine's authoritative live match (live.json.match) — beats clock-window guessing (fixes simultaneous-kickoff split-brain)
   function liveFixtureNow(pc){
     if(_liveMatch&&_liveMatch.home_code){const m=_liveMatch,_k=Date.parse(m.kickoff||'');if(isNaN(_k)||Date.now()<_k+MATCH_MS)return {home:m.home,away:m.away,home_code:m.home_code,away_code:m.away_code,utc:m.kickoff||''};}
-    const now=Date.now();const w=FIX.filter(f=>{const ms=Date.parse(f.utc);return !isNaN(ms)&&now>=ms&&now<ms+MATCH_MS;});if(pc&&pc[0]&&w.length>1){const m=w.find(f=>f.home_code===pc[0]&&f.away_code===pc[1]);if(m)return m;}return w[0]||null;
+    return null;   // off-air → NO live match. Only the engine's fresh is_live drives 'live' — no schedule-guessing, so the nav/player never show a phantom 'ON AIR' for a match we aren't broadcasting.
   }
   // engine silent / says off / unreachable while a match window is open → fail open to the channel live
   function maybeLiveFallback(){

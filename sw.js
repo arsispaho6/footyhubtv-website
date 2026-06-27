@@ -1,7 +1,7 @@
 // FootyHub TV service worker — installability, offline app-shell + push alerts.
 // Network-first for freshness (the site updates often + needs live data), but every
 // successful same-origin GET is cached so the site still opens offline.
-const CACHE = 'footyhub-v1';
+const CACHE = 'footyhub-v3';
 const SHELL = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png',
                '/lenis.min.js', '/fixtures.js', '/results.js', '/logo-trans.png'];
 
