@@ -92,7 +92,7 @@ function confirmHtml(match) {
     <img src="https://footyhub-live.footyhubtv.workers.dev/logo.png" alt="FootyHub TV" width="200" style="display:block;margin:0 auto 22px;max-width:200px;height:auto">
     <h1 style="font-size:21px;margin:0 0 10px;color:#fff">You're on the list</h1>
     <p style="color:#cbb9ff;line-height:1.6;margin:0 0 14px;font-size:15px">${line}</p>
-    <p style="color:#9d8bbf;font-size:13px;line-height:1.6;margin:0">Live AI football - LIA on the call, Victor on the analysis, a fan for every nation.<br>See you at the Mundial 2026 opener.</p>
+    <p style="color:#9d8bbf;font-size:13px;line-height:1.6;margin:0">Live AI football - LIA on the call, Victor on the analysis, a fan for every nation.</p>
     <p style="color:#5e5278;font-size:11px;margin-top:24px">You signed up at footyhub.tv | Entertainment only | 18+</p>
   </div>`;
 }
