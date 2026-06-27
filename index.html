@@ -3497,7 +3497,7 @@
   let _notifyMatch='';
   function openNotify(match){_notifyMatch=match||'';const m=document.getElementById('notifyModal');if(!m)return;const sub=document.getElementById('nmSub');if(sub)sub.textContent=match?("We'll email you before "+match+"."):"We'll email you before kickoff.";m.hidden=false;_lockScroll();if(lenis)lenis.stop();const i=document.getElementById('nmEmail');if(i)setTimeout(()=>{try{i.focus();}catch(_e){}},60);}
   function closeNotify(){const m=document.getElementById('notifyModal');if(m)m.hidden=true;_unlockScroll();if(lenis)lenis.start();}
-  (function(){const f=document.getElementById('notifyForm');if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();const i=document.getElementById('nmEmail');const email=(i?i.value:'').trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast('Please enter a valid email');return;}if(LIVE_ENDPOINT)fetch(LIVE_ENDPOINT+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,match:_notifyMatch})}).catch(()=>{});closeNotify();toast("🔔 You're on the list! We'll email you before kickoff.");});})();
+  (function(){const f=document.getElementById('notifyForm');if(!f)return;f.addEventListener('submit',function(e){e.preventDefault();const i=document.getElementById('nmEmail');const email=(i?i.value:'').trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){toast('Please enter a valid email');return;}if(LIVE_ENDPOINT)fetch(LIVE_ENDPOINT+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,match:_notifyMatch})}).catch(()=>{});_tryPush();closeNotify();toast("🔔 You're on the list! We'll email you + buzz your phone before kickoff.");});})();
   let _lastPick=null;
   function fhShare(customText){
     let url='https://footyhub.tv';
@@ -3539,6 +3539,8 @@
       else toast('Could not enable alerts — try again');
     }catch(e){toast('Could not enable alerts — try again');}
   }
+  // best-effort push opt-in from the Notify flow (silent on iOS-not-installed — email still covers them)
+  function _tryPush(){try{const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent||'');const sa=window.navigator.standalone===true||(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches);if(('serviceWorker'in navigator)&&('PushManager'in window)&&!(isIOS&&!sa))enableAlerts();}catch(_e){}}
   function renderMenuAuth(){
     const el=document.getElementById('menuAuth');if(!el)return;
     if(fhUser){
@@ -3768,7 +3770,8 @@
     const nf=(typeof nextFixture==='function')?nextFixture():null;
     const match=nf?(nf.home+' v '+nf.away):'';
     const send=(email)=>{ if(LIVE_ENDPOINT)fetch(LIVE_ENDPOINT+'/notify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,match})}).catch(()=>{}); };
-    if(fhUser&&fhUser.email){ send(fhUser.email); toast("🔔 Done — we'll email you before "+(match||'kickoff')+"!"); return; }
+    _tryPush();   // also enable instant push alerts on this device
+    if(fhUser&&fhUser.email){ send(fhUser.email); toast("🔔 Done — alerts on + we'll email you before "+(match||'kickoff')+"!"); return; }
     openNotify(match);
   }
   // sponsor inquiry form → POST /sponsor (stores + emails us the lead)

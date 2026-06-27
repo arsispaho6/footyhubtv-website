@@ -124,6 +124,80 @@ async function sendConfirmation(env, email, match) {
   }
 }
 __name(sendConfirmation, "sendConfirmation");
+// ── match-alert blasts (push + email) reused by the scheduled cron ─────────────
+async function _pushBlast(env, title, body, url) {
+  const payload = JSON.stringify({ title, body, url: url || "https://footyhub.tv" });
+  const list = await env.LIVE.list({ prefix: "push:" });
+  let sent = 0;
+  for (const k of list.keys) {
+    const raw = await env.LIVE.get(k.name);
+    if (!raw) continue;
+    const st = await _sendPush(JSON.parse(raw), payload, env);
+    if (st >= 200 && st < 300) sent++;
+    else if (st === 404 || st === 410) await env.LIVE.delete(k.name);
+  }
+  return sent;
+}
+__name(_pushBlast, "_pushBlast");
+async function _emailBlast(env, subject, bodyHtml, url) {
+  if (!env.RESEND_API_KEY) return 0;
+  const html = blastHtml(bodyHtml, url);
+  const list = await env.LIVE.list({ prefix: "notify:" });
+  let sent = 0;
+  for (const k of list.keys) {
+    const raw = await env.LIVE.get(k.name);
+    if (!raw) continue;
+    let email;
+    try { email = JSON.parse(raw).email; } catch (e) { continue; }
+    if (!email) continue;
+    try {
+      const r = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ from: env.NOTIFY_FROM || "FootyHub TV <onboarding@resend.dev>", to: [email], reply_to: env.NOTIFY_REPLY_TO || "contact@footyhub.tv", subject, html })
+      });
+      if (r.ok) sent++;
+    } catch (e) {}
+  }
+  return sent;
+}
+__name(_emailBlast, "_emailBlast");
+async function _once(env, key) {
+  if (await env.LIVE.get(key)) return false;
+  await env.LIVE.put(key, "1", { expirationTtl: 60 * 60 * 24 * 2 });
+  return true;
+}
+__name(_once, "_once");
+async function _notifyTick(env) {
+  let fx;
+  try {
+    const r = await fetch("https://footyhub.tv/fixtures.json", { cf: { cacheTtl: 120 } });
+    if (!r.ok) return;
+    fx = await r.json();
+  } catch (e) { return; }
+  const matches = (fx && fx.matches) || [];
+  const now = Date.now();
+  for (const m of matches) {
+    const ko = Date.parse(m.utc || "");
+    if (isNaN(ko)) continue;
+    const dt = ko - now;
+    if (dt > 10 * 60000 || dt < -10 * 60000) continue;
+    const mid = (m.home_code || "") + "-" + (m.away_code || "");
+    const teams = (m.home || "Home") + " v " + (m.away || "Away");
+    if (dt > 0) {
+      if (await _once(env, "nsoon:" + mid + ":" + ko)) {
+        await _pushBlast(env, "⚽ Kicks off in 10 min", teams + " — live on FootyHub TV. Pre-game starting now.", "https://footyhub.tv/#live");
+        await _emailBlast(env, "⏱️ " + teams + " kicks off in 10 minutes — FootyHub TV", "<b>" + teams + "</b> kicks off in ~10 minutes. Victor reveals his Medium &amp; Max picks in the live pre-game right now.", "https://footyhub.tv/#live");
+      }
+    } else {
+      if (await _once(env, "nlive:" + mid + ":" + ko)) {
+        await _pushBlast(env, "🔴 We're LIVE now", teams + " has kicked off — watch on FootyHub TV.", "https://footyhub.tv/#live");
+        await _emailBlast(env, "🔴 LIVE now: " + teams + " — FootyHub TV", "<b>" + teams + "</b> has kicked off — LIA &amp; Victor are on the call. Tap in:", "https://footyhub.tv/#live");
+      }
+    }
+  }
+}
+__name(_notifyTick, "_notifyTick");
 var worker_default = {
   async fetch(request, env, ctx) {
     if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
@@ -477,6 +551,9 @@ var worker_default = {
       return reply("OK", 200);
     }
     return reply("Method not allowed", 405);
+  },
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(_notifyTick(env));
   }
 };
 var Poll = class {
