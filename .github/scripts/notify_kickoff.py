@@ -77,6 +77,32 @@ def save_state(sent):
     STATE.write_text(json.dumps({"sent": sorted(sent)}, indent=0))
 
 
+def load_ko_map():
+    """Live resolved knockout bracket -> {str(match_no): (home_name, away_name)}.
+    Only DECIDED matches are returned, so we never notify a placeholder slot
+    like "Runner-up A v Runner-up B" — the teams must be real first."""
+    out = {}
+    for url in ("https://cdn.footyhub.tv/live.json", ENDPOINT + "/"):
+        try:
+            req = urllib.request.Request(url, headers={
+                "Accept": "application/json",
+                "User-Agent": "Mozilla/5.0 (compatible; FootyHubNotifier/1.0)",  # Cloudflare 403s the default Python-urllib UA
+            })
+            with urllib.request.urlopen(req, timeout=15) as r:
+                data = json.loads(r.read().decode("utf-8"))
+            ko = ((data.get("results") or {}).get("ko")) or {}
+            for no, v in ko.items():
+                h = (v or {}).get("home") or {}
+                a = (v or {}).get("away") or {}
+                if h.get("name") and a.get("name"):
+                    out[str(no)] = (h["name"], a["name"])
+            if out:
+                return out
+        except Exception:
+            continue
+    return out
+
+
 def main():
     if not SECRET:
         print("No secret - nothing to do.")
@@ -88,6 +114,7 @@ def main():
 
     fixtures = json.loads((ROOT / "fixtures.json").read_text())
     matches = fixtures.get("matches", fixtures if isinstance(fixtures, list) else [])
+    ko_map = load_ko_map()   # real teams for knockout matches (decided rounds only)
     now = datetime.datetime.now(datetime.timezone.utc)
     sent = load_state()
     fired = 0
@@ -96,11 +123,17 @@ def main():
         if not utc:
             continue
         try:
-            ko = datetime.datetime.fromisoformat(utc.replace("Z", "+00:00"))
+            kt = datetime.datetime.fromisoformat(utc.replace("Z", "+00:00"))
         except Exception:
             continue
-        mins_until = (ko - now).total_seconds() / 60.0
-        home, away = m.get("home", "?"), m.get("away", "?")
+        mins_until = (kt - now).total_seconds() / 60.0
+        if m.get("stage") == "ko":
+            decided = ko_map.get(str(m.get("match_no")))
+            if not decided:
+                continue   # teams not decided yet — never send a placeholder slot
+            home, away = decided
+        else:
+            home, away = m.get("home", "?"), m.get("away", "?")
         for kind, lo, hi in (("reminder", REMINDER_LO, REMINDER_HI), ("live", LIVE_LO, LIVE_HI)):
             key = f"{utc}|{kind}"
             if key in sent:

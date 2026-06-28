@@ -175,6 +175,8 @@ async function _notifyTick(env) {
     if (!r.ok) return;
     fx = await r.json();
   } catch (e) { return; }
+  let bracket = {};
+  try { const lv = await env.LIVE.get("live"); if (lv) bracket = ((JSON.parse(lv).results || {}).ko) || {}; } catch (e) {}
   const matches = (fx && fx.matches) || [];
   const now = Date.now();
   for (const m of matches) {
@@ -182,8 +184,13 @@ async function _notifyTick(env) {
     if (isNaN(ko)) continue;
     const dt = ko - now;
     if (dt > 10 * 60000 || dt < -10 * 60000) continue;
-    const mid = (m.home_code || "") + "-" + (m.away_code || "");
-    const teams = (m.home || "Home") + " v " + (m.away || "Away");
+    let home = m.home, away = m.away, mid = (m.home_code || "") + "-" + (m.away_code || "");
+    if (m.stage === "ko") {
+      const r = bracket[m.match_no] || bracket[String(m.match_no)] || {};
+      if (!(r.home && r.home.name && r.away && r.away.name)) continue;   // teams not decided - never notify a placeholder slot
+      home = r.home.name; away = r.away.name; mid = (r.home.code || "") + "-" + (r.away.code || "");
+    }
+    const teams = (home || "Home") + " v " + (away || "Away");
     if (dt > 0) {
       if (await _once(env, "nsoon:" + mid + ":" + ko)) {
         await _pushBlast(env, "Kicks off in 10 minutes", teams + " is live on FootyHub TV. Pre-game starts now.", "https://footyhub.tv/#live");

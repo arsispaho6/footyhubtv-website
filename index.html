@@ -3093,20 +3093,22 @@
   function renderFixtures(el){
     if(!el||!FIX.length)return;
     const now=Date.now();let h='',curDay='';const anchorThis=(el.id==='schedList'||el.id==='mhFixList');let anchored=false;
-    FIX.filter(f=>f.stage!=='ko').forEach(f=>{const ms=Date.parse(f.utc),day=fmtDay(ms);
+    FIX.forEach(f=>{const ms=Date.parse(f.utc),day=fmtDay(ms);
+      const isKo=f.stage==='ko',kr=isKo?((RES.ko&&RES.ko[f.match_no])||{}):null;
+      const hCode=isKo?(kr.home&&kr.home.code):f.home_code,aCode=isKo?(kr.away&&kr.away.code):f.away_code;
+      const hName=isKo?((kr.home&&kr.home.name)||bkLabel(f.home)):f.home,aName=isKo?((kr.away&&kr.away.name)||bkLabel(f.away)):f.away;
       if(day!==curDay){curDay=day;h+='<div class="sched-day">'+day+'</div>';}
-      const _ko=!f.home_code,_sc=(!_ko&&RES.scores)?RES.scores[f.home_code+'-'+f.away_code]:null;
+      const _ko=!hCode,_sc=(!_ko&&RES.scores)?RES.scores[hCode+'-'+aCode]:null;
       const live=now>=ms&&now<ms+MATCH_MS&&!_sc, past=!!_sc||now>=ms+MATCH_MS;
       const isNow=anchorThis&&!anchored&&!past; if(isNow)anchored=true;
       const t=live?'<span style="color:var(--live)">● LIVE</span>':(past?(_sc?'<b class="si-sc">'+_sc.h+'–'+_sc.a+'</b>':'FT'):fmtTime(ms));
       const cta=live?'<a class="si-cta" data-action="live">Watch &rarr;</a>':(past?'<a class="si-cta ghost" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Replay ↗</a>':'<a class="si-cta ghost">🔔 Notify</a>');
-      const ko=!f.home_code;
-      const hh=ko?f.home:'<img class="tkflag" src="flags/'+f.home_code+'.svg" alt=""> '+f.home;
-      const aa=ko?f.away:f.away+' <img class="tkflag" src="flags/'+f.away_code+'.svg" alt="">';
-      const comp=ko?(f.round+(f.venue?' · '+f.venue:'')):'Mundial 2026 · Group '+f.group;
+      const hh=_ko?hName:'<img class="tkflag" src="flags/'+hCode+'.svg" alt=""> '+hName;
+      const aa=_ko?aName:aName+' <img class="tkflag" src="flags/'+aCode+'.svg" alt="">';
+      const comp=isKo?(f.round+(f.venue?' · '+f.venue:'')):'Mundial 2026 · Group '+f.group;
       // expandable panel: live countdown (upcoming) + match cast (LIA, Victor, both fans)
       let exp='';
-      if(!ko){
+      if(!isKo){
         const hf=FANS[f.home_code]||[f.home,''], af=FANS[f.away_code]||[f.away,''];
         let inner=(!live&&!past)
           ? '<div class="se-cd" data-cd="'+ms+'"><div class="se-cdg"><div><b class="cd-D">--</b><span>days</span></div><div><b class="cd-H">--</b><span>hrs</span></div><div><b class="cd-M">--</b><span>min</span></div><div><b class="cd-S">--</b><span>sec</span></div></div></div>'
@@ -3118,9 +3120,9 @@
           +castMember('avatars/'+f.away_code+'.png',af[0],'Away fan','flags/'+f.away_code+'.svg')+'</div>';
         exp='<div class="sched-exp" hidden>'+inner+'</div>';
       }
-      h+='<div class="sched-row"'+(isNow?' id="'+el.id+'_now"':'')+'><div class="sched-item'+(live?' live':'')+(ko?'':' clickable')+'"'+(ko?'':' data-exp')+'><span class="si-time">'+t+'</span>'
+      h+='<div class="sched-row"'+(isNow?' id="'+el.id+'_now"':'')+'><div class="sched-item'+(live?' live':'')+(isKo?'':' clickable')+'"'+(isKo?'':' data-exp')+'><span class="si-time">'+t+'</span>'
         +'<div class="si-match"><b>'+hh+' v '+aa+'</b><span class="si-comp">'+comp+'</span></div>'+cta
-        +(ko?'':'<span class="si-chev">▾</span>')+'</div>'+exp+'</div>';});
+        +(isKo?'':'<span class="si-chev">▾</span>')+'</div>'+exp+'</div>';});
     el.innerHTML=h;
   }
   renderFixtures(document.getElementById('schedList'));
