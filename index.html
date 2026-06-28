@@ -3749,6 +3749,10 @@
       let _lr;if(DEMO){_lr=true;}else if(data.is_live===true){_lr=_liveReal(data);}else if(data.is_live===false){_lr=false;}else{try{_lr=!!liveFixtureNow();}catch(_e){_lr=false;}}
       _liveMatch=(_lr&&data.match&&data.match.home_code)?data.match:null;
       if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;if(data.results.mc)RES.mc=data.results.mc;}   // populate RES BEFORE setMatchLive so the off-air score + finished stats render on the FIRST tick (no ~10s blank)
+      // overlay resolved knockout teams onto FIX (BEFORE the renders below) so EVERY component — mundial banner, ticker, off-air poster, hero next-card, nextFixture/lastFinishedFixture, schedule & bracket — shows REAL teams, never "Winner C / Runner-up F"
+      var _koChg=false;
+      if(RES.ko)FIX.forEach(function(f){if(f.stage==='ko'){var r=RES.ko[f.match_no];if(r&&r.home&&r.home.code&&f.home_code!==r.home.code){f.home=r.home.name;f.home_code=r.home.code;f.away=r.away.name;f.away_code=r.away.code;_koChg=true;}}});
+      if(_koChg){_mPhaseKey=null;try{applyNextMatch();}catch(_e){}}
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);
         if(!isNaN(k)&&k>Date.now()){kickoffTs=k;updateCountdown();}}   // only a FUTURE kickoff sets the countdown — a past/live kickoff never freezes it at 00:00
       // live = engine says so OR a fixture is in its window right now (client-side fallback so it flips even when the engine isn't pushing)
@@ -3769,13 +3773,7 @@
        else if(data.is_live!==false)maybeLiveFallback();   // fail-open ONLY when not explicitly off-air (no fake '● LIVE')
       }
       if(_lr&&data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
-      if(data.results){
-        // overlay the resolved knockout teams onto FIX so the ticker, off-air poster, hero next-card,
-        // nextFixture & lastFinishedFixture all show REAL teams (not "Winner C / Runner-up F" slots)
-        var _koChg=false;
-        if(RES.ko)FIX.forEach(function(f){if(f.stage==='ko'){var r=RES.ko[f.match_no];if(r&&r.home&&r.home.code&&f.home_code!==r.home.code){f.home=r.home.name;f.home_code=r.home.code;f.away=r.away.name;f.away_code=r.away.code;_koChg=true;}}});
-        if(_koChg){try{applyNextMatch();}catch(_e){}}
-        renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
+      if(data.results){renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
     }catch(e){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
   }
   // Victor's bets come from the REAL engine (victor_betting_slip.py → live.json.victor_bets.tiers)
