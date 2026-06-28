@@ -3181,7 +3181,7 @@
   renderBracket();
   function applyNextMatch(){const f=nextFixture();if(!f)return;const ms=Date.parse(f.utc);
     const onair=document.getElementById('onair');
-    const _ko=!f.home_code; const _cmp=_ko?('Mundial 2026 · '+(f.round||'Knockout')+(f.venue?' · '+f.venue:'')):('Mundial 2026 · Group '+f.group);
+    const _ko=f.stage==='ko'; const _cmp=_ko?('Mundial 2026 · '+(f.round||'Knockout')+(f.venue?' · '+f.venue:'')):('Mundial 2026 · Group '+f.group);
     document.querySelectorAll('#posterOff .poster-teams').forEach(e=>e.innerHTML=f.home+' <span>vs</span> '+f.away);
     document.querySelectorAll('#posterOff .poster-comp').forEach(e=>e.textContent=_cmp+' · '+fmtDay(ms)+' · '+fmtTime(ms));
     const nmT=document.querySelector('#heroA .nm-teams');if(nmT)nmT.innerHTML=f.home+' <span style="color:var(--txt-3)">vs</span> '+f.away;
