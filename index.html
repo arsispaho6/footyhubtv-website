@@ -1593,7 +1593,7 @@
   <span class="brand" data-action="home"><img src="logo-trans.png" alt="FootyHub TV"></span>
   <a class="nav-back" data-action="home">&larr; Home</a>
   <span class="onair" id="onair" data-action="live">
-    <span class="eq"><i></i><i></i><i></i><i></i></span>
+    <!-- GRAND-TEST FIX: removed the red pulsing-bars (.eq) circle the user wanted gone (esp. mobile). -->
     <span class="oa-label" id="oaLabel">Next</span>
     <span class="oa-name" id="oaName">Next on FootyHub TV</span>
   </span>
@@ -3971,10 +3971,12 @@
   (function initGoogle(){
     if(!window.google||!google.accounts||!google.accounts.id){return void setTimeout(initGoogle,300);}
     try{
-      google.accounts.id.initialize({client_id:G_CLIENT_ID,callback:onCredential,auto_select:true,itp_support:true});
+      google.accounts.id.initialize({client_id:G_CLIENT_ID,callback:onCredential,auto_select:false,itp_support:true});
       const gb=document.getElementById('gSignin');
       if(gb&&!fhUser)google.accounts.id.renderButton(gb,{theme:'filled_black',size:'medium',type:'standard',text:'signin',shape:'pill'});
-      if(!fhUser){try{google.accounts.id.prompt();}catch(e){}}   // One-Tap: auto-recognise a returning Google user (cross-device 'remember me')
+      // GRAND-TEST FIX: do NOT auto-prompt Google One-Tap on page load — that was the
+      // "prove you're not a bot"/sign-in popup the user saw on every visit. The explicit
+      // Sign-in button above stays for deliberate login (Predictor). auto_select also off.
     }catch(e){}
   })();
 
