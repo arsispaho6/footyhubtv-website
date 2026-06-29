@@ -3086,7 +3086,7 @@
   // the most recent finished match (has a final score, or its window has elapsed) — shown on the hub when off-air
   function lastFinishedFixture(){const now=Date.now();let best=null,bestMs=-1;for(const f of FIX){if(!f||!f.home_code)continue;const ms=Date.parse(f.utc);if(isNaN(ms))continue;const sc=RES.scores&&RES.scores[f.home_code+'-'+f.away_code];if((sc||now>=ms+MATCH_MS)&&ms>bestMs){bestMs=ms;best={home:f.home,away:f.away,home_code:f.home_code,away_code:f.away_code,utc:f.utc,sc:sc||null};}}return best;}
   // true-live ONLY when the engine says live AND the match is inside its window AND the engine is still pushing (kills stale 'live' left over from a finished broadcast)
-  function _liveReal(data){if(!data||data.is_live!==true||!data.match)return false;const k=Date.parse(data.match.kickoff||'');if(!isNaN(k)&&Date.now()>=k+MATCH_MS)return false;const up=Date.parse(data.updated||'');if(!isNaN(up)&&Date.now()-up>15*60000)return false;return true;}
+  function _liveReal(data){if(!data||data.is_live!==true||!data.match)return false;/* kickoff-window guard removed 2026-06-30: a wrong upstream kickoff (fixture feed had 17:00Z vs the real ~20:30Z) made a genuinely LIVE match read as expired -> hub showed off-air. is_live=false at FT + the 'engine still pushing (updated<15min)' guard below already kill a stale-live, independent of the unreliable kickoff timestamp. */const up=Date.parse(data.updated||'');if(!isNaN(up)&&Date.now()-up>15*60000)return false;return true;}
   function castMember(src,name,role,flag){
     return '<div class="mcast"><div class="mcast-av"><img loading="lazy" src="'+src+'" alt="'+name+'"></div><div class="mcast-n">'+name+(flag?' <img class="tkflag" src="'+flag+'">':'')+'</div><div class="mcast-r">'+role+'</div></div>';
   }
