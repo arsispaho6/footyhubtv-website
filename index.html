@@ -3247,9 +3247,12 @@
       if(ltm)ltm.innerHTML=f.home+' vs '+f.away+' <span class="live-min">&middot; '+_ds+'</span>';
       if(lm)lm.textContent='Kicks off '+_ds;
     }
-    try{ TONIGHT=[f.home_code,f.away_code].filter(Boolean); _buildTicker(f); _setPosterCast(f,['#posterOff']); _setNotifyOption(f); }catch(_e){}
+    try{ TONIGHT=[f.home_code,f.away_code].filter(Boolean); _paintTonight(); _buildTicker(f); _setPosterCast(f,['#posterOff']); _setNotifyOption(f); }catch(_e){}
   }
   // ── keep every match/fan/date reference in sync with the real next fixture (no hardcoded match anywhere) ──
+  // repaint the flag wall's TONIGHT pins — initFanpick painted them once with the mx/za default,
+  // so without this the pins stayed on the opening-match teams for the whole tournament
+  function _paintTonight(){document.querySelectorAll('#fpFlags .fp-flag').forEach(im=>{const m=(im.getAttribute('src')||'').match(/flags\/([a-z-]+)\.svg/);im.classList.toggle('tonight',!!m&&TONIGHT.includes(m[1]));});}
   function _fanName(code,fb){const fn=FANS[code];return fn?fn[0]:((fb||code)+' fan');}
   function _buildTicker(f){
     const tk=document.getElementById('tkt');if(!tk||!f)return;
