@@ -1417,12 +1417,18 @@
   .chat .stream .msg{flex:0 0 auto}
   .chat-yt{flex:0 0 auto;margin-top:4px;text-align:center;font-size:.74rem;color:#caa9ff;text-decoration:none;border:1px solid rgba(150,70,255,.3);border-radius:50px;padding:7px 12px}
   .chat-yt:hover{background:rgba(150,70,255,.15);color:#fff}
+  /* show-chat bubbles — mirrors the broadcast's OBS crowd-chat overlay */
+  .scmsg{display:flex;align-items:flex-start;gap:8px;background:rgba(150,70,255,.09);border:1px solid rgba(150,70,255,.16);border-radius:10px;padding:7px 9px;animation:chatin .3s ease}
+  .sc-av{width:27px;height:27px;border-radius:50%;object-fit:cover;flex:0 0 auto;background:#1a0f2e}
+  .sc-b{flex:1;min-width:0}
+  .sc-n{display:block;font-weight:700;font-size:.7rem;letter-spacing:.02em;margin-bottom:1px}
+  .sc-n .tkflag{width:13px;height:9px;vertical-align:0}
+  .sc-t{color:#fff;font-size:.77rem;line-height:1.35;word-wrap:break-word}
+  .sc-rp{font-weight:700}
   .fs-btn{position:absolute;top:10px;right:10px;z-index:6;width:38px;height:34px;border-radius:9px;border:1px solid rgba(255,255,255,.25);background:rgba(10,5,20,.55);color:#fff;font-size:1.05rem;line-height:1;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
   .fs-btn:hover{background:rgba(150,70,255,.6)}
   .yt-under{display:block;text-align:center;margin:10px auto 0;font-size:.74rem;color:var(--txt-2);text-decoration:none}
   .yt-under b{color:#caa9ff}
-  .chat-embed{flex:1;border-radius:12px;overflow:hidden;background:#0b0617;min-height:0}
-  .chat-embed iframe{width:100%;height:100%;border:0;display:block;filter:invert(.92) hue-rotate(180deg) contrast(.96)}   /* YT chat ships light-only — inverted to match the dark UI */
   .chat .join-cta{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;color:var(--txt-2);font-size:.82rem;line-height:1.5;padding:0 10px}
   .msg{line-height:1.35}
   .msg .u{font-weight:700;margin-right:5px}
@@ -1981,7 +1987,6 @@
       <div class="panel chat">
         <h4>Live chat</h4>
         <div class="stream" id="liveStream"></div>
-        <div class="chat-embed" id="chatEmbed" hidden></div>
         <div class="cin" id="cinBar"><input placeholder="Write a message…" readonly><button class="btn">Send</button></div>
       </div>
 
@@ -3832,18 +3837,24 @@
   // join-CTA otherwise. The staged demo messages render ONLY under ?demo=live (ad captures) —
   // real visitors never see fake chat.
   let _chatVid='',_chatMode='',_chatKey='';
+  const _SCCOLS=['#7CFFB2','#9ad1ff','#ffd24a','#ff9a76','#caa9ff','#7ce8ff','#ffb3d9','#b8ff7c'];
+  function _scCol(s){s=String(s||'');let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return _SCCOLS[h%_SCCOLS.length];}
   function renderChat(videoId,showChat){
     const vid=videoId||'';
-    const st=document.getElementById('liveStream'),em=document.getElementById('chatEmbed'),ci=document.getElementById('cinBar');
+    const st=document.getElementById('liveStream'),ci=document.getElementById('cinBar');
     if(DEMO){_chatVid=vid;return;}
     const feed=(Array.isArray(showChat)&&showChat.length)?showChat:null;
-    const mode=(_isLiveNow&&feed)?'feed':((_isLiveNow&&vid)?'embed':(_isLiveNow?'ctaLive':'ctaOff'));
+    const mode=(_isLiveNow&&feed)?'feed':(_isLiveNow?'ctaLive':'ctaOff');
     if(mode==='feed'){
-      // the broadcast's own crowd chat (engine → live.json.show_chat) — same chat as on stream
+      // the broadcast's own crowd chat (engine → live.json.show_chat) — the SAME chat as on
+      // the stream overlay, styled to match it: avatar + coloured name + @reply highlight
       const key=JSON.stringify(feed[feed.length-1])+feed.length;
-      if(mode!==_chatMode){if(em){em.hidden=true;em.innerHTML='';}if(st)st.hidden=false;if(ci)ci.style.display='none';}
+      if(mode!==_chatMode&&ci)ci.style.display='none';
       if(key!==_chatKey||mode!==_chatMode){_chatKey=key;
-        if(st){st.innerHTML=feed.map(m=>'<div class="msg"><span class="u fan">'+mcEsc(m.n||'fan')+(m.i?' <img class="tkflag" src="flags/'+mcEsc(m.i)+'.svg" alt="" onerror="this.remove()">':'')+'</span>'+(m.r?'<span style="color:#9ad1ff">@'+mcEsc(m.r)+'</span> ':'')+mcEsc(m.t||'')+'</div>').join('')
+        if(st){st.innerHTML=feed.map(m=>{const nm=mcEsc(m.n||'fan'),iso=mcEsc(m.i||'');
+            return '<div class="msg scmsg"><img class="sc-av" loading="lazy" src="avatars/'+(iso||'lia')+'.png" alt="" onerror="this.onerror=null;this.src=\'flags/'+iso+'.svg\'">'
+              +'<div class="sc-b"><span class="sc-n" style="color:'+_scCol(m.n)+'">'+nm+(iso?' <img class="tkflag" src="flags/'+iso+'.svg" alt="" onerror="this.remove()">':'')+'</span>'
+              +'<div class="sc-t">'+(m.r?'<span class="sc-rp" style="color:'+_scCol(m.r)+'">@'+mcEsc(m.r)+'</span> ':'')+mcEsc(m.t||'')+'</div></div></div>';}).join('')
             +'<a class="chat-yt" href="'+(vid?('https://www.youtube.com/watch?v='+encodeURIComponent(vid)):'https://www.youtube.com/@FootyHub_TV/live')+'" target="_blank" rel="noopener noreferrer">💬 Join in — chat on YouTube ↗</a>';
           st.scrollTop=st.scrollHeight;}
       }
@@ -3851,21 +3862,12 @@
     }
     if(mode===_chatMode&&vid===_chatVid)return;   // no state change — don't rebuild the DOM every poll
     _chatMode=mode;
-    if(mode==='embed'){
-      if(em&&(vid!==_chatVid||em.hidden)){
-        em.innerHTML='<iframe src="https://www.youtube.com/live_chat?v='+encodeURIComponent(vid)+'&embed_domain='+location.hostname+'" title="YouTube live chat" allow="fullscreen"></iframe>';
-        em.hidden=false;
-      }
-      if(st)st.hidden=true; if(ci)ci.style.display='none';
-    }else{
-      if(em&&!em.hidden){em.hidden=true;em.innerHTML='';}
-      if(st){st.hidden=false;
-        const cta=_isLiveNow
-          ?'<a class="btn" href="'+(vid?('https://www.youtube.com/watch?v='+encodeURIComponent(vid)):'https://www.youtube.com/@FootyHub_TV/live')+'" target="_blank" rel="noopener noreferrer" style="padding:9px 20px;font-size:.8rem">Open YouTube chat ↗</a>'
-          :'<a class="btn" data-action="notifynext" style="padding:9px 20px;font-size:.8rem">🔔 Notify me</a>';
-        st.innerHTML='<div class="join-cta"><span style="font-size:1.6rem">💬</span><b style="color:#fff">'+(_isLiveNow?'The chat is live on YouTube':'Chat opens when we go live')+'</b><span>'+(_isLiveNow?'Jump in — LIA reads the chat on air':'Real viewers, and LIA reads the chat on air')+'</span>'+cta+'</div>';}
-      if(ci)ci.style.display='none';
-    }
+    if(st){st.hidden=false;
+      const cta=_isLiveNow
+        ?'<a class="btn" href="'+(vid?('https://www.youtube.com/watch?v='+encodeURIComponent(vid)):'https://www.youtube.com/@FootyHub_TV/live')+'" target="_blank" rel="noopener noreferrer" style="padding:9px 20px;font-size:.8rem">Open YouTube chat ↗</a>'
+        :'<a class="btn" data-action="notifynext" style="padding:9px 20px;font-size:.8rem">🔔 Notify me</a>';
+      st.innerHTML='<div class="join-cta"><span style="font-size:1.6rem">💬</span><b style="color:#fff">'+(_isLiveNow?'The chat is live on YouTube':'Chat opens when we go live')+'</b><span>'+(_isLiveNow?'Jump in — LIA reads the chat on air':'Real viewers, and LIA reads the chat on air')+'</span>'+cta+'</div>';}
+    if(ci)ci.style.display='none';
     _chatVid=vid;
   }
   function openYtChat(){window.open(_chatVid?('https://www.youtube.com/watch?v='+_chatVid):'https://www.youtube.com/@FootyHub_TV/live','_blank','noopener');}
