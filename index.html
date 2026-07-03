@@ -899,6 +899,8 @@
   .mh-standtitle{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(200,170,255,.6);margin-bottom:12px}
   .mh-soon{text-align:center;padding:46px;color:var(--txt-2);font-size:1rem}
   /* knockout bracket (SofaScore-style, simplified) */
+  .bk-row.win{color:#7CFFB2;font-weight:800}
+  .bk-row.win .bk-sc{color:#7CFFB2}
   .bk-hint{font-size:.74rem;color:var(--txt-2);margin-bottom:12px}
   .bracket{display:flex;gap:22px;align-items:stretch;overflow-x:auto;overflow-y:hidden;padding:2px 2px 16px}
   .bk-col{display:flex;flex-direction:column;min-width:182px;flex:0 0 auto}
@@ -2999,7 +3001,6 @@
       document.querySelectorAll('.watch-cta').forEach(e=>{e.innerHTML=live?'&#9679; Watch Live':'&#9654; Watch';});
       const _ic=document.querySelector('.intro-cta');if(_ic)_ic.innerHTML=live?'<span class="pdot"></span> Watch Live':'&#9654; Watch the show';
       const _rs=document.getElementById('replaySect');if(_rs)_rs.hidden=live;
-      const _yu=document.getElementById('ytUnder');if(_yu&&!live)_yu.hidden=true;
     }
     const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
     let _nf=null;try{_nf=nextFixture();}catch(_e){}   // next not-yet-started match
@@ -3028,16 +3029,21 @@
     if(lm)lm.textContent=live?'● LIVE':(_nf?'Kicks off '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'Kicks off soon');
     if(ns)ns.innerHTML=live?'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>On air:</b> LIA &amp; Victor break down the action':'<span class="eq"><i></i><i></i><i></i><i></i></span> <b>Pre-game:</b> Victor reveals Medium &amp; Max when the countdown ends';
     if(!live&&_lastF){const _sc=_lastF.sc;
+      const _ke=_lastF.ko,_pw=_koWin(_ke),_pp=_koPens(_ke);   // knockout: pens tally + who advanced
+      const _pTx=_pw?((_pp?(_pw.name+' win '+((_ke.winner===(_ke.home||{}).code)?(_pp[0]+'–'+_pp[1]):(_pp[1]+'–'+_pp[0]))+' on penalties'):(_pw.name+' through'))):'';
       if(ls)ls.innerHTML=_sc?(_sc.h+'&nbsp;&ndash;&nbsp;'+_sc.a):'&ndash;&nbsp;&nbsp;&ndash;';
       const _th2=document.getElementById('tnH'),_ta2=document.getElementById('tnA'),_ch2=document.getElementById('crestH'),_ca2=document.getElementById('crestA');
       if(_th2)_th2.textContent=_lastF.home; if(_ta2)_ta2.textContent=_lastF.away;
       if(_ch2&&_lastF.home_code)_ch2.innerHTML='<img src="flags/'+_lastF.home_code+'.svg" alt="">'; if(_ca2&&_lastF.away_code)_ca2.innerHTML='<img src="flags/'+_lastF.away_code+'.svg" alt="">';
       if(lb)lb.textContent='Full time';
-      if(lm)lm.textContent='Full time';
-      if(ltm)ltm.innerHTML=_lastF.home+(_sc?' <b>'+_sc.h+'&ndash;'+_sc.a+'</b> ':' v ')+_lastF.away+' <span class="live-min">FT</span>';
+      if(lm)lm.textContent=_pTx?('Full time · '+_pTx):'Full time';
+      if(ltm)ltm.innerHTML=_lastF.home+(_sc?' <b>'+_sc.h+'&ndash;'+_sc.a+'</b> ':' v ')+_lastF.away+' <span class="live-min">'+(_pw?('FT · '+mcEsc(_pw.name)+(_pp?' on pens':' through')):'FT')+'</span>';
       if(oaL)oaL.textContent='Latest';
-      if(oaN)oaN.innerHTML=_lastF.home+(_sc?' <b>'+_sc.h+'&ndash;'+_sc.a+'</b> ':' v ')+_lastF.away+' &middot; Full time';
+      if(oaN)oaN.innerHTML=_lastF.home+(_sc?' <b>'+_sc.h+'&ndash;'+_sc.a+'</b> ':' v ')+_lastF.away+' &middot; '+(_pw?mcEsc(_pw.name)+(_pp?' win on pens':' through'):'Full time');
     }
+    // the "Watch on YouTube" helper link only makes sense under a visible player
+    const _yu2=document.getElementById('ytUnder'),_wp2=document.getElementById('watchPlayer');
+    if(_yu2&&_wp2&&_wp2.hidden)_yu2.hidden=true;
   }
   // the watch page (player + chat + score + bet) — opened by "Watch now" / "Watch Live"
   const PAGE_TITLES={live:'Watch Live',hosts:'The Cast',schedule:'Schedule',watch:'Replays',clipsPage:'Clips',partnersPage:'Sponsors',predict:'Predict & Win',aboutPage:'About',faqPage:'FAQ'};
@@ -3136,7 +3142,10 @@
   // the NEXT match that hasn't kicked off yet (a live/finished match is never shown as "next")
   function nextFixture(){const now=Date.now();if(DEMO){const g=FIX.filter(f=>f.stage!=='ko');return g[1]||g[0]||null;}return FIX.find(f=>Date.parse(f.utc)>now)||FIX[FIX.length-1]||null;}
   // the most recent finished match (has a final score, or its window has elapsed) — shown on the hub when off-air
-  function lastFinishedFixture(){const now=Date.now();let best=null,bestMs=-1;for(const f of FIX){if(!f||!f.home_code)continue;const ms=Date.parse(f.utc);if(isNaN(ms))continue;const sc=RES.scores&&RES.scores[f.home_code+'-'+f.away_code];if((sc||now>=ms+MATCH_MS)&&ms>bestMs){bestMs=ms;best={home:f.home,away:f.away,home_code:f.home_code,away_code:f.away_code,utc:f.utc,sc:sc||null};}}return best;}
+  function lastFinishedFixture(){const now=Date.now();let best=null,bestMs=-1;for(const f of FIX){if(!f||!f.home_code)continue;const ms=Date.parse(f.utc);if(isNaN(ms))continue;const sc=RES.scores&&RES.scores[f.home_code+'-'+f.away_code];if((sc||now>=ms+MATCH_MS)&&ms>bestMs){bestMs=ms;best={home:f.home,away:f.away,home_code:f.home_code,away_code:f.away_code,utc:f.utc,sc:sc||null,ko:(f.stage==='ko'&&RES.ko)?(RES.ko[f.match_no]||RES.ko[String(f.match_no)]||null):null};}}return best;}
+  // knockout extras: "1 (4)"-style scores carry the shootout — parse pens + the advancing team
+  function _koPens(ke){try{const h=String(((ke||{}).home||{}).score||'').match(/\((\d+)\)/),a=String(((ke||{}).away||{}).score||'').match(/\((\d+)\)/);if(h&&a)return[+h[1],+a[1]];}catch(_e){}return null;}
+  function _koWin(ke){if(!ke||!ke.winner)return null;const h=ke.home||{},a=ke.away||{};return ke.winner===h.code?h:(ke.winner===a.code?a:null);}
   // true-live ONLY when the engine says live AND the match is inside its window AND the engine is still pushing (kills stale 'live' left over from a finished broadcast)
   function _liveReal(data){if(!data||data.is_live!==true||!data.match)return false;/* kickoff-window guard removed 2026-06-30: a wrong upstream kickoff (fixture feed had 17:00Z vs the real ~20:30Z) made a genuinely LIVE match read as expired -> hub showed off-air. is_live=false at FT + the 'engine still pushing (updated<15min)' guard below already kill a stale-live, independent of the unreliable kickoff timestamp. */const up=Date.parse(data.updated||'');if(!isNaN(up)&&Date.now()-up>15*60000)return false;return true;}
   function castMember(src,name,role,flag){
@@ -3156,11 +3165,15 @@
       const live=now>=ms&&now<ms+MATCH_MS&&!_sc, past=!!_sc||now>=ms+MATCH_MS;
       const isNow=anchorThis&&!anchored&&!past; if(isNow)anchored=true;
       const lv=live?(RES.live||{})[hCode+'-'+aCode]:null;   // in-play score+minute from the Worker cron (24/7, any match)
-      const t=live?('<span style="color:var(--live)">● '+(lv&&lv.h!=null?(lv.h+'–'+lv.a+(lv.m?(' · '+mcEsc(String(lv.m))+'&prime;'):'')):'LIVE')+'</span>'):(past?(_sc?'<b class="si-sc">'+_sc.h+'–'+_sc.a+'</b>':'FT'):fmtTime(ms));
+      // knockout finals prefer the ko entry — its "1 (4)"-style score carries the shootout
+      const _ksc=(isKo&&kr&&kr.home&&kr.home.score!=null&&kr.away&&kr.away.score!=null)?(mcEsc(kr.home.score)+'–'+mcEsc(kr.away.score)):null;
+      const _kw=isKo?_koWin(kr):null,_kp=isKo?_koPens(kr):null;
+      const t=live?('<span style="color:var(--live)">● '+(lv&&lv.h!=null?(lv.h+'–'+lv.a+(lv.m?(' · '+mcEsc(String(lv.m))+'&prime;'):'')):'LIVE')+'</span>'):(past?(_ksc?'<b class="si-sc">'+_ksc+'</b>':(_sc?'<b class="si-sc">'+_sc.h+'–'+_sc.a+'</b>':'FT')):fmtTime(ms));
       const cta=live?'<a class="si-cta" data-action="live">Watch &rarr;</a>':(past?'<a class="si-cta ghost" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Replay ↗</a>':'<a class="si-cta ghost">🔔 Notify</a>');
       const hh=_ko?hName:'<img class="tkflag" src="flags/'+hCode+'.svg" alt=""> '+hName;
       const aa=_ko?aName:aName+' <img class="tkflag" src="flags/'+aCode+'.svg" alt="">';
-      const comp=isKo?(f.round+(f.venue?' · '+f.venue:'')):'Mundial 2026 · Group '+f.group;
+      const comp=(isKo?(f.round+(f.venue?' · '+f.venue:'')):'Mundial 2026 · Group '+f.group)
+        +((past&&_kw)?(' · <b style="color:#7CFFB2">'+mcEsc(_kw.name||'')+' through'+(_kp?' on pens':'')+'</b>'):'');
       // expandable panel: live countdown (upcoming) + match cast (LIA, Victor, both fans)
       let exp='';
       if(!isKo){
@@ -3224,11 +3237,12 @@
     if(m=s.match(/^Runner-up ([A-L])$/))return '2'+m[1];
     if(m=s.match(/^3rd (.+)$/))return m[1].split('/').map(g=>'3'+g.trim()).join('/');
     return s;}
-  function bkRow(label,team){
-    if(team&&team.code)return '<div class="bk-row"><img class="bk-flag" src="flags/'+team.code+'.svg">'+team.name+(team.score!=null?'<span class="bk-sc">'+team.score+'</span>':'')+'</div>';
+  function bkRow(label,team,win){
+    if(team&&team.code)return '<div class="bk-row'+(win?' win':'')+'"><img class="bk-flag" src="flags/'+team.code+'.svg">'+team.name+(team.score!=null?'<span class="bk-sc">'+team.score+'</span>':'')+'</div>';
     return '<div class="bk-row"><span class="bk-ic"></span>'+bkLabel(label)+'</div>';}
   function bkCard(f){const ms=Date.parse(f.utc);const r=(RES.ko&&RES.ko[f.match_no])||{};
-    return '<div class="bk-match"><div class="bk-rows">'+bkRow(f.home,r.home)+bkRow(f.away,r.away)+'</div>'
+    const wH=!!(r.winner&&r.home&&r.winner===r.home.code),wA=!!(r.winner&&r.away&&r.winner===r.away.code);
+    return '<div class="bk-match"><div class="bk-rows">'+bkRow(f.home,r.home,wH)+bkRow(f.away,r.away,wA)+'</div>'
       +'<div class="bk-when"><b>'+fmtDayShort(ms)+'</b><span>'+fmtTime(ms)+'</span></div></div>';}
   function renderBracket(){
     const el=document.getElementById('bracket');if(!el)return;
@@ -3279,7 +3293,10 @@
     const d=new Date(Date.parse(f.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
     const flag=c=>c?(' <img class="tkflag" src="flags/'+c+'.svg" alt="">'):'';
     const fans=f.home_code?'<span class="tk"><span class="lbl">Tonight\'s fans</span> '+_fanName(f.home_code,f.home)+flag(f.home_code)+' &middot; '+_fanName(f.away_code,f.away)+flag(f.away_code)+'</span>':'';
+    let lastIt='';try{const lf=lastFinishedFixture();if(lf&&lf.sc){const pw=_koWin(lf.ko),pp=_koPens(lf.ko);
+      lastIt='<span class="tk"><span class="lbl">Full time</span> <b>'+lf.home+' '+lf.sc.h+'–'+lf.sc.a+' '+lf.away+'</b>'+(pw?(' &middot; '+pw.name+(pp?' through on pens ('+pp[0]+'–'+pp[1]+')':' through')):'')+'</span>';}}catch(_e){}
     const items=[
+      lastIt,
       '<span class="tk"><span class="lbl">Next on FootyHub TV</span> <b>'+f.home+' v '+f.away+'</b> &middot; Mundial 2026 &middot; <b>'+d+'</b></span>',
       fans,
       '<span class="tk"><span class="lbl">Victor\'s Triple Bet</span> &#9656; <b>dropping in the pre-game</b></span>',
@@ -3750,7 +3767,10 @@
   // Zero-maintenance real content for the off-air site; iframe loads only on click (facade).
   const YT_UPLOADS='UU'+YT_CHANNEL_ID.slice(2);
   function _lastReplayLabel(){let f=null;try{f=lastFinishedFixture();}catch(_e){}
-    return f?(f.home+(f.sc?(' '+f.sc.h+'–'+f.sc.a+' '):' v ')+f.away+' — watch the full replay'):'Watch the latest full replay';}
+    if(!f)return 'Watch the latest full replay';
+    const ke=f.ko;if(ke&&ke.home&&ke.home.score!=null&&ke.away&&ke.away.score!=null)
+      return f.home+' '+ke.home.score+' – '+ke.away.score+' '+f.away+' — watch the full replay';
+    return f.home+(f.sc?(' '+f.sc.h+'–'+f.sc.a+' '):' v ')+f.away+' — watch the full replay';}
   function _replayFacade(box){
     if(!box||box.dataset.rdy)return;box.dataset.rdy='1';
     box.innerHTML='<button class="yt-facade" type="button" aria-label="Watch the latest full replay" style="background:radial-gradient(circle at 50% 38%,#2a1448,#0b0617 75%)">'
@@ -3765,7 +3785,8 @@
     const t=_lastReplayLabel();
     document.querySelectorAll('.rp-lbl').forEach(e=>{e.textContent=t;});
     const ht=document.getElementById('hrTitle');if(ht){let f=null;try{f=lastFinishedFixture();}catch(_e){}
-      ht.textContent=f?('Missed '+f.home+(f.sc?(' '+f.sc.h+'–'+f.sc.a+' '):' v ')+f.away+'?'):'Missed the last match?';}
+      const pw=f?_koWin(f.ko):null,pp=f?_koPens(f.ko):null;
+      ht.textContent=f?('Missed '+f.home+(f.sc?(' '+f.sc.h+'–'+f.sc.a+' '):' v ')+f.away+(pw?(' — '+pw.name+(pp?' through on pens':' through')):'')+'?'):'Missed the last match?';}
   }
   function renderReplays(){_replayFacade(document.getElementById('replayPlayer'));_updReplayLabels();}
   function renderHomeReplay(){
@@ -3776,6 +3797,7 @@
   }
   // a fixture that should be LIVE right now (kickoff ≤ now < kickoff+2.5h), or null
   let _liveMatch=null;   // engine's authoritative live match (live.json.match) — beats clock-window guessing (fixes simultaneous-kickoff split-brain)
+  let _tickKey='';       // rebuild the ticker only when next-match / latest-result actually change
   function liveFixtureNow(pc){
     if(_liveMatch&&_liveMatch.home_code){const m=_liveMatch,_k=Date.parse(m.kickoff||'');if(isNaN(_k)||Date.now()<_k+MATCH_MS)return {home:m.home,away:m.away,home_code:m.home_code,away_code:m.away_code,utc:m.kickoff||''};}
     return null;   // off-air → NO live match. Only the engine's fresh is_live drives 'live' — no schedule-guessing, so the nav/player never show a phantom 'ON AIR' for a match we aren't broadcasting.
@@ -3827,7 +3849,7 @@
   }
   // real concurrent viewers from live.json (YouTube) — shown only when present, never faked
   function renderViewers(n){
-    const real=(typeof n==='number'&&n>0);
+    const real=(_isLiveNow===true&&typeof n==='number'&&n>0);   // never show a watcher count off-air (stale engine leftovers)
     const lv=document.getElementById('liveViewers'),vc=document.getElementById('vCount');
     if(vc)vc.textContent=real?n.toLocaleString():'';
     if(lv)lv.style.visibility=real?'visible':'hidden';
@@ -3912,6 +3934,10 @@
       if(_lr&&data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
       if(data.results){renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
       try{renderHomeReplay();}catch(_e){}   // keep the "Missed the last match?" card labelled with the real latest result
+      // ticker: applyNextMatch built it before results landed — rebuild when the latest result changes
+      try{const _nf2=nextFixture(),_lf2=lastFinishedFixture();
+        const _tk2=(_nf2?(_nf2.home+_nf2.away):'')+'|'+(_lf2?(_lf2.home_code+_lf2.away_code+JSON.stringify(_lf2.sc)+String((_lf2.ko||{}).winner||'')):'');
+        if(_tk2!==_tickKey){_tickKey=_tk2;if(_nf2)_buildTicker(_nf2);}}catch(_e){}
     }catch(e){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
   }
   // Victor's bets come from the REAL engine (victor_betting_slip.py → live.json.victor_bets.tiers)

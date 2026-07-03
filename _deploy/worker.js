@@ -223,7 +223,16 @@ async function _liveScoresTick(env) {
   for (const m of ((fx && fx.matches) || [])) {
     if (m.home_code && m.away_code) orient[[m.home_code, m.away_code].sort().join("|")] = m.home_code + "-" + m.away_code;
   }
-  const liveNow = {}, finals = {};
+  // ko fixtures indexed by kickoff ts so completed knockout events can update results.ko
+  // (pens + winner) within a minute of FT — GitHub's espn-sync cron proved able to skip
+  // 50min of runs (2026-07-03), which left the bracket without the shootout result.
+  const koFix = [];
+  for (const m of ((fx && fx.matches) || [])) {
+    if (m.stage !== "ko" || !m.utc) continue;
+    const ts = Date.parse(m.utc);
+    if (!isNaN(ts)) koFix.push({ no: String(m.match_no), ts });
+  }
+  const liveNow = {}, finals = {}, koUpd = {};
   for (const off of [0, -1]) {   // today + yesterday UTC (matches cross midnight)
     const ds = new Date(Date.now() + off * 864e5).toISOString().slice(0, 10).replace(/-/g, "");
     let sb;
@@ -238,9 +247,12 @@ async function _liveScoresTick(env) {
       const st = ((comp.status || ev.status || {}).type) || {};
       let h = null, a = null;
       for (const c of (comp.competitors || [])) {
-        const code = _lsCode((c.team || {}).displayName || (c.team || {}).name);
+        const dn = (c.team || {}).displayName || (c.team || {}).name || "";
+        const code = _lsCode(dn);
         if (!code) continue;
-        const side = { code, score: parseInt(c.score, 10) };
+        let so = null;
+        try { const v = parseInt(c.shootoutScore, 10); if (!isNaN(v)) so = v; } catch (e) {}
+        const side = { code, name: dn, score: parseInt(c.score, 10), so };
         if (c.homeAway === "home") h = side;
         else if (c.homeAway === "away") a = side;
       }
@@ -249,11 +261,29 @@ async function _liveScoresTick(env) {
       if (!mid) continue;
       const flip = mid !== h.code + "-" + a.code;
       const hs = flip ? a.score : h.score, as2 = flip ? h.score : a.score;
+      const done = st.completed || st.state === "post";
       if (st.state === "in") {
         const clock = String((comp.status || {}).displayClock || "").replace(/'/g, "").trim();
         liveNow[mid] = { h: hs, a: as2, m: clock };
-      } else if (st.completed || st.state === "post") {
+      } else if (done) {
         finals[mid] = { h: hs, a: as2 };
+      }
+      if (done) {
+        // knockout: attach pens + winner to the matching results.ko slot (kickoff +/-2h)
+        const ets = Date.parse(ev.date || "");
+        if (!isNaN(ets)) {
+          const kf = koFix.filter((k) => Math.abs(k.ts - ets) <= 2 * 3600 * 1000);
+          if (kf.length === 1) {
+            const pens = h.so !== null && a.so !== null && h.so !== a.so;
+            const e2 = {
+              home: { code: h.code, name: h.name, score: pens ? h.score + " (" + h.so + ")" : h.score },
+              away: { code: a.code, name: a.name, score: pens ? a.score + " (" + a.so + ")" : a.score }
+            };
+            if (h.score !== a.score) e2.winner = h.score > a.score ? h.code : a.code;
+            else if (pens) e2.winner = h.so > a.so ? h.code : a.code;
+            koUpd[kf[0].no] = e2;
+          }
+        }
       }
     }
   }
@@ -265,11 +295,15 @@ async function _liveScoresTick(env) {
     if (r.ok) { const c = await r.json(); if (String(c.updated || "") >= String(data.updated || "")) data = c; }
   } catch (e) {}
   const res = data.results = data.results || {};
-  const before = JSON.stringify({ l: res.live || {}, s: res.scores || {}, il: data.is_live });
+  const before = JSON.stringify({ l: res.live || {}, s: res.scores || {}, k: res.ko || {}, il: data.is_live });
   res.live = liveNow;   // wholesale: finished/abandoned matches drop out on their own
   if (Object.keys(finals).length) {
     res.scores = res.scores || {};
     for (const k in finals) res.scores[k] = finals[k];
+  }
+  if (Object.keys(koUpd).length) {
+    res.ko = res.ko || {};
+    for (const k in koUpd) res.ko[k] = koUpd[k];
   }
   // stale-engine kill: the engine pushes every ~15s while live; >7min silence = broadcast over
   try {
@@ -279,7 +313,7 @@ async function _liveScoresTick(env) {
       data.phase = "off";
     }
   } catch (e) {}
-  const after = JSON.stringify({ l: res.live || {}, s: res.scores || {}, il: data.is_live });
+  const after = JSON.stringify({ l: res.live || {}, s: res.scores || {}, k: res.ko || {}, il: data.is_live });
   if (after === before) return;   // nothing changed — no writes, no KV quota spent
   const body = JSON.stringify(data);
   await env.LIVE.put("live", body);
