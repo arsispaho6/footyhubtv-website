@@ -1015,6 +1015,13 @@
     .hb-headline{font-size:clamp(1.7rem,8vw,2.4rem)}
   }
 
+  /* ── REPLAY embeds (home + Replays page) ── */
+  .rp-player{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#000}
+  .rp-home{max-width:820px;margin:0 auto}
+  .rp-under{text-align:center;margin-top:16px}
+  /* collapse finished match-days on the schedule */
+  .sched-past-toggle{display:block;margin:0 auto 18px;padding:9px 20px;border-radius:50px;border:1px solid rgba(150,70,255,.25);background:rgba(150,70,255,.07);color:var(--txt-2);font-size:.78rem;font-weight:600;cursor:pointer}
+  .sched-past-toggle:hover{background:rgba(150,70,255,.16);color:#fff}
   /* ── SCHEDULE + WATCH pages ── */
   #schedule,#watch{padding-top:120px}
   .sched-list{max-width:760px;margin:0 auto}
@@ -1583,7 +1590,7 @@
   <img class="intro-logo" src="logo-trans.png" alt="FootyHub TV">
   <div class="intro-kicker" id="introKicker">FOOTYHUB TV · MUNDIAL 2026</div>
   <h1 class="intro-h1">THE <span class="ai">AI</span> FOOTBALL CHANNEL</h1>
-  <div class="intro-now"><span class="live"></span>Now: <span class="introRot" id="introRot">LIA on the call</span></div>
+  <div class="intro-now"><span class="live"></span><span id="introPre">Now:</span> <span class="introRot" id="introRot">LIA on the call</span></div>
   <a class="btn intro-cta magnetic" data-action="live"><span class="pdot"></span> Watch Live</a>
   <div class="intro-scroll">scroll</div>
 </section>
@@ -1604,7 +1611,6 @@
     <a title="YouTube · @FootyHub_TV" href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M23 7.5a3 3 0 0 0-2.1-2.1C19 5 12 5 12 5s-7 0-8.9.4A3 3 0 0 0 1 7.5 31 31 0 0 0 .6 12 31 31 0 0 0 1 16.5a3 3 0 0 0 2.1 2.1C5 19 12 19 12 19s7 0 8.9-.4a3 3 0 0 0 2.1-2.1A31 31 0 0 0 23.4 12 31 31 0 0 0 23 7.5zM9.8 15.3V8.7l5.7 3.3z"/></svg></a>
     <a title="Twitch · @footyhubtv" href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M4 2 2.5 5.7v15h5.2V24h2.9l2.9-3.3h4.3L23 15V2zm16.6 12.3L18 17h-4.3l-2.9 2.9V17H6.4V4h14.2zM16.7 7.6h-1.9v5.6h1.9zm-5 0H9.8v5.6h1.9z"/></svg></a>
     <a title="Instagram · @footyhubtv" href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm5.3-3.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg></a>
-    <a title="TikTok — coming soon"><svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.7a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.4a3.3 3.3 0 1 0 2.3 3.1V3z"/></svg></a>
     <span class="authbox"><span class="gbtn" id="gSignin"></span><span class="userchip" id="userChip" hidden></span></span>
     <a class="watch-cta" data-action="live">&#9679; Watch Live</a>
     <button class="nav-menu" data-action="menu"><span class="nm-bars"><i></i><i></i><i></i></span> <span class="nm-label">Menu</span></button>
@@ -1613,11 +1619,9 @@
 
 <!-- LIVE TICKER -->
 <div class="ticker"><div class="ticker-track" id="tkt">
-  <span class="tk"><span class="lbl">Premiere</span> <b>Mexico v South Africa</b> &middot; Mundial 2026 opener &middot; <b>11 Jun</b></span>
-  <span class="tk"><span class="lbl">Next on FootyHub TV</span> <b>Mexico</b> v <b>South Africa</b> &middot; Estadio Azteca</span>
+  <span class="tk"><span class="lbl">Next on FootyHub TV</span> <b>Mundial 2026</b> &middot; knockout stage</span>
   <span class="tk"><span class="lbl">Victor's Triple Bet</span> &#9656; <b>dropping in the pre-game</b></span>
-  <span class="tk"><span class="lbl">Tonight's fans</span> Diego <img class="tkflag" src="flags/mx.svg" alt=""> &middot; Sipho <img class="tkflag" src="flags/za.svg" alt=""></span>
-  <span class="tk"><span class="lbl">Mundial 2026</span> kicks off <b>11 Jun</b> &middot; 48 nations &middot; 104 matches</span>
+  <span class="tk"><span class="lbl">Mundial 2026</span> live now &middot; 48 nations &middot; 104 matches</span>
   <span class="tk"><span class="lbl">Predict &amp; win</span> &#9656; <b>free contest</b> &middot; top 3 win prizes</span>
   <span class="tk"><span class="lbl">Live AI commentary</span> LIA &amp; Victor on every kick</span>
 </div></div>
@@ -1636,8 +1640,8 @@
       <div class="kicker">The AI football channel with actual opinions.</div>
       <div class="next-card">
         <div class="nm-label">Next Live Match</div>
-        <div class="nm-teams">Mexico <span style="color:var(--txt-3)">v</span> South Africa</div>
-        <div class="nm-comp">Mundial 2026 · Opening match · 11 Jun</div>
+        <div class="nm-teams">The next Mundial match</div>
+        <div class="nm-comp">Mundial 2026 · live &amp; free on YouTube</div>
         <div class="countdown">
           <div class="cd-box"><div class="cd-num cd-d">06</div><div class="cd-unit">days</div></div>
           <div class="cd-box"><div class="cd-num cd-h">02</div><div class="cd-unit">hrs</div></div>
@@ -1676,8 +1680,8 @@
             <!-- OFF-AIR: next match -->
             <div id="posterOff">
               <div class="poster-label"><span class="ldot"></span>Next live match · on FootyHub TV</div>
-              <div class="poster-teams">Mexico <span>v</span> South Africa</div>
-              <div class="poster-comp">Mundial 2026 · Opening match · Estadio Azteca · 11 Jun</div>
+              <div class="poster-teams">Next match</div>
+              <div class="poster-comp">Mundial 2026 · live &amp; free on YouTube</div>
               <div class="countdown poster-cd">
                 <div class="cd-box"><div class="cd-num cd-d">06</div><div class="cd-unit">days</div></div>
                 <div class="cd-box"><div class="cd-num cd-h">02</div><div class="cd-unit">hrs</div></div>
@@ -1710,7 +1714,7 @@
             <!-- LIVE: live match -->
             <div id="posterLive" hidden>
               <div class="poster-label live"><span class="ldot"></span>Live now · on FootyHub TV</div>
-              <div class="poster-teams">Mexico <b>1&ndash;0</b> South Africa</div>
+              <div class="poster-teams">&mdash; <b>v</b> &mdash;</div>
               <div class="poster-comp">Mundial 2026 · <span class="live-min">LIVE</span><span class="poster-watching"></span></div>
               <a class="btn poster-watch" data-action="live"><span class="pdot"></span> Watch now</a>
               <div class="poster-castlabel">On air now</div>
@@ -1738,6 +1742,13 @@
         </div>
         <span class="ptz-cta">Play now →</span>
       </a>
+    </section>
+
+    <!-- Latest full replay — real content to watch while we're off-air (hidden when live) -->
+    <section class="sect" id="replaySect">
+      <div class="sect-title" id="hrTitle">Missed the last match?</div>
+      <div class="rp-player rp-home" id="homeReplay"></div>
+      <div class="rp-under"><a class="clips-follow" data-action="watch">All replays &rarr;</a></div>
     </section>
 
     <section class="sect cast" id="cast">
@@ -1773,7 +1784,7 @@
     <section class="sect" id="clips">
       <div class="clips-head">
         <div class="sect-title">The moments we'll clip</div>
-        <a class="clips-follow">▶ Shorts · Reels · TikTok — coming soon</a>
+        <a class="clips-follow" href="https://www.youtube.com/@FootyHub_TV" target="_blank" rel="noopener noreferrer">▶ More on YouTube · @FootyHub_TV</a>
       </div>
       <div class="clips" id="clipStrip"></div>
     </section>
@@ -1871,7 +1882,7 @@
     <a class="watch-back" data-action="home">&larr; Back to home</a>
     <div class="live-top">
       <span class="live-badge" id="liveBadge"><span class="dot"></span>Live</span>
-      <span class="live-match" id="liveTopMatch">Mexico <b>1&ndash;0</b> South Africa <span class="live-min">63'</span></span>
+      <span class="live-match" id="liveTopMatch">FootyHub TV</span>
       <span class="live-viewers" id="liveViewers" style="visibility:hidden"><i></i><b id="vCount"></b> watching</span>
     </div>
     <div class="live-grid">
@@ -1921,8 +1932,8 @@
         </div>
         <div class="watch-next" id="watchNext">
           <div class="wn-label"><span class="ldot"></span>Next live on FootyHub TV</div>
-          <div class="wn-teams">Mexico <span>v</span> South Africa</div>
-          <div class="wn-comp">Mundial 2026 · Opening match · Estadio Azteca</div>
+          <div class="wn-teams">Next match</div>
+          <div class="wn-comp">Mundial 2026</div>
           <div class="countdown wn-cd">
             <div class="cd-box"><div class="cd-num cd-d">06</div><div class="cd-unit">days</div></div>
             <div class="cd-box"><div class="cd-num cd-h">02</div><div class="cd-unit">hrs</div></div>
@@ -1934,9 +1945,9 @@
           <div class="mc-poll wn-poll" id="poll1x2" data-pollid="">
             <div class="mcp-head"><span class="poll-tag">🗳️ Fan poll · Who wins?</span><span class="poll-total" id="pollTotal"></span></div>
             <div class="mcp-opts">
-              <button class="poll-opt" data-opt="home"><span class="po-fill"></span><span class="po-k">1</span><span class="po-name" id="poHome">Mexico</span><span class="po-pct"></span></button>
+              <button class="poll-opt" data-opt="home"><span class="po-fill"></span><span class="po-k">1</span><span class="po-name" id="poHome">Home</span><span class="po-pct"></span></button>
               <button class="poll-opt" data-opt="draw"><span class="po-fill"></span><span class="po-k">X</span><span class="po-name">Draw</span><span class="po-pct"></span></button>
-              <button class="poll-opt" data-opt="away"><span class="po-fill"></span><span class="po-k">2</span><span class="po-name" id="poAway">South Africa</span><span class="po-pct"></span></button>
+              <button class="poll-opt" data-opt="away"><span class="po-fill"></span><span class="po-k">2</span><span class="po-name" id="poAway">Away</span><span class="po-pct"></span></button>
             </div>
             <div class="poll-foot" id="pollFoot">Tap to vote</div>
           </div>
@@ -1950,7 +1961,6 @@
         <div class="also">
           <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M4 2 2.5 5.7v15h5.2V24h2.9l2.9-3.3h4.3L23 15V2z"/></svg>Watch on Twitch</a>
           <a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A4.5 4.5 0 1 1 7.5 12 4.5 4.5 0 0 1 12 7.5zm0 2A2.5 2.5 0 1 0 14.5 12 2.5 2.5 0 0 0 12 9.5zm5.3-3.9a1.1 1.1 0 1 1-1.1 1.1 1.1 1.1 0 0 1 1.1-1.1z"/></svg>Instagram</a>
-          <a><svg viewBox="0 0 24 24"><path d="M16.5 3c.3 2.1 1.5 3.6 3.5 3.9V9c-1.3.1-2.5-.3-3.5-1v6.7a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.4a3.3 3.3 0 1 0 2.3 3.1V3z"/></svg>TikTok — coming soon</a>
           <button class="share-btn" data-share style="padding:9px 16px;font-size:.78rem">📤 Share</button>
         </div>
       </div>
@@ -2039,11 +2049,10 @@
       <h2 class="hp-title">Replays &amp; <span class="ai">highlights</span></h2>
       <p class="hp-sub">Missed it live? Every FootyHub TV broadcast, on demand.</p>
     </div>
-    <div style="text-align:center;max-width:560px;margin:40px auto;padding:48px 28px;border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(255,255,255,.02)">
-      <div style="font-size:3rem;line-height:1;margin-bottom:14px">🎬</div>
-      <h3 style="margin:0 0 10px;font-size:1.35rem">Full-match replays — on our YouTube</h3>
-      <p style="color:var(--txt-2);margin:0 0 22px;line-height:1.6">Every FootyHub TV broadcast is recorded in full — LIA &amp; Victor's call and all — and stays up on demand on our channel. Catch up on any match you missed, in full.</p>
-      <a class="btn" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Watch replays on YouTube &rarr;</a>
+    <div class="rp-wrap" style="max-width:860px;margin:26px auto 0">
+      <div class="rp-player" id="replayPlayer"></div>
+      <p class="rp-note" style="color:var(--txt-2);text-align:center;margin:16px auto 0;max-width:560px;line-height:1.6">Every FootyHub TV broadcast is recorded in full — LIA &amp; Victor's call and all — and stays up on demand. Use the playlist icon inside the player to pick any match.</p>
+      <div style="text-align:center;margin:18px 0 8px"><a class="btn" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">All replays on YouTube &rarr;</a></div>
     </div>
   </div>
 </main>
@@ -2603,7 +2612,7 @@
     <a class="cm-row" href="mailto:contact@footyhub.tv"><span class="cm-k">📧 Email us</span><span class="cm-v">contact@footyhub.tv</span></a>
     <a class="cm-row" href="https://www.youtube.com/@FootyHub_TV" target="_blank" rel="noopener noreferrer"><span class="cm-k">▶ YouTube</span><span class="cm-v">@FootyHub_TV</span></a>
     <a class="cm-row" data-action="partners"><span class="cm-k">💼 Sponsorship</span><span class="cm-v">Become a sponsor →</span></a>
-    <p class="cm-note">We're on YouTube, <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer" style="color:#caa9ff">Twitch</a> &amp; <a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer" style="color:#caa9ff">Instagram</a> — TikTok launching soon.</p>
+    <p class="cm-note">We're on YouTube, <a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer" style="color:#caa9ff">Twitch</a> &amp; <a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer" style="color:#caa9ff">Instagram</a>.</p>
   </div>
 </div>
 
@@ -2627,7 +2636,7 @@
     <div class="f-col">
       <div class="f-brand">FootyHub TV</div>
       <p class="f-tag">The AI football channel with actual opinions.</p>
-      <div class="f-social"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer">Twitch</a><a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer">Instagram</a><a title="TikTok — coming soon">TikTok</a></div>
+      <div class="f-social"><a href="https://www.youtube.com/channel/UCNODmrFpJQZvyc0K_A2xk7w" target="_blank" rel="noopener noreferrer">YouTube</a><a href="https://www.twitch.tv/footyhubtv" target="_blank" rel="noopener noreferrer">Twitch</a><a href="https://www.instagram.com/footyhubtv/" target="_blank" rel="noopener noreferrer">Instagram</a></div>
     </div>
     <div class="f-col"><h5>Watch</h5><a data-action="live">Live</a><a data-action="schedule">Schedule</a><a data-action="predict">Predictor</a><a data-action="clips">Clips</a><a data-action="watch">Replays</a></div>
     <div class="f-col"><h5>The Cast</h5><a data-action="hosts">LIA</a><a data-action="hosts">Victor</a><a data-action="fans">The 48 fans</a></div>
@@ -2738,13 +2747,25 @@
       s.style.transitionDelay=(delay+idx*26)+'ms';el.appendChild(s);spans.push(s);idx++;}
     requestAnimationFrame(()=>requestAnimationFrame(()=>{spans.forEach(s=>{s.style.opacity='1';s.style.filter='blur(0px)';s.style.transform='translateY(0)';});}));}
   const hbk=document.getElementById('hbKicker');if(hbk)revealText(hbk,400);
-  // intro hero: smooth kicker reveal + rotating "Now" line + reveal site chrome on scroll
+  // intro hero: smooth kicker reveal + rotating "Now/Next" line + reveal site chrome on scroll
   const iKick=document.getElementById('introKicker');if(iKick)revealText(iKick,500);
-  const iRot=document.getElementById('introRot');
-  const ROT=['LIA on the call','VICTOR breaking it down','48 nations in the stands','you, in the chat'];
+  const iRot=document.getElementById('introRot'),iPre=document.getElementById('introPre');
+  // truthful hero line: on-air rotates "Now: …", off-air rotates "Next: <real match> …" (never a fake live)
+  function _rotList(){
+    if(_isLiveNow)return ['LIA on the call','VICTOR breaking it down','48 nations in the stands','you, in the chat'];
+    let nx='';try{const f=nextFixture();if(f)nx=f.home+' v '+f.away+' · '+new Date(Date.parse(f.utc)).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});}catch(_e){}
+    return [nx||'the next Mundial match','free Predictor — call it & win','48 nations, one AI fan each','full replays on YouTube'];
+  }
+  let _introInit=false;
+  function _introNow(live){
+    const wrap=document.querySelector('.intro-now');if(!wrap)return;
+    const dot=wrap.querySelector('.live');if(dot)dot.style.display=live?'':'none';
+    if(iPre)iPre.textContent=live?'Now:':'Next:';
+    if(iRot){iri=0;iRot.textContent=_rotList()[0];}
+  }
   let iri=0;
-  if(iRot&&!RM){setInterval(()=>{iRot.style.transition='opacity .35s ease, filter .35s ease';iRot.style.opacity='0';iRot.style.filter='blur(4px)';
-    setTimeout(()=>{iri=(iri+1)%ROT.length;iRot.textContent=ROT[iri];iRot.style.opacity='1';iRot.style.filter='blur(0px)';},370);},2800);}
+  if(iRot&&!RM){setInterval(()=>{const list=_rotList();iRot.style.transition='opacity .35s ease, filter .35s ease';iRot.style.opacity='0';iRot.style.filter='blur(4px)';
+    setTimeout(()=>{iri=(iri+1)%list.length;iRot.textContent=list[iri];iRot.style.opacity='1';iRot.style.filter='blur(0px)';},370);},2800);}
   function navReveal(){if(document.body.classList.contains('subpage')||(window.scrollY||document.documentElement.scrollTop)>innerHeight*0.55)document.body.classList.add('scrolled');else document.body.classList.remove('scrolled');}
   addEventListener('scroll',navReveal,{passive:true});navReveal();
 
@@ -2885,7 +2906,7 @@
     const arr=Object.keys(FANLIKES).map(c=>[c,FANLIKES[c]]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,10);
     if(!arr.length){el.innerHTML='<div class="lb-empty">Be the first — open any fan and tap ❤️</div>';return;}
     el.innerHTML=arr.map(function(p,i){const c=p[0],n=p[1];const f=FANS[c]||[c,''];
-      return '<div class="lbf" data-fan="'+c+'"><span class="lbf-r">'+(i+1)+'</span><img class="lbf-av" loading="lazy" decoding="async" src="avatars/'+c+'.png" alt=""><span class="lbf-n">'+f[0]+' <img class="tkflag" src="flags/'+c+'.svg" alt=""></span><span class="lbf-c">❤️ '+n+'</span></div>';}).join('');}
+      return '<div class="lbf" data-fan="'+c+'"><span class="lbf-r">'+(i+1)+'</span><img class="lbf-av" loading="lazy" decoding="async" src="avatars/'+c+'.png" alt=""><span class="lbf-n">'+f[0]+' <img class="tkflag" src="flags/'+c+'.svg" alt=""></span><span class="lbf-c">'+(n>=10?('❤️ '+n):'❤️')+'</span></div>';}).join('');}
   document.addEventListener('click',function(e){const b=e.target.closest('[data-like]');if(b){e.preventDefault();e.stopPropagation();toggleLike(b.getAttribute('data-like'),b);}});
   loadLikes();setInterval(loadLikes,30000);
 
@@ -2915,13 +2936,18 @@
   const mhBack=document.getElementById('mhBack');if(mhBack)mhBack.addEventListener('click',backToGrid);
   const mhPrev=document.getElementById('mhPrev');if(mhPrev)mhPrev.addEventListener('click',()=>showGroup(curG-1));
   const mhNext=document.getElementById('mhNext');if(mhNext)mhNext.addEventListener('click',()=>showGroup(curG+1));
-  function openHub(){if(mhub){mhub.hidden=false;_lockScroll();if(lenis)lenis.stop();fhPush();}}
+  let _hubTabbed=false;   // once the visitor picks a tab, their choice sticks
+  function openHub(){if(mhub){mhub.hidden=false;_lockScroll();if(lenis)lenis.stop();fhPush();
+    // group stage over → the bracket is the story: open the hub on Knockout by default
+    try{if(!_hubTabbed){let ko=null;try{ko=(window.FIXTURES||[]).find(f=>f.stage==='ko');}catch(_e){}
+      const t0=ko?Date.parse(ko.utc):Date.parse('2026-06-28T00:00:00Z');
+      if(Date.now()>t0){const kt=document.querySelector('.mhub-tab[data-tab="knockout"]');if(kt)kt.click();_hubTabbed=false;}}}catch(_e){}}}
   function closeHub(){if(mhub){mhub.hidden=true;_unlockScroll();if(lenis)lenis.start();}}
   if(mOpen)mOpen.addEventListener('click',openHub);
   if(mClose)mClose.addEventListener('click',closeHub);
   if(mhub)mhub.addEventListener('click',e=>{if(e.target===mhub)closeHub();});
   // ESC handled centrally by fhCloseOverlays (covers hub+menu+all overlays)
-  document.querySelectorAll('.mhub-tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.mhub-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const tab=t.dataset.tab;document.querySelectorAll('.mhub-pane').forEach(p=>{p.hidden=p.dataset.pane!==tab;});if(tab==='groups')backToGrid();if(tab==='fixtures')jumpToNow('mhFixList',1);});});
+  document.querySelectorAll('.mhub-tab').forEach(t=>{t.addEventListener('click',e=>{if(e.isTrusted)_hubTabbed=true;document.querySelectorAll('.mhub-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const tab=t.dataset.tab;document.querySelectorAll('.mhub-pane').forEach(p=>{p.hidden=p.dataset.pane!==tab;});if(tab==='groups')backToGrid();if(tab==='fixtures')jumpToNow('mhFixList',1);});});
 
   // ── headline smooth reveal on scroll ──
   function revealHeadline(el){if(RM)return;const nodes=Array.from(el.childNodes);el.innerHTML='';let idx=0;const spans=[];
@@ -2949,6 +2975,13 @@
     if(_was&&!live)resetPlayer();
     const pOff=document.getElementById('posterOff'),pLive=document.getElementById('posterLive');
     if(pOff)pOff.hidden=live; if(pLive)pLive.hidden=!live;
+    // state-change only: hero Now/Next line, Watch CTAs (no red "Live" pulse off-air), home replay card
+    if(_was!==live||!_introInit){_introInit=true;
+      try{_introNow(live);}catch(_e){}
+      document.querySelectorAll('.watch-cta').forEach(e=>{e.innerHTML=live?'&#9679; Watch Live':'&#9654; Watch';});
+      const _ic=document.querySelector('.intro-cta');if(_ic)_ic.innerHTML=live?'<span class="pdot"></span> Watch Live':'&#9654; Watch the show';
+      const _rs=document.getElementById('replaySect');if(_rs)_rs.hidden=live;
+    }
     const onair=document.getElementById('onair'),oaL=document.getElementById('oaLabel'),oaN=document.getElementById('oaName');
     let _nf=null;try{_nf=nextFixture();}catch(_e){}   // next not-yet-started match
     let _lf=null;try{_lf=liveFixtureNow();}catch(_e){}   // the match live right now (or null)
@@ -3005,7 +3038,7 @@
     else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
   });
   // deep-link: open the page named in the URL hash on load (#predict, #schedule, …)
-  setTimeout(function(){try{var _h=(location.hash||'').replace(/^#/,'');const _al={fixtures:'schedule',cast:'hosts'};if(_al[_h])_h=_al[_h];if(_h&&PAGE_TITLES[_h]){showPage(_h);if(_h==='predict'&&typeof renderDayMatches==='function')renderDayMatches();if(_h==='clipsPage'&&typeof renderClips==='function')renderClips();}}catch(_e){}},0);
+  setTimeout(function(){try{var _h=(location.hash||'').replace(/^#/,'');const _al={fixtures:'schedule',cast:'hosts'};if(_al[_h])_h=_al[_h];if(_h&&PAGE_TITLES[_h]){showPage(_h);if(_h==='predict'&&typeof renderDayMatches==='function')renderDayMatches();if(_h==='clipsPage'&&typeof renderClips==='function')renderClips();if(_h==='watch'&&typeof renderReplays==='function')renderReplays();}}catch(_e){}},0);
   function showPage(pid){fhCloseOverlays();const o=document.getElementById('offair'),i=document.getElementById('intro');
     if(o)o.classList.remove('on');if(i)i.style.display='none';
     ['live','hosts','schedule','watch','partnersPage','predict','clipsPage','aboutPage','faqPage'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',id===pid);});
@@ -3090,14 +3123,16 @@
   function castMember(src,name,role,flag){
     return '<div class="mcast"><div class="mcast-av"><img loading="lazy" src="'+src+'" alt="'+name+'"></div><div class="mcast-n">'+name+(flag?' <img class="tkflag" src="'+flag+'">':'')+'</div><div class="mcast-r">'+role+'</div></div>';
   }
+  const _schedPastOpen={};   // per-list: has the visitor expanded the finished match-days?
   function renderFixtures(el){
     if(!el||!FIX.length)return;
-    const now=Date.now();let h='',curDay='';const anchorThis=(el.id==='schedList'||el.id==='mhFixList');let anchored=false;
+    const now=Date.now();const anchorThis=(el.id==='schedList'||el.id==='mhFixList');let anchored=false;
+    const days=[];let curDay='';   // bucket rows per match-day so fully-finished days can collapse
     FIX.forEach(f=>{const ms=Date.parse(f.utc),day=fmtDay(ms);
       const isKo=f.stage==='ko',kr=isKo?((RES.ko&&RES.ko[f.match_no])||{}):null;
       const hCode=isKo?(kr.home&&kr.home.code):f.home_code,aCode=isKo?(kr.away&&kr.away.code):f.away_code;
       const hName=isKo?((kr.home&&kr.home.name)||bkLabel(f.home)):f.home,aName=isKo?((kr.away&&kr.away.name)||bkLabel(f.away)):f.away;
-      if(day!==curDay){curDay=day;h+='<div class="sched-day">'+day+'</div>';}
+      if(day!==curDay){curDay=day;days.push({day:day,rows:[]});}
       const _ko=!hCode,_sc=(!_ko&&RES.scores)?RES.scores[hCode+'-'+aCode]:null;
       const live=now>=ms&&now<ms+MATCH_MS&&!_sc, past=!!_sc||now>=ms+MATCH_MS;
       const isNow=anchorThis&&!anchored&&!past; if(isNow)anchored=true;
@@ -3120,11 +3155,25 @@
           +castMember('avatars/'+f.away_code+'.png',af[0],'Away fan','flags/'+f.away_code+'.svg')+'</div>';
         exp='<div class="sched-exp" hidden>'+inner+'</div>';
       }
-      h+='<div class="sched-row"'+(isNow?' id="'+el.id+'_now"':'')+'><div class="sched-item'+(live?' live':'')+(isKo?'':' clickable')+'"'+(isKo?'':' data-exp')+'><span class="si-time">'+t+'</span>'
+      days[days.length-1].rows.push({past:past&&!live,html:'<div class="sched-row"'+(isNow?' id="'+el.id+'_now"':'')+'><div class="sched-item'+(live?' live':'')+(isKo?'':' clickable')+'"'+(isKo?'':' data-exp')+'><span class="si-time">'+t+'</span>'
         +'<div class="si-match"><b>'+hh+' v '+aa+'</b><span class="si-comp">'+comp+'</span></div>'+cta
-        +(isKo?'':'<span class="si-chev">▾</span>')+'</div>'+exp+'</div>';});
+        +(isKo?'':'<span class="si-chev">▾</span>')+'</div>'+exp+'</div>'});});
+    const dayHtml=d=>'<div class="sched-day">'+d.day+'</div>'+d.rows.map(r=>r.html).join('');
+    let cut=days.findIndex(d=>d.rows.some(r=>!r.past));if(cut<0)cut=days.length;   // leading fully-finished days
+    let h='';
+    if(cut>0&&!_schedPastOpen[el.id]){
+      const nPast=days.slice(0,cut).reduce((s,d)=>s+d.rows.length,0);
+      h+='<button class="sched-past-toggle" data-plist="'+el.id+'" type="button">Show the '+nPast+' finished matches ▾</button>'
+        +days.slice(cut).map(dayHtml).join('');
+    }else{
+      if(cut>0)h+='<button class="sched-past-toggle" data-plist="'+el.id+'" type="button">Hide finished matches ▴</button>';
+      h+=days.map(dayHtml).join('');
+    }
     el.innerHTML=h;
   }
+  document.addEventListener('click',function(e){const b=e.target.closest('.sched-past-toggle');if(!b)return;
+    const id=b.getAttribute('data-plist');_schedPastOpen[id]=!_schedPastOpen[id];
+    const el=document.getElementById(id);if(el)renderFixtures(el);});
   renderFixtures(document.getElementById('schedList'));
   renderFixtures(document.getElementById('mhFixList'));
   function jumpToNow(elId,inModal){const el=document.getElementById(elId);if(!el)return;try{renderFixtures(el);}catch(_e){}setTimeout(function(){const t=document.getElementById(elId+'_now');if(!t)return;if(!inModal&&typeof lenis!=='undefined'&&lenis&&lenis.scrollTo)lenis.scrollTo(t,{offset:-110});else t.scrollIntoView({behavior:'smooth',block:'start'});},140);}
@@ -3249,7 +3298,7 @@
       b.querySelector('.po-pct').textContent=pct+'%';
       b.classList.toggle('mine',o===mine);
     });
-    const tot=document.getElementById('pollTotal');if(tot)tot.textContent=total?(total.toLocaleString()+' votes'):'';
+    const tot=document.getElementById('pollTotal');if(tot)tot.textContent=(total>=25)?(total.toLocaleString()+' votes'):'';
     if(mine){el.classList.add('voted');
       const nm={home:(document.getElementById('poHome')||{}).textContent||'Home',draw:'Draw',away:(document.getElementById('poAway')||{}).textContent||'Away'};
       const ft=document.getElementById('pollFoot');if(ft)ft.textContent='You voted: '+nm[mine]+' · live results';
@@ -3329,7 +3378,7 @@
     const rows=(d&&d.leaderboard)||[],me=predUser()?huid(predUser()):'';
     if(!rows.length){el.innerHTML='<div class="lb-empty">No predictions yet — be the first to call it! ⚽</div>';const s0=document.getElementById('lbSub');if(s0)s0.textContent='this season';return;}
     el.innerHTML=rows.map((r,i)=>'<div class="lb-row'+(i<3?' top':'')+(me&&r.user===me?' me':'')+'"><span class="rk">'+(i+1)+'</span><span class="nm">'+mcEsc(r.name)+'</span><span class="pts">'+r.points+'</span></div>').join('');
-    const sub=document.getElementById('lbSub');if(sub){const n=d.players||rows.length;sub.textContent=n+' player'+(n===1?'':'s');}
+    const sub=document.getElementById('lbSub');if(sub){const n=d.players||rows.length;sub.textContent=n>=20?(n+' players'):'this season';}
   }
   function renderRank(d){
     const card=document.getElementById('rankCard');if(!card)return;
@@ -3358,7 +3407,7 @@
     const el=document.getElementById('predConsensus');if(!el||!predId||!LIVE_ENDPOINT)return;
     const hasPick=d&&(d.prediction||(d.result&&d.result.settled));
     if(!hasPick){el.style.display='none';return;}
-    try{el.style.display='none';const r=await fetch(LIVE_ENDPOINT+'/predict/consensus?matchId='+encodeURIComponent(predId),{cache:'no-store'});if(!r.ok)return;const c=await r.json();if(!c||!c.total){el.style.display='none';return;}
+    try{el.style.display='none';const r=await fetch(LIVE_ENDPOINT+'/predict/consensus?matchId='+encodeURIComponent(predId),{cache:'no-store'});if(!r.ok)return;const c=await r.json();if(!c||!c.total||c.total<10){el.style.display='none';return;}
       const tot=c.total||0, pc=Math.max(c.pctHome,c.pctDraw,c.pctAway);
       const side=(c.pctHome>=c.pctDraw&&c.pctHome>=c.pctAway)?(predHome+' to win'):((c.pctAway>=c.pctDraw)?(predAway+' to win'):'a draw');
       let s='👥 <b>'+tot+'</b> '+(tot===1?'prediction':'predictions')+' so far · '+(tot<5?('<b>'+Math.round(pc/100*tot)+' of '+tot+'</b> back <b>'+mcEsc(side)+'</b>'):('most back <b>'+mcEsc(side+' ('+pc+'%)')+'</b>'));
@@ -3462,7 +3511,7 @@
     fetch(LIVE_ENDPOINT+'/predict/leaderboard?full=1',{cache:'no-store'}).then(r=>r.json()).then(d=>{
       const rows=(d&&d.leaderboard)||[],me=predUser()?huid(predUser()):'';let mine=false;
       if(list)list.innerHTML=rows.length?rows.map(r=>{const isme=me&&r.user===me;if(isme)mine=true;return '<div class="lb-row'+(r.rank<=3?' top':'')+(isme?' me':'')+'" data-u="'+mcEsc(r.user)+'"><span class="rk">'+r.rank+'</span><span class="nm">'+mcEsc(r.name)+'</span><span class="pts">'+r.points+'</span></div>';}).join(''):'<div class="lb-empty">No players yet — be the first! ⚽</div>';
-      const sub=document.getElementById('lbmSub');if(sub){const n=d.players||rows.length;sub.textContent=n+' player'+(n===1?'':'s');}
+      const sub=document.getElementById('lbmSub');if(sub){const n=d.players||rows.length;sub.textContent=n>=20?(n+' players'):'';}
       const jb=document.getElementById('lbmJump');if(jb)jb.hidden=!mine;
     }).catch(()=>{});
   }
@@ -3671,6 +3720,34 @@
       p.innerHTML='<iframe src="https://www.youtube.com/embed/live_stream?channel='+YT_CHANNEL_ID+'&autoplay=1&rel=0&playsinline=1" title="FootyHub TV — live" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="width:100%;height:100%;border:0;border-radius:16px;display:block"></iframe>';
     },{once:true});
   }
+  // ── Replays: the channel's uploads playlist (UC→UU) = every finished broadcast, newest first.
+  // Zero-maintenance real content for the off-air site; iframe loads only on click (facade).
+  const YT_UPLOADS='UU'+YT_CHANNEL_ID.slice(2);
+  function _lastReplayLabel(){let f=null;try{f=lastFinishedFixture();}catch(_e){}
+    return f?(f.home+(f.sc?(' '+f.sc.h+'–'+f.sc.a+' '):' v ')+f.away+' — watch the full replay'):'Watch the latest full replay';}
+  function _replayFacade(box){
+    if(!box||box.dataset.rdy)return;box.dataset.rdy='1';
+    box.innerHTML='<button class="yt-facade" type="button" aria-label="Watch the latest full replay" style="background:radial-gradient(circle at 50% 38%,#2a1448,#0b0617 75%)">'
+      +'<span class="yt-playbtn"></span>'
+      +'<span class="rp-lbl" style="position:absolute;left:0;right:0;bottom:14%;text-align:center;color:#fff;font-weight:700;font-size:.95rem;padding:0 14px">'+mcEsc(_lastReplayLabel())+'</span></button>';
+    const b=box.querySelector('.yt-facade');
+    if(b)b.addEventListener('click',function(){
+      box.innerHTML='<iframe src="https://www.youtube.com/embed/videoseries?list='+YT_UPLOADS+'&autoplay=1&rel=0&playsinline=1" title="FootyHub TV — replays" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
+    },{once:true});
+  }
+  function _updReplayLabels(){
+    const t=_lastReplayLabel();
+    document.querySelectorAll('.rp-lbl').forEach(e=>{e.textContent=t;});
+    const ht=document.getElementById('hrTitle');if(ht){let f=null;try{f=lastFinishedFixture();}catch(_e){}
+      ht.textContent=f?('Missed '+f.home+(f.sc?(' '+f.sc.h+'–'+f.sc.a+' '):' v ')+f.away+'?'):'Missed the last match?';}
+  }
+  function renderReplays(){_replayFacade(document.getElementById('replayPlayer'));_updReplayLabels();}
+  function renderHomeReplay(){
+    const sect=document.getElementById('replaySect');if(!sect)return;
+    sect.hidden=!!_isLiveNow;   // live → the show is on, don't compete with it
+    if(!_isLiveNow)_replayFacade(document.getElementById('homeReplay'));
+    _updReplayLabels();
+  }
   // a fixture that should be LIVE right now (kickoff ≤ now < kickoff+2.5h), or null
   let _liveMatch=null;   // engine's authoritative live match (live.json.match) — beats clock-window guessing (fixes simultaneous-kickoff split-brain)
   function liveFixtureNow(pc){
@@ -3774,6 +3851,7 @@
       }
       if(_lr&&data.victor_bets&&data.victor_bets.tiers){renderVictorLive(data.victor_bets);}
       if(data.results){renderBracket();const gd=document.getElementById('mhGDetail');if(gd&&!gd.hidden)showGroup(curG);}
+      try{renderHomeReplay();}catch(_e){}   // keep the "Missed the last match?" card labelled with the real latest result
     }catch(e){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();/* offline / file:// — inline real data stands */}
   }
   // Victor's bets come from the REAL engine (victor_betting_slip.py → live.json.victor_bets.tiers)
@@ -3788,7 +3866,10 @@
   if(DEMO){showWatch();}
   syncLive();setInterval(syncLive,10000);
   // real social proof: live predictor player count (honest, auto-updating — never faked)
-  (function(){if(!LIVE_ENDPOINT)return;fetch(LIVE_ENDPOINT+'/predict/leaderboard',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{const n=(d&&d.players)||0;if(n<=0)return;const t=document.getElementById('snPlayers');if(t){const bb=t.querySelector('b');if(bb)bb.textContent=n.toLocaleString();t.hidden=false;}const tp=document.getElementById('teaserPlayers');if(tp)tp.textContent=' · '+n.toLocaleString()+' playing';}).catch(()=>{});})();
+  // social proof shows only once the numbers actually look social (small counts read as a dead site)
+  (function(){if(!LIVE_ENDPOINT)return;fetch(LIVE_ENDPOINT+'/predict/leaderboard',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{const n=(d&&d.players)||0;
+    if(n>=100){const t=document.getElementById('snPlayers');if(t){const bb=t.querySelector('b');if(bb)bb.textContent=n.toLocaleString();t.hidden=false;}}
+    if(n>=50){const tp=document.getElementById('teaserPlayers');if(tp)tp.textContent=' · '+n.toLocaleString()+' playing';}}).catch(()=>{});})();
 
   // ── site-wide link wiring: every link goes somewhere / opens something ──
   // one-click notify for the NEXT match (the countdown match) — no navigation to the schedule
@@ -3842,7 +3923,7 @@
       else if(act==='home'){goHome();}
       else if(act==='mundial'){openHub();}
       else if(act==='schedule'){showPage('schedule');jumpToNow('schedList');}
-      else if(act==='watch'){showPage('watch');}
+      else if(act==='watch'){showPage('watch');renderReplays();}
       else if(act==='clips'){showPage('clipsPage');renderClips();}
       else if(act==='partners'){showPage('partnersPage');}
       else if(act==='predict'){showPage('predict');if(typeof renderDayMatches==='function')renderDayMatches();}
@@ -3887,7 +3968,7 @@
     {f:'clips/the-cast.mp4',  p:'clips/the-cast-poster.jpg',  tag:'The Cast',         dur:'0:14', cap:'Meet LIA &amp; Victor — your AI broadcast team'},
     {f:'clips/winner.mp4',    p:'clips/winner-poster.jpg',    tag:'Predict & Win',dur:'0:40', cap:'Top the leaderboard, win Victor Premium'},
     {f:'clips/48-fans.mp4',   p:'clips/48-fans-poster.jpg',   tag:'48 Nations',       dur:'0:13', cap:'48 AI fans, 48 voices — every match'},
-    {f:'clips/notify.mp4',    p:'clips/notify-poster.jpg',    tag:'Never miss a kick',dur:'0:18', cap:'Mundial 2026 — kicks off 11 June'},
+    {f:'clips/notify.mp4',    p:'clips/notify-poster.jpg',    tag:'Never miss a kick',dur:'0:18', cap:'Match alerts before every kickoff — free'},
   ];
   function _clipCard(c,i){return '<div class="clip" data-clip="'+i+'">'+
     '<div class="clip-thumb"><img class="poster" src="'+c.p+'" alt="" loading="lazy">'+
@@ -3911,7 +3992,7 @@
   // ── toast + placeholder actions (so every click gives correct feedback) ──
   let toastT;
   function toast(msg){const el=document.getElementById('toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2600);}
-  const SOON=[['.lang','🌐 More languages coming soon'],['.social a:not(.lang), .f-social a','TikTok launching soon — we\'re on YouTube, Twitch & Instagram @footyhubtv 🟣'],['.clips-follow','Follow us — YouTube @FootyHub_TV · Twitch & Instagram @footyhubtv'],['.also a','TikTok coming soon — we\'re live on YouTube, Twitch & Instagram'],['.vod','▶ Replay player coming soon']];
+  const SOON=[['.lang','🌐 More languages coming soon'],['.vod','▶ Replay player coming soon']];
   document.addEventListener('click',function(e){
     if(e.target.closest('[data-action]'))return;
     if(e.target.closest('a[href^="http"]'))return; // real external links (YouTube channel) navigate
