@@ -443,113 +443,107 @@ def _ko_fixtures() -> list:
     return _KO_FIX
 
 
-def _gd_int(r) -> int:
-    try:
-        return int(str(r.get("gd", "0")).replace("+", ""))
-    except Exception:
-        return 0
+def _norm_venue(s: str) -> str:
+    import unicodedata
+    s = unicodedata.normalize("NFKD", str(s or "")).encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z]", "", s.lower())
 
 
-def compute_ko(standings: dict, finished: list) -> dict:
-    """Resolve the knockout bracket from FINAL group standings + finished-match scores.
+def espn_ko_events(days_back: int = 16, days_ahead: int = 12) -> list:
+    """Every ESPN knockout-window event (finished OR upcoming) with REAL teams.
 
-    Returns results.ko = { "<match_no>": {home:{code,name,score?}, away:{...}, winner?} }.
-    Empty {} until the group stage is complete (all 12 groups, all teams played 3) — the
-    front-end keeps showing placeholder slots until then. Winner/Runner-up + advancement +
-    scores are exact; the 8 best-3rd slots use a valid constrained assignment (FIFA's exact
-    table may differ, but each team lands in a slot its group is eligible for).
+    2026-07-03: the old standings-derived compute_ko() guessed the best-3rd slot
+    assignment; FIFA's real table differed, so wrong pairings (Germany v Bosnia
+    instead of Germany v Paraguay) were baked into fixtures.json. ESPN's
+    scoreboard is the ground truth for who actually plays whom — read it instead.
+    Returns [{ts, venue, state, completed, home:{code,name,score,shootout}, away:{...}}].
     """
-    ko_fix = _ko_fixtures()
-    if not ko_fix:
-        return {}
-    grp = {}
-    for L in _GL:
-        rows = standings.get(L) or []
-        if len(rows) >= 4 and all((r.get("p", 0) or 0) >= 3 for r in rows[:4]):
-            grp[L] = rows
-    if len(grp) < 12:
-        return {}
-    thirds = sorted(((L, grp[L][2]) for L in _GL),
-                    key=lambda x: (-(x[1].get("pts", 0) or 0), -_gd_int(x[1]), -(x[1].get("gf", 0) or 0)))
-    best8 = set(L for L, _ in thirds[:8])
-    # constrained bijection: each "3rd X/Y/.." slot -> one qualified third whose group is allowed
-    slots = []
-    for f in ko_fix:
-        for side in ("home", "away"):
-            m = re.match(r"3rd\s+([A-L/]+)", str(f.get(side) or ""))
-            if m:
-                allowed = set(g for g in m.group(1).split("/") if g in _GL) & best8
-                slots.append((f.get("match_no"), side, allowed))
-    assign, used = {}, set()
+    out, seen = [], set()
+    today = _dt.datetime.now(_dt.timezone.utc).date()
+    for i in range(-days_back, days_ahead + 1):
+        url = f"{ESPN_BOARD}?dates={(today + _dt.timedelta(days=i)).strftime('%Y%m%d')}"
+        try:
+            d = _get_json(url, timeout=15)
+        except Exception:
+            continue
+        for ev in d.get("events", []) or []:
+            eid = str(ev.get("id") or "")
+            if not eid or eid in seen:
+                continue
+            seen.add(eid)
+            comp = (ev.get("competitions") or [{}])[0]
+            try:
+                ts = _dt.datetime.fromisoformat(
+                    str(ev.get("date") or "").replace("Z", "+00:00")).timestamp()
+            except Exception:
+                continue
+            st = ((comp.get("status") or ev.get("status") or {}).get("type") or {})
+            ven = (comp.get("venue") or {})
+            sides = {}
+            for c in comp.get("competitors", []) or []:
+                t = c.get("team", {}) or {}
+                name = t.get("displayName") or t.get("name") or ""
+                code = code_for(name)
+                if not code:
+                    continue
 
-    def _bt(i):
-        if i >= len(slots):
-            return len(used) == len(best8)
-        mn, side, allowed = slots[i]
-        for g in sorted(allowed):
-            if g not in used:
-                used.add(g); assign[(mn, side)] = g
-                if _bt(i + 1):
-                    return True
-                used.discard(g); assign.pop((mn, side), None)
-        return False
-    _bt(0)
-    fin = {}
-    for hc, hs, ac, as_, *_ in finished:
-        fin[(hc, ac)] = (hs, as_)
-
-    def score_for(hc, ac):
-        if (hc, ac) in fin:
-            return fin[(hc, ac)]
-        if (ac, hc) in fin:
-            r = fin[(ac, hc)]
-            return (r[1], r[0])
-        return None
-
-    def team(code):
-        return {"code": code, "name": _DISPLAY.get(code, str(code or "").upper())}
-
-    out = {}
-
-    def resolve(label, mn, side):
-        lab = str(label or "")
-        m = re.match(r"Winner ([A-L])$", lab)
-        if m:
-            return grp[m.group(1)][0]["code"]
-        m = re.match(r"Runner-up ([A-L])$", lab)
-        if m:
-            return grp[m.group(1)][1]["code"]
-        if lab.startswith("3rd"):
-            g = assign.get((mn, side))
-            return grp[g][2]["code"] if g else None
-        m = re.match(r"Winner (\d+)$", lab)
-        if m:
-            return (out.get(m.group(1)) or {}).get("winner")
-        m = re.match(r"Loser (\d+)$", lab)
-        if m:
-            e = out.get(m.group(1)) or {}
-            if e.get("winner") and e.get("home") and e.get("away"):
-                return e["away"]["code"] if e["winner"] == e["home"]["code"] else e["home"]["code"]
-            return None
-        return None
-
-    for f in ko_fix:                                    # sorted by match_no -> Winner-N resolves after N
-        mn = str(f.get("match_no"))
-        hc = resolve(f.get("home"), f.get("match_no"), "home")
-        ac = resolve(f.get("away"), f.get("match_no"), "away")
-        e = {}
-        if hc:
-            e["home"] = team(hc)
-        if ac:
-            e["away"] = team(ac)
-        if hc and ac:
-            sc = score_for(hc, ac)
-            if sc:
-                e["home"]["score"], e["away"]["score"] = sc[0], sc[1]
-                if sc[0] != sc[1]:
-                    e["winner"] = hc if sc[0] > sc[1] else ac
-        out[mn] = e
+                def _i(v):
+                    try:
+                        return int(v)
+                    except (TypeError, ValueError):
+                        return None
+                sides[c.get("homeAway")] = {
+                    "code": code, "name": _DISPLAY.get(code, name),
+                    "score": _i(c.get("score")), "shootout": _i(c.get("shootoutScore"))}
+            if "home" not in sides or "away" not in sides:
+                continue
+            out.append({"ts": ts, "state": st.get("state") or "",
+                        "completed": bool(st.get("completed") or st.get("state") == "post"),
+                        "venue": _norm_venue((ven.get("fullName") or "") + ((ven.get("address") or {}).get("city") or "")),
+                        "home": sides["home"], "away": sides["away"]})
     return out
+
+
+def map_ko_events(events: list) -> dict:
+    """ESPN events -> results.ko keyed by our match_no, matched on kickoff time (+venue).
+
+    Kickoff times in fixtures.json come from the official schedule, so a +/-2h window
+    finds the event; if two share a window, the venue city disambiguates. Scores and
+    penalty shootouts come straight from ESPN, so the winner (and therefore every
+    later-round slot) is exact — including matches decided on penalties.
+    """
+    ko = {}
+    for f in _ko_fixtures():
+        try:
+            fts = _dt.datetime.fromisoformat(str(f.get("utc") or "").replace("Z", "+00:00")).timestamp()
+        except Exception:
+            continue
+        cands = [e for e in events if abs(e["ts"] - fts) <= 2 * 3600]
+        if len(cands) > 1:
+            fv = _norm_venue(f.get("venue") or "")
+            if fv:
+                vc = [e for e in cands if fv and (fv in e["venue"] or e["venue"] in fv)]
+                if vc:
+                    cands = vc
+        if len(cands) != 1:
+            if len(cands) > 1:
+                print(f"  [warn] ko match {f.get('match_no')}: {len(cands)} ESPN candidates — skipped")
+            continue
+        e = cands[0]
+        h, a = dict(e["home"]), dict(e["away"])
+        entry = {"home": {"code": h["code"], "name": h["name"]},
+                 "away": {"code": a["code"], "name": a["name"]}}
+        if e["completed"] and h["score"] is not None and a["score"] is not None:
+            pens = (h["shootout"] is not None and a["shootout"] is not None
+                    and h["shootout"] != a["shootout"])
+            entry["home"]["score"] = f'{h["score"]} ({h["shootout"]})' if pens else h["score"]
+            entry["away"]["score"] = f'{a["score"]} ({a["shootout"]})' if pens else a["score"]
+            if h["score"] != a["score"]:
+                entry["winner"] = h["code"] if h["score"] > a["score"] else a["code"]
+            elif pens:
+                entry["winner"] = h["code"] if h["shootout"] > a["shootout"] else a["code"]
+        ko[str(f.get("match_no"))] = entry
+    return ko
 
 
 def bake_fixtures(ko: dict) -> bool:
@@ -613,9 +607,14 @@ def run_once(do_settle: bool = True):
     if standings or scores:
         teams = sum(len(v) for v in standings.values())
         print(f"  ESPN standings: {len(standings)} groups, {teams} teams | scores: {len(scores)} finished")
-        ko = compute_ko(standings, fin)
+        ko = {}
+        try:
+            ko = map_ko_events(espn_ko_events())
+        except Exception as e:
+            print(f"  ko mapping failed: {e}")
         if ko:
-            print(f"  knockout bracket resolved: {len(ko)} matches")
+            dec = sum(1 for v in ko.values() if v.get("winner"))
+            print(f"  knockout bracket (ESPN truth): {len(ko)} matches known, {dec} decided")
         push_results(standings, scores, ko or None, mc)
         try:
             bake_fixtures(ko)   # write real teams into fixtures.json/js (committed by the workflow)
