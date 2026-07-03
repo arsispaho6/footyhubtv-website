@@ -205,6 +205,91 @@ async function _notifyTick(env) {
   }
 }
 __name(_notifyTick, "_notifyTick");
+// ── live-scores tick (cron): ESPN scoreboard -> results.live (in-play score+minute, ~1min)
+//    + results.scores (finals land <=1min after FT). 24/7, broadcast PC can be OFF.
+//    Writes only when something changed (KV free tier = 1000 writes/day; idle hours cost 0).
+var NAMECODE = { "mexico": "mx", "southafrica": "za", "safrica": "za", "southkorea": "kr", "skorea": "kr", "czechrepublic": "cz", "czechia": "cz", "canada": "ca", "bosniaherzegovina": "ba", "bosnia": "ba", "qatar": "qa", "switzerland": "ch", "usa": "us", "paraguay": "py", "australia": "au", "turkey": "tr", "turkiye": "tr", "brazil": "br", "morocco": "ma", "haiti": "ht", "scotland": "gb-sct", "germany": "de", "curacao": "cw", "ivorycoast": "ci", "ecuador": "ec", "netherlands": "nl", "japan": "jp", "sweden": "se", "tunisia": "tn", "spain": "es", "capeverde": "cv", "saudiarabia": "sa", "uruguay": "uy", "belgium": "be", "egypt": "eg", "iran": "ir", "newzealand": "nz", "france": "fr", "senegal": "sn", "iraq": "iq", "norway": "no", "argentina": "ar", "algeria": "dz", "austria": "at", "jordan": "jo", "portugal": "pt", "drcongo": "cd", "england": "gb-eng", "croatia": "hr", "ghana": "gh", "panama": "pa", "uzbekistan": "uz", "colombia": "co", "korearepublic": "kr", "iriran": "ir", "cotedivoire": "ci", "unitedstates": "us", "bosniaandherzegovina": "ba", "congodr": "cd", "caboverde": "cv" };
+var _lsNorm = /* @__PURE__ */ __name((s) => String(s || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, ""), "_lsNorm");
+var _lsCode = /* @__PURE__ */ __name((n) => NAMECODE[_lsNorm(n)] || "", "_lsCode");
+async function _liveScoresTick(env) {
+  // fixtures.json gives OUR home/away orientation — results.scores/live keys must match the site's
+  let fx;
+  try {
+    const r = await fetch("https://footyhub.tv/fixtures.json", { cf: { cacheTtl: 300 } });
+    if (!r.ok) return;
+    fx = await r.json();
+  } catch (e) { return; }
+  const orient = {};
+  for (const m of ((fx && fx.matches) || [])) {
+    if (m.home_code && m.away_code) orient[[m.home_code, m.away_code].sort().join("|")] = m.home_code + "-" + m.away_code;
+  }
+  const liveNow = {}, finals = {};
+  for (const off of [0, -1]) {   // today + yesterday UTC (matches cross midnight)
+    const ds = new Date(Date.now() + off * 864e5).toISOString().slice(0, 10).replace(/-/g, "");
+    let sb;
+    try {
+      const r = await fetch("https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=" + ds,
+        { headers: { "User-Agent": "Mozilla/5.0" } });
+      if (!r.ok) continue;
+      sb = await r.json();
+    } catch (e) { continue; }
+    for (const ev of (sb.events || [])) {
+      const comp = (ev.competitions || [])[0] || {};
+      const st = ((comp.status || ev.status || {}).type) || {};
+      let h = null, a = null;
+      for (const c of (comp.competitors || [])) {
+        const code = _lsCode((c.team || {}).displayName || (c.team || {}).name);
+        if (!code) continue;
+        const side = { code, score: parseInt(c.score, 10) };
+        if (c.homeAway === "home") h = side;
+        else if (c.homeAway === "away") a = side;
+      }
+      if (!h || !a || isNaN(h.score) || isNaN(a.score)) continue;
+      const mid = orient[[h.code, a.code].sort().join("|")];
+      if (!mid) continue;
+      const flip = mid !== h.code + "-" + a.code;
+      const hs = flip ? a.score : h.score, as2 = flip ? h.score : a.score;
+      if (st.state === "in") {
+        const clock = String((comp.status || {}).displayClock || "").replace(/'/g, "").trim();
+        liveNow[mid] = { h: hs, a: as2, m: clock };
+      } else if (st.completed || st.state === "post") {
+        finals[mid] = { h: hs, a: as2 };
+      }
+    }
+  }
+  // merge into the freshest live.json — touch ONLY results.* (the engine owns the broadcast fields)
+  let data = {};
+  try { data = JSON.parse((await env.LIVE.get("live")) || EMPTY); } catch (e) { data = {}; }
+  try {
+    const r = await fetch("https://cdn.footyhub.tv/live.json?cron=" + Date.now(), { headers: { "User-Agent": "Mozilla/5.0" } });
+    if (r.ok) { const c = await r.json(); if (String(c.updated || "") >= String(data.updated || "")) data = c; }
+  } catch (e) {}
+  const res = data.results = data.results || {};
+  const before = JSON.stringify({ l: res.live || {}, s: res.scores || {}, il: data.is_live });
+  res.live = liveNow;   // wholesale: finished/abandoned matches drop out on their own
+  if (Object.keys(finals).length) {
+    res.scores = res.scores || {};
+    for (const k in finals) res.scores[k] = finals[k];
+  }
+  // stale-engine kill: the engine pushes every ~15s while live; >7min silence = broadcast over
+  try {
+    const up = Date.parse(data.updated || "");
+    if (data.is_live === true && !isNaN(up) && Date.now() - up > 420000) {
+      data.is_live = false;
+      data.phase = "off";
+    }
+  } catch (e) {}
+  const after = JSON.stringify({ l: res.live || {}, s: res.scores || {}, il: data.is_live });
+  if (after === before) return;   // nothing changed — no writes, no KV quota spent
+  const body = JSON.stringify(data);
+  await env.LIVE.put("live", body);
+  if (env.CDN) {
+    try {
+      await env.CDN.put("live.json", body, { httpMetadata: { contentType: "application/json; charset=utf-8", cacheControl: "public, max-age=5" } });
+    } catch (e) {}
+  }
+}
+__name(_liveScoresTick, "_liveScoresTick");
 var worker_default = {
   async fetch(request, env, ctx) {
     if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
@@ -574,6 +659,7 @@ var worker_default = {
   },
   async scheduled(event, env, ctx) {
     ctx.waitUntil(_notifyTick(env));
+    ctx.waitUntil(_liveScoresTick(env));
   }
 };
 var Poll = class {

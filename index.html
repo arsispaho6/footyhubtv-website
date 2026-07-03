@@ -3106,7 +3106,7 @@
   const DEMO=/[?&]demo=live/i.test(location.search); // ad/demo mode: render the site as if a match is LIVE now
   // referral: stash an inviter's ?ref so it's credited on this player's first prediction
   try{var _rf=new URLSearchParams(location.search).get('ref');if(_rf){_rf=_rf.replace(/[^A-Za-z0-9_\- ]/g,'').trim().slice(0,20);if(_rf)localStorage.setItem('fh_ref',_rf);}}catch(_e){}
-  const RES=window.RESULTS||{standings:{},ko:{}};RES.scores=RES.scores||{};RES.mc=RES.mc||{};
+  const RES=window.RESULTS||{standings:{},ko:{}};RES.scores=RES.scores||{};RES.mc=RES.mc||{};RES.live=RES.live||{};
   let fhUser=null; // signed-in Google user (or null)
   const TZ=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
   const fmtTime=ms=>new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
@@ -3136,7 +3136,8 @@
       const _ko=!hCode,_sc=(!_ko&&RES.scores)?RES.scores[hCode+'-'+aCode]:null;
       const live=now>=ms&&now<ms+MATCH_MS&&!_sc, past=!!_sc||now>=ms+MATCH_MS;
       const isNow=anchorThis&&!anchored&&!past; if(isNow)anchored=true;
-      const t=live?'<span style="color:var(--live)">● LIVE</span>':(past?(_sc?'<b class="si-sc">'+_sc.h+'–'+_sc.a+'</b>':'FT'):fmtTime(ms));
+      const lv=live?(RES.live||{})[hCode+'-'+aCode]:null;   // in-play score+minute from the Worker cron (24/7, any match)
+      const t=live?('<span style="color:var(--live)">● '+(lv&&lv.h!=null?(lv.h+'–'+lv.a+(lv.m?(' · '+mcEsc(String(lv.m))+'&prime;'):'')):'LIVE')+'</span>'):(past?(_sc?'<b class="si-sc">'+_sc.h+'–'+_sc.a+'</b>':'FT'):fmtTime(ms));
       const cta=live?'<a class="si-cta" data-action="live">Watch &rarr;</a>':(past?'<a class="si-cta ghost" href="https://www.youtube.com/@FootyHub_TV/streams" target="_blank" rel="noopener noreferrer">Replay ↗</a>':'<a class="si-cta ghost">🔔 Notify</a>');
       const hh=_ko?hName:'<img class="tkflag" src="flags/'+hCode+'.svg" alt=""> '+hName;
       const aa=_ko?aName:aName+' <img class="tkflag" src="flags/'+aCode+'.svg" alt="">';
@@ -3828,7 +3829,7 @@
       else{let r=await fetch(LIVE_READ||'live.json',{cache:'no-store'}).catch(()=>null); if((!r||!r.ok)&&LIVE_ENDPOINT){r=await fetch(LIVE_ENDPOINT+'/live.json',{cache:'no-store'}).catch(()=>null);} if(!r||!r.ok){_liveMatch=null;try{setMatchLive(!!liveFixtureNow());}catch(_e){} maybeLiveFallback();return;} data=await r.json();}
       let _lr;if(DEMO){_lr=true;}else if(data.is_live===true){_lr=_liveReal(data);}else if(data.is_live===false){_lr=false;}else{try{_lr=!!liveFixtureNow();}catch(_e){_lr=false;}}
       _liveMatch=(_lr&&data.match&&data.match.home_code)?data.match:null;
-      if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;if(data.results.mc)RES.mc=data.results.mc;}   // populate RES BEFORE setMatchLive so the off-air score + finished stats render on the FIRST tick (no ~10s blank)
+      if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;if(data.results.mc)RES.mc=data.results.mc;RES.live=data.results.live||{};}   // populate RES BEFORE setMatchLive so the off-air score + finished stats render on the FIRST tick (no ~10s blank); results.live replaced wholesale so ended matches drop out
       // overlay resolved knockout teams onto FIX (BEFORE the renders below) so EVERY component — mundial banner, ticker, off-air poster, hero next-card, nextFixture/lastFinishedFixture, schedule & bracket — shows REAL teams, never "Winner C / Runner-up F"
       var _koChg=false;
       if(RES.ko)FIX.forEach(function(f){if(f.stage==='ko'){var r=RES.ko[f.match_no];if(r&&r.home&&r.home.code&&f.home_code!==r.home.code){f.home=r.home.name;f.home_code=r.home.code;f.away=r.away.name;f.away_code=r.away.code;_koChg=true;}}});
