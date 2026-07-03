@@ -1414,6 +1414,9 @@
   /* chat */
   .chat{height:420px;display:flex;flex-direction:column}
   .chat .stream{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:9px;font-size:.8rem}
+  .chat-embed{flex:1;border-radius:12px;overflow:hidden;background:#0b0617;min-height:0}
+  .chat-embed iframe{width:100%;height:100%;border:0;display:block;filter:invert(.92) hue-rotate(180deg) contrast(.96)}   /* YT chat ships light-only — inverted to match the dark UI */
+  .chat .join-cta{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;color:var(--txt-2);font-size:.82rem;line-height:1.5;padding:0 10px}
   .msg{line-height:1.35}
   .msg .u{font-weight:700;margin-right:5px}
   .msg .u.lia{color:#ff7ac6}.msg .u.vic{color:#7ad0ff}.msg .u.fan{color:#ffd36b}.msg .u.viewer{color:#9ad8a0}
@@ -1965,10 +1968,12 @@
         </div>
       </div>
 
-      <!-- RIGHT: chat -->
+      <!-- RIGHT: chat — the REAL YouTube stream chat when live (embed); honest CTA otherwise.
+           The staged demo messages survive ONLY under ?demo=live (ad captures). -->
       <div class="panel chat">
         <h4>Live chat</h4>
         <div class="stream" id="liveStream"></div>
+        <div class="chat-embed" id="chatEmbed" hidden></div>
         <div class="cin" id="cinBar"><input placeholder="Write a message…" readonly><button class="btn">Send</button></div>
       </div>
 
@@ -3811,9 +3816,34 @@
     if(lv)lv.style.visibility=real?'visible':'hidden';
     document.querySelectorAll('.poster-watching').forEach(e=>{e.innerHTML=real?(' · <b>'+n.toLocaleString()+' watching</b>'):'';});
   }
-  // live chat: embed the real YouTube chat when live, else the demo preview
-  let _chatVid='';
-  function renderChat(videoId){_chatVid=videoId||'';}   // keep the chat preview; just track the live id for the redirect
+  // live chat: the REAL YouTube stream chat (official live_chat embed) when live; an honest
+  // join-CTA otherwise. The staged demo messages render ONLY under ?demo=live (ad captures) —
+  // real visitors never see fake chat.
+  let _chatVid='',_chatMode='';
+  function renderChat(videoId){
+    const vid=videoId||'';
+    const st=document.getElementById('liveStream'),em=document.getElementById('chatEmbed'),ci=document.getElementById('cinBar');
+    if(DEMO){_chatVid=vid;return;}
+    const mode=(_isLiveNow&&vid)?'embed':(_isLiveNow?'ctaLive':'ctaOff');
+    if(mode===_chatMode&&vid===_chatVid)return;   // no state change — don't rebuild the DOM every poll
+    _chatMode=mode;
+    if(_isLiveNow&&vid){
+      if(em&&(vid!==_chatVid||em.hidden)){
+        em.innerHTML='<iframe src="https://www.youtube.com/live_chat?v='+encodeURIComponent(vid)+'&embed_domain='+location.hostname+'" title="YouTube live chat" allow="fullscreen"></iframe>';
+        em.hidden=false;
+      }
+      if(st)st.hidden=true; if(ci)ci.style.display='none';
+    }else{
+      if(em&&!em.hidden){em.hidden=true;em.innerHTML='';}
+      if(st){st.hidden=false;
+        const cta=_isLiveNow
+          ?'<a class="btn" href="'+(vid?('https://www.youtube.com/watch?v='+encodeURIComponent(vid)):'https://www.youtube.com/@FootyHub_TV/live')+'" target="_blank" rel="noopener noreferrer" style="padding:9px 20px;font-size:.8rem">Open YouTube chat ↗</a>'
+          :'<a class="btn" data-action="notifynext" style="padding:9px 20px;font-size:.8rem">🔔 Notify me</a>';
+        st.innerHTML='<div class="join-cta"><span style="font-size:1.6rem">💬</span><b style="color:#fff">'+(_isLiveNow?'The chat is live on YouTube':'Chat opens when we go live')+'</b><span>'+(_isLiveNow?'Jump in — LIA reads the chat on air':'Real viewers, and LIA reads the chat on air')+'</span>'+cta+'</div>';}
+      if(ci)ci.style.display='none';
+    }
+    _chatVid=vid;
+  }
   function openYtChat(){window.open(_chatVid?('https://www.youtube.com/watch?v='+_chatVid):'https://www.youtube.com/@FootyHub_TV/live','_blank','noopener');}
   const DEMO_DATA={is_live:true,
     match:{home:'Mexico',away:'South Africa',home_code:'mx',away_code:'za',score_home:1,score_away:0,minute:63,kickoff:'2026-06-11T19:00:00Z'},
@@ -4082,9 +4112,9 @@
   const liveStream=document.getElementById('liveStream'),vCount=document.getElementById('vCount');
   // Ambient demo chat for the watch page — kept country-neutral so it's never wrong for the live match (real chat happens in the YouTube stream).
   const CHATPOOL=[['viewer','joao_10','GOOOOL?? wait no 😅'],['lia','LIA','That run was pure instinct!'],['viewer','amara','first time here, this is wild'],['fan','Mateo','this atmosphere is unreal 🔥'],['vic','Victor','xG says the next goal is coming.'],['viewer','kenji','what a save 🧤'],['fan','Noor','we are NOT sitting down tonight!'],['viewer','sam','the AI just clapped back lmao'],['lia','LIA','sam — I heard that!'],['viewer','lucia_07','this chat is chaos 😂']];
-  if(liveStream){for(let _k=0;_k<6;_k++){const _m=CHATPOOL[_k%CHATPOOL.length];const _d=document.createElement('div');_d.className='msg';_d.innerHTML='<span class="u '+_m[0]+'">'+_m[1]+'</span>'+_m[2];liveStream.appendChild(_d);}}
+  if(liveStream&&DEMO){for(let _k=0;_k<6;_k++){const _m=CHATPOOL[_k%CHATPOOL.length];const _d=document.createElement('div');_d.className='msg';_d.innerHTML='<span class="u '+_m[0]+'">'+_m[1]+'</span>'+_m[2];liveStream.appendChild(_d);}}
   let ci=6;
-  if(liveStream){setInterval(()=>{if(!document.getElementById('live').classList.contains('on'))return;if(!_isLiveNow)return;const m=CHATPOOL[ci%CHATPOOL.length];ci++;const d=document.createElement('div');d.className='msg';d.innerHTML='<span class="u '+m[0]+'">'+m[1]+'</span>'+m[2];liveStream.appendChild(d);while(liveStream.children.length>9)liveStream.removeChild(liveStream.firstChild);},2800);}
+  if(liveStream&&DEMO){setInterval(()=>{if(!document.getElementById('live').classList.contains('on'))return;if(!_isLiveNow)return;const m=CHATPOOL[ci%CHATPOOL.length];ci++;const d=document.createElement('div');d.className='msg';d.innerHTML='<span class="u '+m[0]+'">'+m[1]+'</span>'+m[2];liveStream.appendChild(d);while(liveStream.children.length>9)liveStream.removeChild(liveStream.firstChild);},2800);}
   // (removed fabricated viewer-count ticker — #vCount is now driven ONLY by renderViewers() from live.json, real numbers, never faked)
 
   // ── full-screen menu ──
