@@ -1427,6 +1427,12 @@
   .sc-n .tkflag{width:13px;height:9px;vertical-align:0}
   .sc-t{color:#fff;font-size:.77rem;line-height:1.35;word-wrap:break-word}
   .sc-rp{font-weight:700}
+  /* REAL viewers (YouTube/Twitch/TikTok) stand out from the AI crowd */
+  .scmsg.real{background:rgba(124,255,178,.08);border-color:rgba(124,255,178,.28)}
+  .sc-plat{display:inline-flex;width:14px;height:14px;margin-left:5px;vertical-align:-2px}
+  .sc-plat svg{width:100%;height:100%;border-radius:3px}
+  .sc-avreal{display:inline-flex;align-items:center;justify-content:center;padding:3px}
+  .sc-avreal svg{width:100%;height:100%}
   .fs-btn{position:absolute;top:10px;right:10px;z-index:6;width:38px;height:34px;border-radius:9px;border:1px solid rgba(255,255,255,.25);background:rgba(10,5,20,.55);color:#fff;font-size:1.05rem;line-height:1;cursor:pointer;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
   .fs-btn:hover{background:rgba(150,70,255,.6)}
   .yt-under{display:block;text-align:center;margin:10px auto 0;font-size:.74rem;color:var(--txt-2);text-decoration:none}
@@ -3897,6 +3903,11 @@
   let _chatVid='',_chatMode='',_chatKey='';
   const _SCCOLS=['#7CFFB2','#9ad1ff','#ffd24a','#ff9a76','#caa9ff','#7ce8ff','#ffb3d9','#b8ff7c'];
   function _scCol(s){s=String(s||'');let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return _SCCOLS[h%_SCCOLS.length];}
+  // platform glyphs for REAL viewers merged from YouTube/Twitch/TikTok (mirrors the OBS overlay)
+  const _PLAT_SVG={
+    youtube:'<svg viewBox="0 0 24 24" fill="#fff"><rect width="24" height="24" rx="5" fill="#FF0000"/><polygon points="10,7.5 16.5,12 10,16.5"/></svg>',
+    twitch:'<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#9146FF"/><path fill="#fff" d="M6 4l-1.3 3.3V18h3.6v2h2l2-2h3L21 14.3V4H6zm12.7 9.7L16 16.3h-3.6L10.3 18.4v-2.1H7.3V5.7h11.4v8z"/><rect x="14" y="8" width="1.5" height="4" fill="#fff"/><rect x="10.5" y="8" width="1.5" height="4" fill="#fff"/></svg>',
+    tiktok:'<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#111"/><path fill="#fff" d="M16.5 6.5c-.7-.5-1.2-1.3-1.3-2.2h-2.1v10.4a2.1 2.1 0 1 1-2.1-2.1c.2 0 .4 0 .6.1v-2.2c-.2 0-.4-.1-.6-.1a4.2 4.2 0 1 0 4.2 4.2V9.8c.8.6 1.8.9 2.8.9V8.6c-1 0-1.8-.4-2.5-1.1z"/></svg>'};
   function renderChat(videoId,showChat){
     const vid=videoId||'';
     const st=document.getElementById('liveStream'),ci=document.getElementById('cinBar');
@@ -3909,9 +3920,12 @@
       const key=JSON.stringify(feed[feed.length-1])+feed.length;
       if(mode!==_chatMode&&ci)ci.style.display='none';
       if(key!==_chatKey||mode!==_chatMode){_chatKey=key;
-        if(st){st.innerHTML=feed.map(m=>{const nm=mcEsc(m.n||'fan'),iso=mcEsc(m.i||'');
-            return '<div class="msg scmsg"><img class="sc-av" loading="lazy" src="avatars/'+(iso||'lia')+'.png" alt="" onerror="this.onerror=null;this.src=\'flags/'+iso+'.svg\'">'
-              +'<div class="sc-b"><span class="sc-n" style="color:'+_scCol(m.n)+'">'+nm+(iso?' <img class="tkflag" src="flags/'+iso+'.svg" alt="" onerror="this.remove()">':'')+'</span>'
+        if(st){st.innerHTML=feed.map(m=>{const nm=mcEsc(m.n||'fan'),iso=mcEsc(m.i||''),plat=String(m.p||'').toLowerCase();
+            const real=plat==='youtube'||plat==='twitch'||plat==='tiktok';
+            const badge=real?('<span class="sc-plat '+plat+'" title="Real viewer · '+plat+'">'+(_PLAT_SVG[plat]||'')+'</span>'):'';
+            const av=real?('<span class="sc-av sc-avreal '+plat+'">'+(_PLAT_SVG[plat]||'👤')+'</span>'):('<img class="sc-av" loading="lazy" src="avatars/'+(iso||'lia')+'.png" alt="" onerror="this.onerror=null;this.src=\'flags/'+iso+'.svg\'">');
+            return '<div class="msg scmsg'+(real?' real':'')+'">'+av
+              +'<div class="sc-b"><span class="sc-n" style="color:'+(real?'#fff':_scCol(m.n))+'">'+nm+badge+(!real&&iso?' <img class="tkflag" src="flags/'+iso+'.svg" alt="" onerror="this.remove()">':'')+'</span>'
               +'<div class="sc-t">'+(m.r?'<span class="sc-rp" style="color:'+_scCol(m.r)+'">@'+mcEsc(m.r)+'</span> ':'')+mcEsc(m.t||'')+'</div></div></div>';}).join('')
             +'<a class="chat-yt" href="'+(vid?('https://www.youtube.com/watch?v='+encodeURIComponent(vid)):'https://www.youtube.com/@FootyHub_TV/live')+'" target="_blank" rel="noopener noreferrer">💬 Join in — chat on YouTube ↗</a>';
           st.scrollTop=st.scrollHeight;}
