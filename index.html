@@ -3012,7 +3012,7 @@
         if(_th)_th.textContent=_lf.home; if(_ta)_ta.textContent=_lf.away;
         if(_ch&&_lf.home_code)_ch.innerHTML='<img src="flags/'+_lf.home_code+'.svg" alt="">'; if(_ca&&_lf.away_code)_ca.innerHTML='<img src="flags/'+_lf.away_code+'.svg" alt="">';
         try{_setPosterCast(_lf,['#posterLive']);}catch(_e){}}}   // real score lands via renderLiveMatch
-    else{if(onair)onair.classList.remove('live');if(oaL)oaL.textContent='Next';if(oaN)oaN.textContent=_nf?(_nf.home+' v '+_nf.away+' · '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'FootyHub TV';}
+    else{if(onair)onair.classList.remove('live');if(oaL)oaL.textContent='Next';if(oaN)oaN.textContent=_nf?(_sideName(_nf.home)+' v '+_sideName(_nf.away)+' · '+new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'FootyHub TV';}
     // watch page: pre-live (next-match countdown) ↔ live (stream)
     const wP=document.getElementById('watchPlayer'),wN=document.getElementById('watchNext');
     if(wP)wP.hidden=!live; if(wN)wN.hidden=false;   // player only when live; next-match card always (off-air = next, live = up next)
@@ -3105,7 +3105,7 @@
         count.innerHTML='<div class="m-liverow"><span class="m-lr-live">● LIVE</span> <img class="tkflag" src="flags/'+_lf.home_code+'.svg" alt=""> '+_lf.home+' v '+_lf.away+' <img class="tkflag" src="flags/'+_lf.away_code+'.svg" alt=""></div><div class="m-livesub">On FootyHub TV right now</div>';
       }else if(_nf){
         const _d=new Date(Date.parse(_nf.utc)).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+' · '+new Date(Date.parse(_nf.utc)).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-        count.innerHTML='<div class="m-liverow"><span class="m-lr-live" style="background:rgba(150,70,255,.18);color:#caa9ff">NEXT</span> '+(_nf.home_code?'<img class="tkflag" src="flags/'+_nf.home_code+'.svg" alt=""> ':'')+_nf.home+' v '+_nf.away+(_nf.away_code?' <img class="tkflag" src="flags/'+_nf.away_code+'.svg" alt="">':'')+'</div><div class="m-livesub">'+_d+' · live on FootyHub TV</div>';
+        count.innerHTML='<div class="m-liverow"><span class="m-lr-live" style="background:rgba(150,70,255,.18);color:#caa9ff">NEXT</span> '+(_nf.home_code?'<img class="tkflag" src="flags/'+_nf.home_code+'.svg" alt=""> ':'')+mcEsc(_sideName(_nf.home))+' v '+mcEsc(_sideName(_nf.away))+(_nf.away_code?' <img class="tkflag" src="flags/'+_nf.away_code+'.svg" alt="">':'')+'</div><div class="m-livesub">'+_d+' · live on FootyHub TV</div>';
       }else{
         count.innerHTML='<div class="m-livesub">48 nations · 104 matches · live on FootyHub TV</div>';
       }
@@ -3150,7 +3150,7 @@
   function _koPens(ke){try{const h=String(((ke||{}).home||{}).score||'').match(/\((\d+)\)/),a=String(((ke||{}).away||{}).score||'').match(/\((\d+)\)/);if(h&&a)return[+h[1],+a[1]];}catch(_e){}return null;}
   function _koWin(ke){if(!ke||!ke.winner)return null;const h=ke.home||{},a=ke.away||{};return ke.winner===h.code?h:(ke.winner===a.code?a:null);}
   // true-live ONLY when the engine says live AND the match is inside its window AND the engine is still pushing (kills stale 'live' left over from a finished broadcast)
-  function _liveReal(data){if(!data||data.is_live!==true||!data.match)return false;/* kickoff-window guard removed 2026-06-30: a wrong upstream kickoff (fixture feed had 17:00Z vs the real ~20:30Z) made a genuinely LIVE match read as expired -> hub showed off-air. is_live=false at FT + the 'engine still pushing (updated<15min)' guard below already kill a stale-live, independent of the unreliable kickoff timestamp. */const up=Date.parse(data.updated||'');if(!isNaN(up)&&Date.now()-up>15*60000)return false;return true;}
+  function _liveReal(data){if(!data||data.is_live!==true||!data.match)return false;/* kickoff-window guard removed 2026-06-30: a wrong upstream kickoff (fixture feed had 17:00Z vs the real ~20:30Z) made a genuinely LIVE match read as expired -> hub showed off-air. is_live=false at FT + the 'engine still pushing (updated<15min)' guard below already kill a stale-live, independent of the unreliable kickoff timestamp. */const up=Date.parse(data.updated||'');if(!isNaN(up)&&Date.now()-up>7*60000)return false;return true;}   /* 7min matches the Worker's stale-is_live kill — an engine crash drops LIVE client-side at 7min, not 15, so the poster/nav never linger on a frozen scoreline */
   function castMember(src,name,role,flag){
     return '<div class="mcast"><div class="mcast-av"><img loading="lazy" src="'+src+'" alt="'+name+'"></div><div class="mcast-n">'+name+(flag?' <img class="tkflag" src="'+flag+'">':'')+'</div><div class="mcast-r">'+role+'</div></div>';
   }
@@ -3258,6 +3258,12 @@
       if(!(e.home&&e.home.code)){const r=_resolveKoSlot(f.home_label||f.home);if(r)e.home=Object.assign({},r);}
       if(!(e.away&&e.away.code)){const r=_resolveKoSlot(f.away_label||f.away);if(r)e.away=Object.assign({},r);}
     });}
+  // a fixture side is still an unresolved knockout SLOT ("Winner 85", "Runner-up A", "3rd B/C/E")?
+  // → show the SHORT bracket code ("W85", "2A", "3B/C/E") instead of leaking the raw label. This is
+  // how renderBracket already labels pending slots; keeps the banner/poster/ticker honest on first
+  // paint (results.js bakes empty → RES empty until the first syncLive fetch resolves teams).
+  function _isSlotLabel(s){return /^(Winner|Runner-up|Loser|3rd)\b/.test(String(s||''));}
+  function _sideName(s){return _isSlotLabel(s)?bkLabel(s):s;}
   // ── Knockout bracket (placeholder slots like SofaScore: 1E, 2A, 3A/B/C/D/F, W74…) ──
   function bkLabel(s){let m;
     if(m=s.match(/^Winner (\d+)$/))return 'W'+m[1];
@@ -3294,13 +3300,14 @@
   function applyNextMatch(){const f=nextFixture();if(!f)return;const ms=Date.parse(f.utc);
     const onair=document.getElementById('onair');
     const _ko=f.stage==='ko'; const _cmp=_ko?('Mundial 2026 · '+(f.round||'Knockout')+(f.venue?' · '+f.venue:'')):('Mundial 2026 · Group '+f.group);
-    document.querySelectorAll('#posterOff .poster-teams').forEach(e=>e.innerHTML=f.home+' <span>vs</span> '+f.away);
+    const _fh=mcEsc(_sideName(f.home)),_fa=mcEsc(_sideName(f.away));   // honest short code for pending KO slots
+    document.querySelectorAll('#posterOff .poster-teams').forEach(e=>e.innerHTML=_fh+' <span>vs</span> '+_fa);
     document.querySelectorAll('#posterOff .poster-comp').forEach(e=>e.textContent=_cmp+' · '+fmtDay(ms)+' · '+fmtTime(ms));
-    const nmT=document.querySelector('#heroA .nm-teams');if(nmT)nmT.innerHTML=f.home+' <span style="color:var(--txt-3)">vs</span> '+f.away;
+    const nmT=document.querySelector('#heroA .nm-teams');if(nmT)nmT.innerHTML=_fh+' <span style="color:var(--txt-3)">vs</span> '+_fa;
     const nmC=document.querySelector('#heroA .nm-comp');if(nmC)nmC.textContent=_cmp+' · '+fmtDayShort(ms);
-    const wnT=document.querySelector('#watchNext .wn-teams');if(wnT)wnT.innerHTML=f.home+' <span>vs</span> '+f.away;
+    const wnT=document.querySelector('#watchNext .wn-teams');if(wnT)wnT.innerHTML=_fh+' <span>vs</span> '+_fa;
     const wnC=document.querySelector('#watchNext .wn-comp');if(wnC)wnC.textContent=_cmp;
-    const oaN=document.getElementById('oaName');if(oaN&&onair&&!onair.classList.contains('live'))oaN.innerHTML=f.home+' v '+f.away+' &middot; '+fmtDayShort(ms)+' '+fmtTime(ms);
+    const oaN=document.getElementById('oaName');if(oaN&&onair&&!onair.classList.contains('live'))oaN.innerHTML=_fh+' v '+_fa+' &middot; '+fmtDayShort(ms)+' '+fmtTime(ms);
     setupPoll(f);
     renderDayMatches();
     // keep the watch-page off-air header in sync (setMatchLive's first run happens before FIX is ready)
@@ -3326,7 +3333,7 @@
       lastIt='<span class="tk"><span class="lbl">Full time</span> <b>'+lf.home+' '+lf.sc.h+'–'+lf.sc.a+' '+lf.away+'</b>'+(pw?(' &middot; '+pw.name+(pp?' through on pens ('+pp[0]+'–'+pp[1]+')':' through')):'')+'</span>';}}catch(_e){}
     const items=[
       lastIt,
-      '<span class="tk"><span class="lbl">Next on FootyHub TV</span> <b>'+f.home+' v '+f.away+'</b> &middot; Mundial 2026 &middot; <b>'+d+'</b></span>',
+      '<span class="tk"><span class="lbl">Next on FootyHub TV</span> <b>'+mcEsc(_sideName(f.home))+' v '+mcEsc(_sideName(f.away))+'</b> &middot; Mundial 2026 &middot; <b>'+d+'</b></span>',
       fans,
       '<span class="tk"><span class="lbl">Victor\'s Triple Bet</span> &#9656; <b>dropping in the pre-game</b></span>',
       '<span class="tk"><span class="lbl">Mundial 2026</span> live now &middot; 48 nations &middot; 104 matches</span>',
@@ -3946,6 +3953,9 @@
         if(!isNaN(k)&&k>Date.now()){kickoffTs=k;updateCountdown();}}   // only a FUTURE kickoff sets the countdown — a past/live kickoff never freezes it at 00:00
       // live = engine says so OR a fixture is in its window right now (client-side fallback so it flips even when the engine isn't pushing)
       setMatchLive(_lr);
+      // poster/nav read engine-owned data.match; overlay the Worker's fresher in-play score so
+      // they never lag the schedule row (which already reads RES.live) during an engine stall
+      try{if(_lr&&data.match&&data.match.home_code&&data.match.away_code){const _lvm=(RES.live||{})[data.match.home_code+'-'+data.match.away_code];if(_lvm&&typeof _lvm.h==='number'&&typeof _lvm.a==='number'){data.match.score_home=_lvm.h;data.match.score_away=_lvm.a;if(_lvm.m)data.match.minute=_lvm.m;}}}catch(_e){}
       renderLiveMatch(data.match);
       renderViewers(data.viewers);
       refreshSchedule(document.getElementById('schedList'));

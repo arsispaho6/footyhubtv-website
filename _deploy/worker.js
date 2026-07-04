@@ -252,6 +252,19 @@ async function _liveScoresTick(env) {
   for (const m of ((fx && fx.matches) || [])) {
     if (m.home_code && m.away_code) orient[[m.home_code, m.away_code].sort().join("|")] = m.home_code + "-" + m.away_code;
   }
+  // ALSO key already-resolved KO slots (QF/SF/Final teams the propagator filled) so their
+  // live/FT scores map to the right slot BEFORE the flaky Action bakes real codes into fixtures.
+  // Without this, an in-play quarter-final shows "LIVE" with no score until the bake lands.
+  try {
+    let _pre = {};
+    try { _pre = JSON.parse((await env.LIVE.get("live")) || "{}"); } catch (e) {}
+    const _pko = (_pre.results || {}).ko || {};
+    for (const no in _pko) {
+      const e = _pko[no];
+      if (e && e.home && e.home.code && e.away && e.away.code)
+        orient[[e.home.code, e.away.code].sort().join("|")] = e.home.code + "-" + e.away.code;
+    }
+  } catch (e) {}
   // ko fixtures indexed by kickoff ts so completed knockout events can update results.ko
   // (pens + winner) within a minute of FT — GitHub's espn-sync cron proved able to skip
   // 50min of runs (2026-07-03), which left the bracket without the shootout result.
@@ -262,6 +275,7 @@ async function _liveScoresTick(env) {
     if (!isNaN(ts)) koFix.push({ no: String(m.match_no), ts });
   }
   const liveNow = {}, finals = {}, koUpd = {};
+  let espnOk = false;   // did AT LEAST ONE ESPN window answer? if not, a total outage must NOT wipe live scores
   for (const off of [0, -1]) {   // today + yesterday UTC (matches cross midnight)
     const ds = new Date(Date.now() + off * 864e5).toISOString().slice(0, 10).replace(/-/g, "");
     let sb;
@@ -270,6 +284,7 @@ async function _liveScoresTick(env) {
         { headers: { "User-Agent": "Mozilla/5.0" } });
       if (!r.ok) continue;
       sb = await r.json();
+      espnOk = true;
     } catch (e) { continue; }
     for (const ev of (sb.events || [])) {
       const comp = (ev.competitions || [])[0] || {};
@@ -325,7 +340,7 @@ async function _liveScoresTick(env) {
   } catch (e) {}
   const res = data.results = data.results || {};
   const before = JSON.stringify({ l: res.live || {}, s: res.scores || {}, k: res.ko || {}, il: data.is_live });
-  res.live = liveNow;   // wholesale: finished/abandoned matches drop out on their own
+  if (espnOk) res.live = liveNow;   // wholesale replace ONLY when ESPN answered — a total outage leaves prior in-play scores intact (empty liveNow from a FAILURE must not wipe them)
   if (Object.keys(finals).length) {
     res.scores = res.scores || {};
     for (const k in finals) res.scores[k] = finals[k];

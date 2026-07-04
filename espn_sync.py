@@ -156,7 +156,7 @@ def espn_finished(days_back: int = 16) -> list:
 
 
 # ── fixtures: unordered code-pair -> site matchId (home_code-away_code) ────────
-def _fixture_index() -> dict:
+def _fixture_index(ko: dict | None = None) -> dict:
     idx = {}
     try:
         fx = json.load(open(os.path.join(_HERE, "fixtures.json"), encoding="utf-8"))
@@ -166,12 +166,19 @@ def _fixture_index() -> dict:
                 idx[frozenset((hc, ac))] = (hc, ac)
     except Exception:
         pass
+    # ALSO index resolved knockout pairings (QF/SF/Final) so their scores + predictor settle
+    # map to the site's matchId BEFORE fixtures.json is baked with the real codes
+    if ko:
+        for e in ko.values():
+            h, a = (e.get("home") or {}), (e.get("away") or {})
+            if h.get("code") and a.get("code"):
+                idx.setdefault(frozenset((h["code"], a["code"])), (h["code"], a["code"]))
     return idx
 
 
-def _scores_map(finished: list) -> dict:
+def _scores_map(finished: list, ko: dict | None = None) -> dict:
     """ESPN finished list -> {matchId (home_code-away_code): {h, a}} in fixture orientation."""
-    idx = _fixture_index()
+    idx = _fixture_index(ko)
     out = {}
     for hc, hs, ac, as_, *_ in finished:
         fx = idx.get(frozenset((hc, ac)))
@@ -364,10 +371,10 @@ def push_results(standings: dict, scores: dict | None = None, ko: dict | None = 
     return ok_w or ok_r2
 
 
-def settle(finished: list) -> None:
+def settle(finished: list, ko: dict | None = None) -> None:
     if not SECRET or not finished:
         return
-    idx = _fixture_index()
+    idx = _fixture_index(ko)   # ko-aware so knockout matches settle before fixtures are baked
     n = 0
     for hc, hs, ac, as_, *_ in finished:
         fx = idx.get(frozenset((hc, ac)))
@@ -654,7 +661,14 @@ def run_once(do_settle: bool = True):
     print(f"ESPN sync @ {time.strftime('%Y-%m-%d %H:%M:%SZ', time.gmtime())}")
     standings = espn_standings()
     fin = espn_finished()
-    scores = _scores_map(fin)
+    # resolve the knockout bracket FIRST so scores + predictor settle can key off resolved
+    # KO pairings (Argentina v Egypt) before fixtures.json is baked with the real codes
+    ko = {}
+    try:
+        ko = propagate_ko(map_ko_events(espn_ko_events()), standings)
+    except Exception as e:
+        print(f"  ko mapping failed: {e}")
+    scores = _scores_map(fin, ko)
     mc = None
     if fin:
         try:
@@ -665,12 +679,6 @@ def run_once(do_settle: bool = True):
     if standings or scores:
         teams = sum(len(v) for v in standings.values())
         print(f"  ESPN standings: {len(standings)} groups, {teams} teams | scores: {len(scores)} finished")
-        ko = {}
-        try:
-            ko = map_ko_events(espn_ko_events())
-            ko = propagate_ko(ko, standings)   # fill downstream slots from decided feeders
-        except Exception as e:
-            print(f"  ko mapping failed: {e}")
         if ko:
             dec = sum(1 for v in ko.values() if v.get("winner"))
             filled = sum(1 for v in ko.values() if (v.get("home") or {}).get("code") and (v.get("away") or {}).get("code"))
@@ -685,7 +693,7 @@ def run_once(do_settle: bool = True):
     schedule_kickoffs()        # arm the predictor kickoff-lock (cloud-side, PC-independent)
     if do_settle:
         print(f"  ESPN finished matches found: {len(fin)}")
-        settle(fin)
+        settle(fin, ko)
 
 
 def _mock():
