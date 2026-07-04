@@ -546,6 +546,64 @@ def map_ko_events(events: list) -> dict:
     return ko
 
 
+def propagate_ko(ko: dict, standings: dict) -> dict:
+    """Forward-fill each ko slot from decided feeders — mirrors the site + Worker propagators
+    so all three producers write the SAME complete bracket (this module replaces results.ko
+    wholesale, so without propagating here it would clobber the Worker's filled slots).
+
+    "Winner 88" -> Egypt the moment m88 decides, "Winner A" -> the group winner, etc. Fills
+    ONLY empty slots (never overwrites an ESPN-resolved team); iterates in match_no order so a
+    later round resolves after the round that feeds it.
+    """
+    kf = _ko_fixtures()
+
+    def grp_row(L, pos):
+        r = standings.get(L) or []
+        return r[pos] if len(r) >= 4 and pos < len(r) else None
+
+    def resolve(label):
+        s = str(label or "")
+        m = re.match(r"Winner ([A-L])$", s)
+        if m:
+            r = grp_row(m.group(1), 0)
+            return {"code": r["code"], "name": r["name"]} if r else None
+        m = re.match(r"Runner-up ([A-L])$", s)
+        if m:
+            r = grp_row(m.group(1), 1)
+            return {"code": r["code"], "name": r["name"]} if r else None
+        m = re.match(r"Winner (\d+)$", s)
+        if m:
+            e = ko.get(m.group(1)) or {}
+            w = e.get("winner")
+            if w:
+                t = e.get("home") if (e.get("home") or {}).get("code") == w else (
+                    e.get("away") if (e.get("away") or {}).get("code") == w else None)
+                return {"code": w, "name": (t or {}).get("name") or _DISPLAY.get(w, str(w).upper())}
+            return None
+        m = re.match(r"Loser (\d+)$", s)
+        if m:
+            e = ko.get(m.group(1)) or {}
+            w = e.get("winner")
+            if w and e.get("home") and e.get("away"):
+                t = e["away"] if e["home"].get("code") == w else e["home"]
+                return {"code": t["code"], "name": t.get("name") or _DISPLAY.get(t["code"], str(t["code"]).upper())}
+            return None
+        return None
+
+    for f in sorted(kf, key=lambda m: m.get("match_no", 0)):
+        no = str(f.get("match_no"))
+        e = ko.setdefault(no, {})
+        if not (e.get("home") or {}).get("code"):
+            r = resolve(f.get("home"))
+            if r:
+                e["home"] = {**(e.get("home") or {}), **r}
+        if not (e.get("away") or {}).get("code"):
+            r = resolve(f.get("away"))
+            if r:
+                e["away"] = {**(e.get("away") or {}), **r}
+    return ko
+
+
 def bake_fixtures(ko: dict) -> bool:
     """Overlay the resolved knockout teams onto fixtures.json + fixtures.js.
 
@@ -610,11 +668,13 @@ def run_once(do_settle: bool = True):
         ko = {}
         try:
             ko = map_ko_events(espn_ko_events())
+            ko = propagate_ko(ko, standings)   # fill downstream slots from decided feeders
         except Exception as e:
             print(f"  ko mapping failed: {e}")
         if ko:
             dec = sum(1 for v in ko.values() if v.get("winner"))
-            print(f"  knockout bracket (ESPN truth): {len(ko)} matches known, {dec} decided")
+            filled = sum(1 for v in ko.values() if (v.get("home") or {}).get("code") and (v.get("away") or {}).get("code"))
+            print(f"  knockout bracket: {len(ko)} slots, {filled} both-sides filled, {dec} decided")
         push_results(standings, scores, ko or None, mc)
         try:
             bake_fixtures(ko)   # write real teams into fixtures.json/js (committed by the workflow)

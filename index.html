@@ -3128,6 +3128,9 @@
 
   // ── Mundial fixtures (window.FIXTURES from fixtures.js) — every time rendered in the VISITOR'S local timezone ──
   const FIX=Array.isArray(window.FIXTURES)?window.FIXTURES:[];
+  // snapshot the ORIGINAL knockout slot labels ("Winner 88", "Runner-up A") before any
+  // baking overwrites them — the client-side propagator resolves from these, not the baked name
+  FIX.forEach(function(f){if(f&&f.stage==='ko'&&f.home_label===undefined){f.home_label=f.home;f.away_label=f.away;}});
   const DEMO=/[?&]demo=live/i.test(location.search); // ad/demo mode: render the site as if a match is LIVE now
   // referral: stash an inviter's ?ref so it's credited on this player's first prediction
   try{var _rf=new URLSearchParams(location.search).get('ref');if(_rf){_rf=_rf.replace(/[^A-Za-z0-9_\- ]/g,'').trim().slice(0,20);if(_rf)localStorage.setItem('fh_ref',_rf);}}catch(_e){}
@@ -3229,6 +3232,32 @@
     list.querySelectorAll('.sched-item[data-exp]').forEach(x=>x.classList.remove('open'));
     if(opening){exp.hidden=false;it.classList.add('open');schedCdTick();}
   });
+  // ── Knockout FORWARD PROPAGATION (client-side, instant, cron-independent) ──
+  // Fills each ko slot from data already in hand the moment a feeder decides — so the
+  // moment Egypt win m88, "Winner 88" resolves to Egypt in the R16 slot WITHOUT waiting
+  // for ESPN to update the R16 fixture or for the GitHub cron to run. This is what makes
+  // the bracket auto-advance "24/7, instantly" as the user expects.
+  const _NAT={};NATIONS.forEach(function(x){_NAT[x[0]]=x[1];});
+  function _koName(code){if(!code)return String(code||'').toUpperCase();
+    const st=RES.standings||{};for(const L in st){const r=(st[L]||[]).find(function(x){return x&&x.code===code;});if(r&&r.name)return r.name;}
+    const ff=FIX.find(function(x){return x&&x.home_code===code;});if(ff)return ff.home;
+    const gf=FIX.find(function(x){return x&&x.away_code===code;});if(gf)return gf.away;
+    return _NAT[code]||code.toUpperCase();}
+  function _grpRow(L,pos){const r=(RES.standings&&RES.standings[L])||[];return (r.length>=4&&r[pos])?r[pos]:null;}
+  function _resolveKoSlot(label){const s=String(label||'');let m;
+    if(m=s.match(/^Winner ([A-L])$/)){const r=_grpRow(m[1],0);return r?{code:r.code,name:r.name}:null;}
+    if(m=s.match(/^Runner-up ([A-L])$/)){const r=_grpRow(m[1],1);return r?{code:r.code,name:r.name}:null;}
+    if(m=s.match(/^Winner (\d+)$/)){const e=(RES.ko||{})[m[1]];if(e&&e.winner){const t=(e.home&&e.home.code===e.winner)?e.home:((e.away&&e.away.code===e.winner)?e.away:null);return {code:e.winner,name:(t&&t.name)||_koName(e.winner)};}return null;}
+    if(m=s.match(/^Loser (\d+)$/)){const e=(RES.ko||{})[m[1]];if(e&&e.winner&&e.home&&e.away){const t=(e.home.code===e.winner)?e.away:e.home;return {code:t.code,name:t.name||_koName(t.code)};}return null;}
+    return null;}   // 3rd X/Y/Z — best-third assignment stays server-side (ESPN/espn_sync)
+  function _propagateKo(){
+    if(!RES.ko)RES.ko={};
+    const kf=FIX.filter(function(f){return f.stage==='ko';}).sort(function(a,b){return (a.match_no||0)-(b.match_no||0);});
+    kf.forEach(function(f){const no=String(f.match_no);const e=RES.ko[no]||(RES.ko[no]={});
+      // resolve from the ORIGINAL fixture label, not f.home (which the overlay may have baked)
+      if(!(e.home&&e.home.code)){const r=_resolveKoSlot(f.home_label||f.home);if(r)e.home=Object.assign({},r);}
+      if(!(e.away&&e.away.code)){const r=_resolveKoSlot(f.away_label||f.away);if(r)e.away=Object.assign({},r);}
+    });}
   // ── Knockout bracket (placeholder slots like SofaScore: 1E, 2A, 3A/B/C/D/F, W74…) ──
   function bkLabel(s){let m;
     if(m=s.match(/^Winner (\d+)$/))return 'W'+m[1];
@@ -3908,9 +3937,10 @@
       let _lr;if(DEMO){_lr=true;}else if(data.is_live===true){_lr=_liveReal(data);}else if(data.is_live===false){_lr=false;}else{try{_lr=!!liveFixtureNow();}catch(_e){_lr=false;}}
       _liveMatch=(_lr&&data.match&&data.match.home_code)?data.match:null;
       if(data.results){if(data.results.standings)RES.standings=data.results.standings;if(data.results.ko)RES.ko=data.results.ko;if(data.results.scores)RES.scores=data.results.scores;if(data.results.mc)RES.mc=data.results.mc;RES.live=data.results.live||{};}   // populate RES BEFORE setMatchLive so the off-air score + finished stats render on the FIRST tick (no ~10s blank); results.live replaced wholesale so ended matches drop out
-      // overlay resolved knockout teams onto FIX (BEFORE the renders below) so EVERY component — mundial banner, ticker, off-air poster, hero next-card, nextFixture/lastFinishedFixture, schedule & bracket — shows REAL teams, never "Winner C / Runner-up F"
+      try{_propagateKo();}catch(_e){}   // fill each ko slot from decided feeders NOW — bracket auto-advances without waiting for ESPN/cron
+      // overlay FULLY-resolved knockout matches onto FIX (BEFORE the renders below) so EVERY component — mundial banner, ticker, off-air poster, hero next-card, nextFixture/lastFinishedFixture, schedule & bracket — shows REAL teams, never "Winner C / Runner-up F"
       var _koChg=false;
-      if(RES.ko)FIX.forEach(function(f){if(f.stage==='ko'){var r=RES.ko[f.match_no];if(r&&r.home&&r.home.code&&f.home_code!==r.home.code){f.home=r.home.name;f.home_code=r.home.code;f.away=r.away.name;f.away_code=r.away.code;_koChg=true;}}});
+      if(RES.ko)FIX.forEach(function(f){if(f.stage==='ko'){var r=RES.ko[f.match_no];if(r&&r.home&&r.home.code&&r.away&&r.away.code&&(f.home_code!==r.home.code||f.away_code!==r.away.code)){f.home=r.home.name;f.home_code=r.home.code;f.away=r.away.name;f.away_code=r.away.code;_koChg=true;}}});
       if(_koChg){_mPhaseKey=null;try{applyNextMatch();}catch(_e){}}
       if(data.match&&data.match.kickoff){const k=Date.parse(data.match.kickoff);
         if(!isNaN(k)&&k>Date.now()){kickoffTs=k;updateCountdown();}}   // only a FUTURE kickoff sets the countdown — a past/live kickoff never freezes it at 00:00

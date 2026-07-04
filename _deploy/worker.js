@@ -211,6 +211,35 @@ __name(_notifyTick, "_notifyTick");
 var NAMECODE = { "mexico": "mx", "southafrica": "za", "safrica": "za", "southkorea": "kr", "skorea": "kr", "czechrepublic": "cz", "czechia": "cz", "canada": "ca", "bosniaherzegovina": "ba", "bosnia": "ba", "qatar": "qa", "switzerland": "ch", "usa": "us", "paraguay": "py", "australia": "au", "turkey": "tr", "turkiye": "tr", "brazil": "br", "morocco": "ma", "haiti": "ht", "scotland": "gb-sct", "germany": "de", "curacao": "cw", "ivorycoast": "ci", "ecuador": "ec", "netherlands": "nl", "japan": "jp", "sweden": "se", "tunisia": "tn", "spain": "es", "capeverde": "cv", "saudiarabia": "sa", "uruguay": "uy", "belgium": "be", "egypt": "eg", "iran": "ir", "newzealand": "nz", "france": "fr", "senegal": "sn", "iraq": "iq", "norway": "no", "argentina": "ar", "algeria": "dz", "austria": "at", "jordan": "jo", "portugal": "pt", "drcongo": "cd", "england": "gb-eng", "croatia": "hr", "ghana": "gh", "panama": "pa", "uzbekistan": "uz", "colombia": "co", "korearepublic": "kr", "iriran": "ir", "cotedivoire": "ci", "unitedstates": "us", "bosniaandherzegovina": "ba", "congodr": "cd", "caboverde": "cv" };
 var _lsNorm = /* @__PURE__ */ __name((s) => String(s || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, ""), "_lsNorm");
 var _lsCode = /* @__PURE__ */ __name((n) => NAMECODE[_lsNorm(n)] || "", "_lsCode");
+// forward-propagate the knockout bracket server-side so live.json is self-complete:
+// "Winner 88" -> Egypt the moment m88 decides, without waiting for ESPN to update the R16
+// fixture or for the GitHub cron. Mirrors the site's client-side propagator.
+function _koNameSrv(res, code) {
+  if (!code) return String(code || "").toUpperCase();
+  const st = res.standings || {};
+  for (const L in st) { const r = (st[L] || []).find((x) => x && x.code === code); if (r && r.name) return r.name; }
+  return String(code).toUpperCase();
+}
+__name(_koNameSrv, "_koNameSrv");
+function _resolveKoSrv(res, label) {
+  const s = String(label || ""); let m;
+  if (m = s.match(/^Winner ([A-L])$/)) { const r = (res.standings || {})[m[1]] || []; return r.length >= 4 && r[0] ? { code: r[0].code, name: r[0].name } : null; }
+  if (m = s.match(/^Runner-up ([A-L])$/)) { const r = (res.standings || {})[m[1]] || []; return r.length >= 4 && r[1] ? { code: r[1].code, name: r[1].name } : null; }
+  if (m = s.match(/^Winner (\d+)$/)) { const e = (res.ko || {})[m[1]]; if (e && e.winner) { const t = e.home && e.home.code === e.winner ? e.home : (e.away && e.away.code === e.winner ? e.away : null); return { code: e.winner, name: t && t.name || _koNameSrv(res, e.winner) }; } return null; }
+  if (m = s.match(/^Loser (\d+)$/)) { const e = (res.ko || {})[m[1]]; if (e && e.winner && e.home && e.away) { const t = e.home.code === e.winner ? e.away : e.home; return { code: t.code, name: t.name || _koNameSrv(res, t.code) }; } return null; }
+  return null;
+}
+__name(_resolveKoSrv, "_resolveKoSrv");
+function _propagateKoSrv(res, matches) {
+  res.ko = res.ko || {};
+  const kf = matches.filter((m) => m.stage === "ko" && m.match_no != null).sort((a, b) => (a.match_no || 0) - (b.match_no || 0));
+  for (const f of kf) {
+    const no = String(f.match_no); const e = res.ko[no] || (res.ko[no] = {});
+    if (!(e.home && e.home.code)) { const r = _resolveKoSrv(res, f.home_label || f.home); if (r) e.home = Object.assign({}, e.home, r); }
+    if (!(e.away && e.away.code)) { const r = _resolveKoSrv(res, f.away_label || f.away); if (r) e.away = Object.assign({}, e.away, r); }
+  }
+}
+__name(_propagateKoSrv, "_propagateKoSrv");
 async function _liveScoresTick(env) {
   // fixtures.json gives OUR home/away orientation — results.scores/live keys must match the site's
   let fx;
@@ -305,6 +334,7 @@ async function _liveScoresTick(env) {
     res.ko = res.ko || {};
     for (const k in koUpd) res.ko[k] = koUpd[k];
   }
+  try { _propagateKoSrv(res, (fx && fx.matches) || []); } catch (e) {}   // fill downstream ko slots from decided feeders
   // stale-engine kill: the engine pushes every ~15s while live; >7min silence = broadcast over
   try {
     const up = Date.parse(data.updated || "");
