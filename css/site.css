@@ -222,6 +222,10 @@ button { font: inherit; color: inherit; }
 .chapter { position: relative; height: calc((100 + 78 * var(--pace)) * var(--vh) + var(--hold, 330px)); }
 .onair { position: relative; height: calc((100 + 90 * var(--pace)) * var(--vh) + var(--hold, 330px)); }
 .pin { position: sticky; top: 0; height: calc(100 * var(--vh)); }
+/* The text that is read always stands in front of the ball. Where the ball passes behind it, the letters get a
+   dark edge so they stay readable over its white panels; the class is set only there (main.js, haloBehind), so
+   the rest of the page looks exactly as before. Bold words keep their glow on top of the edge. */
+.over-ball { text-shadow: 0 0 .09em rgba(14, 8, 30, .95), 0 0 .26em rgba(14, 8, 30, .8), 0 0 .5em rgba(14, 8, 30, .45); }
 .pin--word { z-index: 1; display: flex; justify-content: center; padding-top: calc(12 * var(--vh)); pointer-events: none; }
 .pin--ui { z-index: 3; margin-top: calc(-100 * var(--vh)); pointer-events: none; }
 .pin--ui a, .pin--ui button { pointer-events: auto; }
