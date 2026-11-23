@@ -214,9 +214,13 @@ button { font: inherit; color: inherit; }
 /* A chapter's height is one screen, plus exactly the scroll its animation uses (the scripts map that
    distance to the whole animation, with no pause inside), plus --hold: one ordinary scroll gesture during
    which the finished picture rests before the page moves on. --hold is set by the script (330 px for a
-   mouse wheel, 360 px for a finger). Checked with _tooling/dead_scroll.py: one rest per chapter, no other. */
-.chapter { position: relative; height: calc(178 * var(--vh) + var(--hold, 330px)); }
-.onair { position: relative; height: calc(190 * var(--vh) + var(--hold, 330px)); }
+   mouse wheel, 360 px for a finger). Checked with _tooling/dead_scroll.py: one rest per chapter, no other.
+   --pace (owner 2026-11-22: every chapter should last longer, the visitor did not have time to enjoy it):
+   how much scroll the animation of every chapter takes, against the lengths of 2026-11-15 (1 = those).
+   One number for the whole page; the scripts read the heights, so nothing else has to follow it. */
+:root { --pace: 1.5; }
+.chapter { position: relative; height: calc((100 + 78 * var(--pace)) * var(--vh) + var(--hold, 330px)); }
+.onair { position: relative; height: calc((100 + 90 * var(--pace)) * var(--vh) + var(--hold, 330px)); }
 .pin { position: sticky; top: 0; height: calc(100 * var(--vh)); }
 .pin--word { z-index: 1; display: flex; justify-content: center; padding-top: calc(12 * var(--vh)); pointer-events: none; }
 .pin--ui { z-index: 3; margin-top: calc(-100 * var(--vh)); pointer-events: none; }
@@ -250,7 +254,7 @@ button { font: inherit; color: inherit; }
 .anchor--side { width: min(13vw, 190px); aspect-ratio: 1; }
 
 /* ── the show, in three parts: the ball hops from one to the next ─────── */
-.trio { position: relative; height: calc(184 * var(--vh) + var(--hold, 330px)); }
+.trio { position: relative; height: calc((100 + 84 * var(--pace)) * var(--vh) + var(--hold, 330px)); }
 .trio .pin { display: grid; align-content: center; padding: calc(13 * var(--vh)) var(--pad) calc(5 * var(--vh)); }
 .trio__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4.6vw, 88px); align-items: start; }
 .trio__item { opacity: .32; transition: opacity .55s; }
@@ -270,7 +274,7 @@ button { font: inherit; color: inherit; }
 .trio__body ol li::before { content: counter(step); font-variant-numeric: tabular-nums; color: var(--mauve); }
 
 /* ── the last act: the whole title first, the goal small beneath it; scrolling brings the goal forward ── */
-.watch { --title-top: calc(20 * var(--vh)); position: relative; height: calc(190 * var(--vh) + var(--hold, 330px)); }
+.watch { --title-top: calc(20 * var(--vh)); position: relative; height: calc((100 + 90 * var(--pace)) * var(--vh) + var(--hold, 330px)); }
 .watch .pin--word { padding-top: var(--title-top); }
 .watch .word { text-align: center; }
 /* the box the goal stands in. The title stays readable from start to finish: once the goal has come
@@ -412,7 +416,11 @@ button { font: inherit; color: inherit; }
 
 /* ── phones and narrow tablets: its own layout, not a shrunken desktop ── */
 @media (max-width: 860px) {
-  .nav__links { display: none; }
+  /* of the menu only "Terms" stays here: plain text, right beside the Watch live button (owner, 2026-11-16) */
+  .nav { gap: 10px; }
+  .nav__links a { display: none; }
+  .nav__links a[href="terms.html"] { display: block; padding: 14px 4px; }
+  .nav__links a[href="terms.html"]::after { left: 4px; right: 4px; bottom: 8px; }
   .nav__logo img { height: 38px; }
 
   .display { line-height: .96; }
@@ -431,8 +439,8 @@ button { font: inherit; color: inherit; }
   .pills .pill { flex: 1 1 auto; padding: 0 14px; gap: 8px; }
   .pills .pill .arr { display: none; }
 
-  .chapter { height: calc(175 * var(--vh) + var(--hold, 360px)); }
-  .onair { height: calc(182 * var(--vh) + var(--hold, 360px)); }
+  .chapter { height: calc((100 + 75 * var(--pace)) * var(--vh) + var(--hold, 360px)); }
+  .onair { height: calc((100 + 82 * var(--pace)) * var(--vh) + var(--hold, 360px)); }
   .pin--word { padding-top: calc(10 * var(--vh)); }
   /* the photos start a little over half-way down the name, so the letters show above and beside them */
   .pin--ui {
@@ -461,7 +469,7 @@ button { font: inherit; color: inherit; }
 
   /* one part open at a time; the ball sits beside the open one */
   /* on a phone one swipe travels a long way: the three parts get about a swipe each, so every list can be read */
-  .trio { height: calc(340 * var(--vh) + var(--hold, 360px)); }
+  .trio { height: calc((100 + 240 * var(--pace)) * var(--vh) + var(--hold, 360px)); }
   .trio .pin { padding-top: calc(12 * var(--vh)); }
   .trio__list { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .trio__item { border-top: 1px solid var(--rule); padding: 16px 0; }
@@ -479,7 +487,7 @@ button { font: inherit; color: inherit; }
   .word--lines .ln { width: auto; }
   .word--lines .w { display: block; width: max-content; margin-inline: auto; }
   /* the title is one word per line here, so the goal's box starts further down */
-  .watch { --title-top: calc(15 * var(--vh)); height: calc(182 * var(--vh) + var(--hold, 360px)); }
+  .watch { --title-top: calc(15 * var(--vh)); height: calc((100 + 82 * var(--pace)) * var(--vh) + var(--hold, 360px)); }
   .watch .pin--ui { display: block; padding: 0; }
   .anchor--goal { --gw: 92vw; top: calc(var(--title-top) + var(--word-size, 90px) * 3.82 - var(--gw) * .07); }
   .find { grid-template-columns: minmax(0, 1fr); grid-template-areas: "lead" "title" "list"; row-gap: 22px; }
@@ -503,6 +511,12 @@ button { font: inherit; color: inherit; }
   .cookies-open .hero { padding-bottom: 62px; }
 }
 
+/* the narrowest phones: logo, "Terms" and the Watch live button still share one line */
+@media (max-width: 359px) {
+  .nav__logo img { height: 30px; }
+  .pill--nav { padding: 0 12px; }
+}
+
 /* tall, narrow screens (tablets held upright) have room for bigger photos */
 @media (min-width: 600px) and (max-width: 860px) and (min-height: 900px) {
   .anchor--duo { height: calc(50 * var(--vh)); }
@@ -514,4 +528,80 @@ button { font: inherit; color: inherit; }
   .desc { font-size: .9375rem; }
   .desc__quote { display: none; }
   .pin--ui { gap: 8px; }
+}
+
+/* ── terms & privacy: a page of its own (terms.html) ─────────────────── */
+/* Same stage, same type, same ball. Here the ball is the reader's place-mark in a list of parts that stays on
+   screen, so its canvas lies above the text (it only ever stands in the places kept free for it) and below
+   the menu bar and the cookie notice. */
+.page-legal #gl { z-index: 15; }
+.foot__copy a { color: inherit; text-underline-offset: 3px; }
+.foot__copy a:hover { color: #fff; }
+/* Three columns: the ball's own (with the list of parts under it), the reading column in the middle of the
+   page, and air. The title starts on the same line as the text and may run on into the third column. */
+.legal {
+  position: relative; z-index: 3; padding: calc(76px + 7 * var(--vh)) var(--pad) clamp(70px, 12vh, 140px);
+  font-size: clamp(1rem, .5vw + .56rem, 1.22rem);      /* the text grows a little on a big screen */
+}
+.legal__head, .legal__grid { display: grid; grid-template-columns: minmax(190px, 1fr) minmax(0, 44em) minmax(0, 1fr); column-gap: clamp(28px, 4vw, 80px); align-items: start; }
+.legal__head { --fs: min(8.4vw, calc(20 * var(--vh))); margin-bottom: clamp(44px, 9vh, 110px); }
+.legal__top { grid-column: 2 / span 2; min-width: 0; }
+/* where the ball waits: big, beside the title, straight above the list it then drops into */
+.legal__spot--side { grid-column: 1; justify-self: end; width: min(100%, calc(var(--fs) * 1.5)); aspect-ratio: 1; margin-top: calc(var(--fs) * .13); }
+.legal__spot--line { display: none; width: .8em; height: .8em; margin-left: .16em; vertical-align: -.07em; }      /* phones: right after the first word */
+.legal__lead { max-width: 36rem; margin-top: clamp(22px, 4vh, 40px); font-size: 1.125rem; line-height: 1.5; }
+.legal__date { margin-top: 12px; font-size: .8125rem; letter-spacing: .02em; color: var(--ink-2); }
+.legal__text { grid-column: 2; min-width: 0; }
+
+/* the parts of the page; the ball stands in the slot of the one being read */
+.toc { grid-column: 1; justify-self: end; width: min(100%, 16rem); position: sticky; top: calc(var(--nav-h, 74px) + 50px); display: grid; gap: 2px; }
+.toc a { display: flex; align-items: center; gap: 12px; min-height: 44px; text-decoration: none; color: rgba(255, 255, 255, .64); font: 500 1rem/1.2 var(--body); transition: color .3s; }
+.toc a:hover, .toc a.is-active { color: #fff; }
+.toc__slot { flex: none; width: 32px; height: 32px; border-radius: 50%; }
+.toc__short { display: none; }
+/* without the ball (no WebGL) nothing is lost: a plain dot marks the part being read */
+.no-webgl .toc a.is-active .toc__slot { background-color: var(--mauve); transform: scale(.36); }
+
+.legal__part { padding-bottom: clamp(60px, 10vh, 120px); scroll-margin-top: calc(var(--nav-h, 74px) + 22px); }      /* a part opened by its link starts clear of the menu */
+.legal__part--last { padding-bottom: 0; }
+.legal__part h2 { margin-bottom: 26px; font: 200 clamp(2rem, 3.6vw, 3.25rem)/1 var(--display); letter-spacing: -.035em; text-transform: uppercase; }
+.legal__part h3 { display: flex; gap: .75em; margin: 36px 0 10px; font: 600 1.0625em/1.35 var(--body); }
+.legal__part h3 span { flex: none; min-width: 1.5em; color: var(--mauve); font-variant-numeric: tabular-nums; }
+.legal__part p, .legal__part li { font-size: 1em; line-height: 1.65; color: rgba(255, 255, 255, .86); }
+.legal__part p + p, .legal__part ul + p { margin-top: 12px; }
+.legal__part .legal__intro { font-size: 1.125em; line-height: 1.55; color: #fff; }
+.legal__part ul { display: grid; gap: 10px; margin-top: 4px; }
+.legal__part li { position: relative; padding-left: 1.35em; }
+.legal__part li::before { content: ""; position: absolute; left: .2em; top: .7em; width: 6px; height: 6px; border-radius: 50%; background-color: var(--mauve); }
+.legal__part b { font-weight: 600; color: #fff; }
+.legal__part a:not(.pill) { color: #fff; text-decoration: underline; text-decoration-color: var(--mauve); text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color .25s; }
+.legal__part a:not(.pill):hover { color: var(--mauve); }
+.legal__part .legal__mail { margin-top: 14px; }
+.legal__part .legal__mail a { font: 300 clamp(1.3rem, 2.2vw, 2rem)/1.2 var(--display); letter-spacing: -.02em; }
+.legal__part .legal__sign { margin-top: 26px; font-size: .8125rem; color: var(--ink-2); }
+.legal__back { margin-top: 30px; }
+
+@media (max-width: 860px) {
+  .legal { padding-top: calc(70px + 4 * var(--vh)); }
+  .legal__head, .legal__grid { grid-template-columns: minmax(0, 1fr); }
+  .legal__head { --fs: 12.6vw; margin-bottom: 30px; }
+  .legal__top, .legal__text { grid-column: 1; }
+  .legal__spot--side { display: none; }
+  .legal__spot--line { display: inline-block; }
+  .legal__lead { font-size: 1.0625rem; }
+  /* the list of parts becomes a bar that locks right under the menu; the ball sits under the part being read */
+  .page-legal .nav::before { inset: 0; -webkit-mask-image: none; mask-image: none; }
+  .toc {
+    justify-self: stretch; width: auto; top: var(--nav-h, 70px); z-index: 4; display: flex; justify-content: space-between; gap: 6px;
+    margin: 0 calc(var(--pad) * -1) 30px; padding: 4px var(--pad) 7px;
+    background-color: rgba(28, 18, 54, .92); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, .12);
+  }
+  .toc__long { display: none; }
+  .toc__short { display: inline; }
+  .toc a { flex: 1 1 0; flex-direction: column-reverse; justify-content: center; gap: 3px; min-height: 52px; font-size: .875rem; }
+  .toc__slot { width: 20px; height: 20px; }
+  .legal__part { scroll-margin-top: calc(var(--nav-h, 70px) + 76px); }
+  .legal__part h2 { margin-bottom: 20px; }
+  .legal__part h3 { margin-top: 30px; }
 }
